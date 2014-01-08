@@ -1,10 +1,9 @@
 require! {
-  fs
   path
   _: 'lodash'
 }
 
-{ env, platform } = process
+{ env, platform, exit } = process
 
 module.exports = class common
 
@@ -26,10 +25,10 @@ module.exports = class common
 
   @exit = (code) ~>
     if code is 0 or not code
-      code |> process.exit
+      code |> exit
     # if exit code is not 0, return a partial function
     (message) ~>
       if message?
         message = message.red if String::red?
         message |> @echo
-      code |> process.exit
+      code |> exit

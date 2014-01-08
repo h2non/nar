@@ -4,3 +4,4 @@ require! {
 
 module <<< exports:
   version: version
+
