@@ -1,0 +1,6 @@
+src/
+test/
+*.ls
+*.coffee
+.gitignore
+.travis.yml
