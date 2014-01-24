@@ -1,14 +1,30 @@
 # nar
 
-> **N**ode.js application **AR**chive. Package and ship node applications like a boss
+> **N**ode.js application **AR**chive. Package and ship node applications easily
 
 > **work in progress!**
 
-## About
+## Why
+
+If you are a lucky guy, you probably do not need to use `nar`, in other cases,
 
 Easily package and ship node.js applications in a self-contained gzipped archive
 
-**work in progress!**
+## Installation
+
+```
+$ npm install -g nar
+```
+
+## Command-line interface
+
+### create
+
+### exec
+
+### extract
+
+### deploy
 
 ## Configuration
 
@@ -21,12 +37,13 @@ in the `package.json` manifest file of your application
   "version": "1.0.0",
   "nar": {
     "binary": true,
+    "deployPath": "${HOME}/apps/my-cool-package",
     "dependencies": true,
     "devDependencies": false,
-    "peerDependencies": false,
+    "peerDependencies": true,
     "commands": {
       "pre-run": "npm install",
-      "run": "node app"
+      "run": "node ./app"
     }
   }
 }
@@ -34,17 +51,8 @@ in the `package.json` manifest file of your application
 
 ### Options
 
-The following options should be declared in a package called `package`
-
-#### binary
-Type: `boolean`
-Default: `false`
-Alias: `includeBinary`
-
-This options allows to you include include the node.js binary in the generated build archive.
-This is usually useful when you want to deploy a fully self-contained application in a sandboxed deployment environment
-
-**Note**: Node binary is OS-specific. Be aware about using this option if you want to deploy in multiple platforms
+The following options can be declared in your application package.json as
+properties members of the `nar` or `package` first-level property
 
 #### dependencies
 Type: `boolean`
@@ -61,15 +69,29 @@ Type: `boolean`
 Default: `false`
 Alias: `includePeerDependencies`
 
-## Command-line interface
+#### binary
+Type: `boolean`
+Default: `false`
+Alias: `includeBinary`
 
-### create
+#### globalPackages
+Type: `string|array`
+Default: `undefined`
+Alias: `includeGlobalPackages`
 
-### update
+Bundle globally installed packages in the generated archive.
+Useful for npm, grunt-cli, bower...
 
-### exec
+Include the node.js binary in the generated archive.
+This is usually useful when you want to deploy a obsessively fully self-contained application
+in a sandboxed deployment or runtime environment
 
-### extract
+**Note**: the binary is OS-specific. Be aware about using this option if you want to deploy in multiple platforms
+
+#### deployPath
+Type: `string`
+Default: `undefined`
+
 
 ## Programmatic API
 
