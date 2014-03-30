@@ -16,13 +16,13 @@ program
   .option '--no-color', 'Disable colored output'
   .on '--help', ->
     echo '''
-          Usage examples:
+      Usage examples:
 
-            $ nar extract
-            $ nar extract app.nar
-            $ nar extract app.nar -o some-dir
-            $ nar extract app.nar --debug --verbose --no-color
-
+        $ nar extract
+        $ nar extract app.nar
+        $ nar extract app.nar -o some-dir
+        $ nar extract app.nar --debug --verbose --no-color
+    \t
     '''
   .action -> create ...
 

@@ -16,13 +16,13 @@ program
   .option '--no-color', 'Disable colored output'
   .on '--help', ->
     echo '''
-          Usage examples:
+      Usage examples:
 
-            $ nar create
-            $ nar create some/path
-            $ nar create path/to/package.json -o some-dir
-            $ nar create --debug --verbose --no-color
-
+        $ nar create
+        $ nar create some/path
+        $ nar create path/to/package.json -o some-dir
+        $ nar create --debug --verbose --no-color
+    \t
     '''
   .action -> create ...
 

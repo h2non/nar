@@ -33,49 +33,9 @@ If you need to use the API, you should install it as package dependency
 $ npm install nar --save
 ```
 
-## Command-line interface
-
-```
-  Usage: nar [options] [command]
-
-  Commands:
-
-    help
-      Output the usage information
-    version
-      Output the version information
-    create [options] [path]
-      Create new aplication archive
-    extract [options] [archive]
-      Extract archive files
-
-  Options:
-
-    -h, --help     output usage information
-    -V, --version  output the version number
-
-  Usage examples:
-
-    $ nar create [path]
-    $ nar run [archive]
-    $ nar extract [archive] -o [directory]
-
-  Command specific help:
-
-    $ nar <command> --help
-```
-
-### create
-
-Create a new archive from an existent application
-
-### extract
-
-Extract archive files to a given directory
-
 ## Configuration
 
-Nar supports specific build configuration that can be defined as meta-data
+It supports specific archive build configuration that can be defined as meta-data
 in the `package.json` of your application
 
 Example
@@ -125,6 +85,86 @@ in a sandboxed deployment or runtime environment
 
 **Note**: node binary is OS and platform specific.
 Take that into account if you are going to deploy the archive in multiple platforms
+
+## Command-line interface
+
+```
+  Usage: nar [options] [command]
+
+  Commands:
+
+    help
+      Output the usage information
+    version
+      Output the version information
+    create [options] [path]
+      Create new aplication archive
+    extract [options] [archive]
+      Extract archive files
+
+  Options:
+
+    -h, --help     output usage information
+    -V, --version  output the version number
+
+  Usage examples:
+
+    $ nar create [path]
+    $ nar run [archive]
+    $ nar extract [archive] -o [directory]
+
+  Command specific help:
+
+    $ nar <command> --help
+```
+
+### create
+
+Create a new archive from an existent application
+
+```
+  Usage: create [path] [options]
+
+  Options:
+
+    -h, --help     output usage information
+    -o, --output   Output directory
+    -f, --force    Forces archive creation passing warnings or errors
+    -d, --debug    Enable debugging mode for tasks that support it
+    -v, --verbose  Verbose mode. A lot of information will be showed
+    --no-color     Disable colored output
+
+  Usage examples:
+
+    $ nar create
+    $ nar create some/path
+    $ nar create path/to/package.json -o some-dir
+    $ nar create --debug --verbose --no-color
+```
+
+### extract
+
+Extract archive files to a given directory
+
+```
+  Usage: extract [archive] [options]
+
+  Options:
+
+    -h, --help     output usage information
+    -o, --output   Output directory
+    -f, --force    Forces archive creation passing warnings or errors
+    -d, --debug    Enable debugging mode for tasks that support it
+    -v, --verbose  Verbose mode. A lot of information will be showed
+    --no-color     Disable colored output
+
+  Usage examples:
+
+    $ nar extract
+    $ nar extract app.nar
+    $ nar extract app.nar -o some-dir
+    $ nar extract app.nar --debug --verbose --no-color
+```
 
 ## Programmatic API
 
