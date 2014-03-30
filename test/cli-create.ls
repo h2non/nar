@@ -12,7 +12,7 @@ describe 'CLI', (_) ->
 
   describe 'create', (_) ->
 
-    describe 'default', (_) ->
+    describe 'basic', (_) ->
 
       before ->
         mk "#{__dirname}/fixtures/.tmp"

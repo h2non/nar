@@ -2,6 +2,7 @@
   rm
   mk
   nar
+  read
   exists
   expect
   version
@@ -104,7 +105,7 @@ describe 'nar', ->
             expect exists "#{dest}/package.json" .to.be.true
 
           it 'should be a valid JSON', ->
-            expect (require "#{dest}/package.json").name .to.be.equal 'test'
+            expect (read "#{dest}/package.json").name .to.be.equal 'test'
 
           it 'should exist the node_modules directory', ->
             expect exists "#{dest}/node_modules" .to.be.true

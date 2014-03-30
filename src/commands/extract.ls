@@ -6,9 +6,9 @@ require! {
 { echo, exit, exists, is-dir, is-file } = require '../helper'
 
 program
-  .command 'create [path]'
-  .description '\n  Create new aplication archive'
-  .usage '[path] [options]'
+  .command 'extract [archive]'
+  .description '\n  Extract archive files'
+  .usage '[archive] [options]'
   .option '-o, --output', 'Output directory'
   .option '-f, --force', 'Forces archive creation passing warnings or errors'
   .option '-d, --debug', 'Enable debugging mode for tasks that support it'
@@ -18,36 +18,36 @@ program
     echo '''
           Usage examples:
 
-            $ nar create
-            $ nar create some/path
-            $ nar create path/to/package.json -o some-dir
-            $ nar create --debug --verbose --no-color
+            $ nar extract
+            $ nar extract app.nar
+            $ nar extract app.nar -o some-dir
+            $ nar extract app.nar --debug --verbose --no-color
 
     '''
   .action -> create ...
 
-create = (pkgpath, options) ->
+create = (archive, options) ->
   { debug, force, verbose, output } = options
 
   opts =
     dest: output
 
-  if pkgpath
-    unless pkgpath |> exists
+  if archive
+    unless archive |> exists
       "Error: the given path do not exists" |> exit 1
-    if pkgpath |> is-file
-      pkgpath = pkgpath |> path.dirname
+    if archive |> is-file
+      archive = archive |> path.dirname
     else
-      unless pkgpath |> is-dir
+      unless archive |> is-dir
         "Error: path must be a directory" |> exit 1
-    opts <<< base: pkgpath
+    opts <<< base: archive
 
   try
-    "Creating archive..." |> echo
-    archive = nar.create opts, ->
-      "Archive created in: #{archive.output}" |> echo
+    "Extracting files..." |> echo
+    archive = nar.extract opts, ->
+      "Extracted in: #{archive.output}" |> echo
       exit 0
   catch
-    "Error: cannot create the archive: #{e.message} \n" |> echo
+    "Error: cannot extract the archive: #{e.message} \n" |> echo
     e.stack |> echo if debug
     exit 1

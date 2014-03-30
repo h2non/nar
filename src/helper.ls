@@ -16,12 +16,19 @@ module.exports = _ = {
   exit: (code) ->
     if code is 0 or not code
       code |> exit
-    # if exit code is not 0, return a partial function
+    # if code is not 0, return a partial function
     (message) ->
       if message?
         message = message.red if String::red?
         message |> _.echo
       code |> exit
+
+  read: ->
+    data = (it |> fs.read-file-sync).to-string!
+    if it |> /.json$/.test
+      data |> JSON.parse
+    else
+      data
 
   exists: ->
     it and (it |> fs.exists-sync)

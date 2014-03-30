@@ -31,10 +31,11 @@ compile: clean mkdir
 	cat src/pack.ls | $(LS) -c -s -b > ./lib/pack.js
 	cat src/helper.ls | $(LS) -c -s -b > ./lib/helper.js
 	cat src/commands/create.ls | $(LS) -c -s -b > ./lib/commands/create.js
+	cat src/commands/extract.ls | $(LS) -c -s -b > ./lib/commands/extract.js
 
 mocha:
 	cat test/lib/helper.ls | $(LS) -c -s -b > ./test/lib/helper.js
-	$(MOCHA) --timeout 10000 --reporter spec --ui tdd --compilers ls:$(LS_MODULE)
+	$(MOCHA) --timeout 20000 --reporter spec --ui tdd --compilers ls:$(LS_MODULE)
 
 release:
 	@$(call release, patch)

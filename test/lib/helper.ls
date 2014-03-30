@@ -34,6 +34,13 @@ module.exports =
 
   createWriteStream: fs.createWriteStream
 
+  read: ->
+    data = (it |> fs.read-file-sync).to-string!
+    if it |> /.json$/.test
+      data |> JSON.parse
+    else
+      data
+
   exists: ->
     fs.exists-sync it
 

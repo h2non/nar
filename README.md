@@ -1,19 +1,13 @@
 # nar [![Build Status](https://secure.travis-ci.org/h2non/nar.png?branch=master)][travis] [![Dependency Status](https://gemnasium.com/h2non/nar.png)][gemnasium] [![NPM version](https://badge.fury.io/js/nar.png)][npm]
 
-> Node.js application archive. Bundle, package and ship self-contained applications easily
+> node.js application archive. Bundle, package self-contained applications ready-to-ship
 
 > **Spoiler! Work in progress!**
 
 ## About
 
-**nar** is a simple utility for creating self-contained node applications that are easy to
-ship and deploy
-
-It creates a gzipped archive with all your applications sources, packages dependencies and
-optionally node binary
-
-### Rationale
-
+**nar** is a simple utility for creating self-contained node applications
+that are ready to ship and deploy
 
 ## Features
 
@@ -43,6 +37,34 @@ $ npm install nar --save
 
 ```
 $ nar --help
+
+  Usage: nar [options] [command]
+
+  Commands:
+
+    help
+      Output the usage information
+    version
+      Output the version information
+    create [options] [path]
+      Create new aplication archive
+    extract [options] [archive]
+      Extract archive files
+
+  Options:
+
+    -h, --help     output usage information
+    -V, --version  output the version number
+
+  Usage examples:
+
+    $ nar create [path]
+    $ nar run [archive]
+    $ nar extract [archive] -o [directory]
+
+  Command specific help:
+
+    $ nar <command> --help
 
 ```
 

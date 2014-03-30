@@ -13,6 +13,7 @@ require! {
   findup: 'findup-sync'
   '../package.json'.version
 }
+{ read } = require './helper'
 
 const pkgfile = 'package.json'
 const attr = 'archive'
@@ -31,7 +32,7 @@ module.exports = class Nar
     nar
 
   @run = (options, cb) ->
-    nar = Nar.extract options, ->
+    Nar.extract options, ->
       pkg = pkg
 
   @VERSION = version
@@ -69,7 +70,7 @@ module.exports = class Nar
         throw new Error "Error while parsing package.json: #{e.message} - #{@pkg-path}"
 
   apply-config: ->
-    @pkg = require @pkg-path
+    @pkg = @pkg-path |> read
     options = @pkg[attr]
     options |> hu.extend @options, _ if (options |> hu.is-object)
 
@@ -246,17 +247,17 @@ module.exports = class Nar
     archive = archive[0] if archive |> hu.is-array
     throw new Error 'Cannot find nar archive' unless archive
 
-    dest ||= process.cwd!
+    @output = dest ||= process.cwd!
     tmp = @tmp-dir
 
     mk dest unless @exists dest
 
     extract { archive, dest: tmp, gzip: yes }, ->
-      nar = require "#{tmp}/.nar.json"
+      nar = "#{tmp}/.nar.json" |> read
       copy "#{tmp}/.nar.json", dest, ->
         extract-files nar.files, cb
 
-    clean = ~> @clean!
+    #clean = ~> @clean!
     on-err = (cb) -> ->
       cb!
       #clean!
