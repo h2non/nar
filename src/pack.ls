@@ -31,7 +31,11 @@ module.exports = pack =
         archive: file
         path: dest-path
 
-    tar.pipe zlib.create-gzip! .pipe stream
+    if gzip
+      tar.pipe zlib.create-gzip! .pipe stream
+    else
+      tar.pipe stream
+
     tar.on 'error', -> on-err cb, it
     tar.bulk [{ expand: true, cwd: src, src: patterns, dest: '.' }]
     tar.finalize!

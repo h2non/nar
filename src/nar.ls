@@ -8,22 +8,31 @@ require! {
   './pack'
   './extract'
   rm: rimraf.sync
+  mk: mkdirp.sync
   'os-shim'.tmpdir
   findup: 'findup-sync'
   '../package.json'.version
 }
 
-const ext = '.nar'
-const file = 'package.json'
+const pkgfile = 'package.json'
 const attr = 'archive'
 const pkg-dir = 'node_modules'
 
 module.exports = class Nar
 
-  @create = ->
-    instance = Nar:: |> Object.create
-    Nar.apply instance, &
-    instance
+  @create = (options, cb) ->
+    nar = new Nar options
+    nar.create cb
+    nar
+
+  @extract = (options, cb) ->
+    nar = new Nar
+    nar.extract options, cb
+    nar
+
+  @run = (options, cb) ->
+    nar = Nar.extract options, ->
+      pkg = pkg
 
   @VERSION = version
 
@@ -34,24 +43,29 @@ module.exports = class Nar
     dependencies: yes
     dev-dependencies: no
     peer-dependencies: yes
-    comds:
+    commands:
       pre-run: null
       run: null
 
   (options) ->
     @options = (@defaults |> hu.clone) |> hu.extend _, options
     @options <<< base: process.cwd! unless @options.base
-    @pkg-path = @options.pkg-path or path.join @options.base, file
+    @pkg = {}
+    @set-tmp-dir!
+
+  create: ->
+    @pkg-path = @options.pkg-path or path.join @options.base, pkgfile
     @discover!
     @load-config!
-    @set-tmp-dir!
     @set-filename!
+    @set-output!
+    @compress it
 
   load-config: ->
     if @exists!
       try
         @apply-config!
-      catch e
+      catch
         throw new Error "Error while parsing package.json: #{e.message} - #{@pkg-path}"
 
   apply-config: ->
@@ -61,7 +75,7 @@ module.exports = class Nar
 
   discover: ->
     unless @exists!
-      @pkg-path = findup file, cwd: @options.base
+      @pkg-path = findup pkgfile, cwd: @options.base
       @load-config!
 
   exists: ->
@@ -73,11 +87,13 @@ module.exports = class Nar
   set-filename: ->
     @file = @name!
     @file += "-#{@pkg.version}" if @pkg.version
-    @file += '.nar'
 
   set-tmp-dir: ->
     @tmp-dir = "nar-#{@pkg.name or 'pkg'}-#{random!}" |> path.join tmpdir!, _
     @tmp-dir |> fs.mkdir-sync
+
+  set-output: ->
+    @output = "#{@file}.nar" |> path.join @options.base, _
 
   match-deps: ->
     { dependencies, dev-dependencies, peer-dependencies } = @options
@@ -116,7 +132,9 @@ module.exports = class Nar
     all = (done) ~>
       config |> @compress-all _, done
 
-    async.series [ deps, pkg, all ], cb
+    async.series [ deps, pkg, all ], ~>
+      @clean!
+      cb!
 
   write-config: (config, cb) ->
     file = @tmp-dir |> path.join _, '.nar.json'
@@ -127,7 +145,7 @@ module.exports = class Nar
 
   compress-all: (config, cb) ->
     options =
-      name: @name!
+      name: @file
       dest: @options.base
       patterns: [ '*.tar', '.nar.json' ]
       src: @tmp-dir
@@ -146,14 +164,14 @@ module.exports = class Nar
       async.series [ write-config, pack-all ], -> cb!
 
     add-binary = ~>
-      copy-node-bin @tmp-dir, ~>
-        it |> options.patterns.push
+      copy process.exec-path, @tmp-dir, ~>
+        (path.basename it) |> options.patterns.push
         info =
-          name: 'node'
-          dest: '.bin'
-          binary: yes
+          archive: 'node'
+          dest: '.node/bin'
+          type: 'binary'
 
-        checksum (it |> path.join @tmp-dir, _), ->
+        checksum it, ->
           info <<< checksum: it
           info |> config.files.push
           exec!
@@ -174,9 +192,9 @@ module.exports = class Nar
       src: @pkg-path |> path.dirname
 
     pkg-info =
-      name: @name!
+      archive: "#{@name!}.tar"
       dest: '.'
-      dependency: no
+      type: 'package'
 
     pack options, (err, pkg) ->
       throw err if err
@@ -201,8 +219,8 @@ module.exports = class Nar
       set-pkg = (pkg, done) ->
         pkg-info =
           archive: pkg.archive
-          dest: pkg-dir
-          dependency: true
+          dest: path.join pkg-dir, pkg.name
+          type: 'dependency'
 
         checksum pkg.path, ->
           pkg-info <<< checksum: it
@@ -222,6 +240,41 @@ module.exports = class Nar
         throw it if it
         cb!
 
+  extract: (options = {}, cb) ->
+    { archive, dest } = options if options
+    archive ||= findup '*.nar'
+    archive = archive[0] if archive |> hu.is-array
+    throw new Error 'Cannot find nar archive' unless archive
+
+    dest ||= process.cwd!
+    tmp = @tmp-dir
+
+    mk dest unless @exists dest
+
+    extract { archive, dest: tmp, gzip: yes }, ->
+      nar = require "#{tmp}/.nar.json"
+      copy "#{tmp}/.nar.json", dest, ->
+        extract-files nar.files, cb
+
+    on-err = (cb) -> ->
+      throw it if it
+      cb!
+
+    extract-files = (files, cb) ->
+      async.each files, ((file, done) ->
+        archive = path.join tmp, file.archive
+        checksum archive, ->
+          if it is file.checksum
+            cwd = path.join dest, file.dest
+            mk cwd
+            if file.type is 'binary'
+              copy archive, cwd, -> done!
+            else
+              extract { archive, dest: cwd }, on-err done
+          else
+            throw new Error "Checksum verification was failed for archive '#{file.archive}'"
+        ), on-err cb
+
 checksum = (file, cb) ->
   hash = crypto.create-hash 'sha1'
   (file |> fs.create-read-stream)
@@ -229,13 +282,13 @@ checksum = (file, cb) ->
     .on('end', -> hash.digest 'hex' |> cb)
     .on('error', -> throw it)
 
-copy-node-bin = (dest, cb) ->
-  bin = process.exec-path
-  file = bin |> path.basename
-  (fs.create-read-stream bin)
-    .pipe(fs.create-write-stream (file |> path.join dest, _))
+copy = (file, dest, cb) ->
+  filename = file |> path.basename
+  dest = filename |> path.join dest, _
+  (fs.create-read-stream file)
+    .pipe(fs.create-write-stream dest)
     .on('error', -> throw it)
-    .on('close', -> cb file)
+    .on('close', -> cb dest)
 
 get-pkg-path = ->
   it |> path.join pkg-dir, _

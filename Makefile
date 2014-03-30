@@ -19,7 +19,7 @@ all: test
 test: compile mocha
 
 mkdir:
-	mkdir -p lib
+	mkdir -p lib/commands
 
 clean:
 	rm -rf lib
@@ -29,6 +29,8 @@ compile: clean mkdir
 	cat src/cli.ls | $(LS) -c -s -b > ./lib/cli.js
 	cat src/extract.ls | $(LS) -c -s -b > ./lib/extract.js
 	cat src/pack.ls | $(LS) -c -s -b > ./lib/pack.js
+	cat src/helper.ls | $(LS) -c -s -b > ./lib/helper.js
+	cat src/commands/create.ls | $(LS) -c -s -b > ./lib/commands/create.js
 
 mocha:
 	cat test/lib/helper.ls | $(LS) -c -s -b > ./test/lib/helper.js

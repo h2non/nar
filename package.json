@@ -1,6 +1,6 @@
 {
   "name": "nar",
-  "version": "0.1.0-rc.0",
+  "version": "0.1.0-rc.1",
   "description": "node.js application archive",
   "preferGlobal": true,
   "homepage": "http://github.com/h2non/nar",
@@ -54,7 +54,6 @@
   },
   "devDependencies": {
     "chai": "~1.9.1",
-    "suppose": "~0.3.0",
     "semver": "~2.2.1",
     "mocha": "~1.18.2",
     "LiveScript": "~1.2.0"

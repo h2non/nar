@@ -24,7 +24,8 @@ optionally node binary
 - Automatic package discovery
 - Full configurable from package.json
 - Allow to bundle dependencies by type
-- Bundle node binary for platform-specific deployments
+- Allow to bundle node binary for platform-specific runtime environments
+- Transparent checksum file integrity verification
 
 ## Installation
 

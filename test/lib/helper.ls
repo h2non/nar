@@ -4,7 +4,6 @@ require! {
   chai
   rimraf
   mkdirp
-  suppose
   child_process.spawn
   '../../lib/nar'
   '../../package.json'.version

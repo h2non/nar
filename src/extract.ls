@@ -13,18 +13,18 @@ module.exports = extract =
     stream.on 'error', -> on-err cb, it
 
     if gzip
-      extract-gzip stream, archive, dest, cb
+      extract-gzip stream, dest, cb
     else
-      extract-normal stream, archive, dest, cb
+      extract-normal stream, dest, cb
 
-extract-gzip = (stream, archive, dest, cb) ->
+extract-gzip = (stream, dest, cb) ->
   gzstream = stream.pipe zlib.create-gunzip!
   gzstream.on 'error', -> on-err cb, it
   tstream = gzstream.pipe tar.Extract path: dest
   tstream.on 'error', -> on-err cb, it
   tstream.on 'end', -> cb!
 
-extract-normal = (stream, archive, dest, cb) ->
+extract-normal = (stream, dest, cb) ->
   tstream = stream.pipe tar.Extract path: dest
   tstream.on 'error', -> on-err cb, it
   tstream.on 'end', -> cb!
