@@ -1,7 +1,6 @@
 src/
 test/
 *.ls
-*.wisp
 .gitignore
 .travis.yml
 .editorconfig
