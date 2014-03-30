@@ -256,9 +256,11 @@ module.exports = class Nar
       copy "#{tmp}/.nar.json", dest, ->
         extract-files nar.files, cb
 
+    clean = ~> @clean!
     on-err = (cb) -> ->
-      throw it if it
       cb!
+      #clean!
+      throw it if it
 
     extract-files = (files, cb) ->
       async.each files, ((file, done) ->
