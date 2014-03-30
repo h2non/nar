@@ -1,0 +1,12 @@
+{
+  "name": "test",
+  "version": "0.0.1",
+  "archive": {
+    "binary": true,
+    "devDependencies": true,
+    "peerDependencies": false
+  },
+  "dependencies": {
+    "hu": "~0.1.0"
+  }
+}

@@ -1,13 +1,12 @@
 {
   "name": "nar",
-  "version": "0.1.0",
+  "version": "0.1.0-rc.0",
   "description": "node.js application archive",
   "preferGlobal": true,
   "homepage": "http://github.com/h2non/nar",
   "bugs": "https://github.com/h2non/nar/issues",
   "author": {
-    "name": "Tomas Aparicio",
-    "email": "tomas@aparicio.me"
+    "name": "Tomas Aparicio"
   },
   "repository": {
     "type": "git",
@@ -25,9 +24,11 @@
     "node": ">= 0.8.0"
   },
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "prepublish": "make test"
   },
   "keywords": [
+    "node",
     "archive",
     "packer",
     "package",
@@ -42,15 +43,20 @@
     "commander": "~2.1.0",
     "colors": "~0.6.2",
     "os-shim": "~0.1.2",
-    "tar.gz": "~0.1.1",
-    "hu": "0.1.0-rc.1"
+    "hu": "0.1.0-rc.2",
+    "matchdep": "^0.3.0",
+    "findup-sync": "^0.1.3",
+    "archiver": "^0.7.1",
+    "tar": "^0.1.19",
+    "rimraf": "~2.2.4",
+    "async": "^0.4.0",
+    "mkdirp": "^0.3.5"
   },
   "devDependencies": {
     "chai": "~1.8.1",
-    "mkdirp": "~0.3.5",
     "suppose": "~0.3.0",
-    "sinon": "~1.7.3",
-    "rimraf": "~2.2.4",
-    "wisp": "^0.9.0-beta3"
+    "semver": "^2.2.1",
+    "mocha": "^1.18.2",
+    "LiveScript": "^1.2.0"
   }
 }

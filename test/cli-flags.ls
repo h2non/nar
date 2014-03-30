@@ -2,7 +2,6 @@
   rm
   cwd
   exec
-  mkdirp
   expect
   suppose
   version
@@ -10,7 +9,7 @@
 
 describe 'CLI', (_) ->
 
-  describe 'general flags', (_) ->
+  xdescribe 'general flags', (_) ->
 
     it 'should return the expected version', (done) ->
       exec 'data', <[--version]>, ->
@@ -21,13 +20,3 @@ describe 'CLI', (_) ->
       exec 'close', <[--help]>, ->
         expect it .to.be.equal 0
         done!
-
-  describe '', (_) ->
-
-    before ->
-      process.chdir "#{__dirname}/fixtures/"
-
-    after ->
-      process.chdir cwd
-
-

@@ -1,7 +1,244 @@
 require! {
+  hu
+  fs
+  path
+  async
+  crypto
+  matchdep
+  './pack'
+  './extract'
+  rm: rimraf.sync
+  'os-shim'.tmpdir
+  findup: 'findup-sync'
   '../package.json'.version
 }
 
-module <<< exports:
-  version: version
+const ext = '.nar'
+const file = 'package.json'
+const attr = 'archive'
+const pkg-dir = 'node_modules'
 
+module.exports = class Nar
+
+  @create = ->
+    instance = Nar:: |> Object.create
+    Nar.apply instance, &
+    instance
+
+  @VERSION = version
+
+  defaults:
+    base: null
+    pkg-path: null
+    binary: no
+    dependencies: yes
+    dev-dependencies: no
+    peer-dependencies: yes
+    comds:
+      pre-run: null
+      run: null
+
+  (options) ->
+    @options = (@defaults |> hu.clone) |> hu.extend _, options
+    @options <<< base: process.cwd! unless @options.base
+    @pkg-path = @options.pkg-path or path.join @options.base, file
+    @discover!
+    @load-config!
+    @set-tmp-dir!
+    @set-filename!
+
+  load-config: ->
+    if @exists!
+      try
+        @apply-config!
+      catch e
+        throw new Error "Error while parsing package.json: #{e.message} - #{@pkg-path}"
+
+  apply-config: ->
+    @pkg = require @pkg-path
+    options = @pkg[attr]
+    options |> hu.extend @options, _ if (options |> hu.is-object)
+
+  discover: ->
+    unless @exists!
+      @pkg-path = findup file, cwd: @options.base
+      @load-config!
+
+  exists: ->
+    (it or @pkg-path) and ((it or @pkg-path) |> fs.exists-sync)
+
+  name: ->
+    @pkg.name or 'unnamed'
+
+  set-filename: ->
+    @file = @name!
+    @file += "-#{@pkg.version}" if @pkg.version
+    @file += '.nar'
+
+  set-tmp-dir: ->
+    @tmp-dir = "nar-#{@pkg.name or 'pkg'}-#{random!}" |> path.join tmpdir!, _
+    @tmp-dir |> fs.mkdir-sync
+
+  match-deps: ->
+    { dependencies, dev-dependencies, peer-dependencies } = @options
+    deps = {}
+    deps <<< dep: matchdep.filter '*', @pkg if dependencies
+    deps <<< dev: matchdep.filter-dev '*', @pkg if dev-dependencies
+    deps <<< peer: matchdep.filter-peer '*', @pkg if peer-dependencies
+    deps
+
+  clean: ->
+    try
+      rm @tmp-dir
+      rm @file if @file
+
+  compress: (cb) ->
+    config =
+      name: @name!
+      time: new Date!get-time!
+      commands: @options.commands
+      info:
+        platform: process.platform
+        arch: process.arch
+        version: process.version
+      files: []
+      manifest: @pkg
+
+    deps = (done) ~>
+      @compress-deps config, ->
+        done!
+
+    pkg = (done) ~>
+      @compress-pkg ->
+        it |> config.files.push
+        done!
+
+    all = (done) ~>
+      config |> @compress-all _, done
+
+    async.series [ deps, pkg, all ], cb
+
+  write-config: (config, cb) ->
+    file = @tmp-dir |> path.join _, '.nar.json'
+    data = config |> JSON.stringify _, null, 2
+    fs.writeFile file, data, (err) ->
+      throw err if err
+      cb!
+
+  compress-all: (config, cb) ->
+    options =
+      name: @name!
+      dest: @options.base
+      patterns: [ '*.tar', '.nar.json' ]
+      src: @tmp-dir
+      ext: 'nar'
+      gzip: yes
+
+    pack-all = (done) ->
+      pack options, (err) ->
+        throw err if err
+        done!
+
+    write-config = (done) ~>
+      config |> @write-config _, done
+
+    exec = ->
+      async.series [ write-config, pack-all ], -> cb!
+
+    add-binary = ~>
+      copy-node-bin @tmp-dir, ~>
+        it |> options.patterns.push
+        info =
+          name: 'node'
+          dest: '.bin'
+          binary: yes
+
+        checksum (it |> path.join @tmp-dir, _), ->
+          info <<< checksum: it
+          info |> config.files.push
+          exec!
+
+    if @options.binary
+      add-binary!
+    else
+      exec!
+
+  compress-pkg: (cb) ->
+    dest = @tmp-dir
+    { base } = @options
+
+    options =
+      name: @name!
+      dest: dest
+      patterns: [ '**', '!node_modules/**' ]
+      src: @pkg-path |> path.dirname
+
+    pkg-info =
+      name: @name!
+      dest: '.'
+      dependency: no
+
+    pack options, (err, pkg) ->
+      throw err if err
+      checksum pkg.path, ->
+        pkg-info <<< checksum: it
+        cb pkg-info
+
+  compress-deps: (config, cb) ->
+    dest = @tmp-dir
+    { base } = @options
+
+    find-pkg = ->
+      it.map ->
+        name: it
+        dest: dest
+        src: findup (it |> get-pkg-path), cwd: base
+
+    is-valid = ->
+      it and it.length
+
+    do-compress = (it, done) ->
+      set-pkg = (pkg, done) ->
+        pkg-info =
+          archive: pkg.archive
+          dest: pkg-dir
+          dependency: true
+
+        checksum pkg.path, ->
+          pkg-info <<< checksum: it
+          done null, pkg-info
+
+      async.map it, pack, (err, results) ->
+        done err if err
+        async.map results, set-pkg, (err, results) ->
+          throw err if err
+          config <<< files: config.files.concat results
+          done!
+
+    ((@match-deps! |> hu.vals)
+      .map find-pkg
+      .filter is-valid)
+      |> async.each _, do-compress, ->
+        throw it if it
+        cb!
+
+checksum = (file, cb) ->
+  hash = crypto.create-hash 'sha1'
+  (file |> fs.create-read-stream)
+    .on('data', -> it |> hash.update)
+    .on('end', -> hash.digest 'hex' |> cb)
+    .on('error', -> throw it)
+
+copy-node-bin = (dest, cb) ->
+  bin = process.exec-path
+  file = bin |> path.basename
+  (fs.create-read-stream bin)
+    .pipe(fs.create-write-stream (file |> path.join dest, _))
+    .on('error', -> throw it)
+    .on('close', -> cb file)
+
+get-pkg-path = ->
+  it |> path.join pkg-dir, _
+
+random = ->
+  new Date!get-time! + (Math.floor Math.random! * 10000)

@@ -1,6 +1,8 @@
 src/
 test/
 *.ls
-*.coffee
+*.wisp
 .gitignore
 .travis.yml
+.editorconfig
+Makefile

@@ -22,7 +22,7 @@ program.on '--help', help = ->
 
       $ nar create
       $ nar update [file]
-      $ nar exec
+      $ nar run
       $ nar extract [directory]
 
     Command specific help:

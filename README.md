@@ -6,7 +6,7 @@
 
 ## About
 
-**nar** (node.js aplication archive) is a helper utility for creating self-contained node applications that was easy to 
+**nar** (node.js aplication archive) is a helper utility for creating self-contained node applications that was easy to
 ship and deploy
 
 It creates a gzipped archive with all your applications sources, packages dependencies and
@@ -23,14 +23,13 @@ $ npm install -g nar
 ```
 $ nar --help
 
-
 ```
 
 ### create
 
-Create a nar archive from an existent application 
+Create a nar archive from an existent application
 
-### exec
+### run
 
 Run an application
 
@@ -43,7 +42,7 @@ Extend sources from a nar archive
 nar specific build configuration should be defined as meta-data
 in the `package.json` manifest file of your application
 
-```
+```js
 {
   "name": "my-package",
   "version": "1.0.0",
@@ -105,10 +104,57 @@ Default: `undefined`
 
 ## Programmatic API
 
-`to do`
+### Nar(options)
+
+### Nar.create(options)
+
+#### compress(callback)
+
+## Contributing
+
+Wanna help? Cool! It will be really apreciated :)
+
+`nar` is completely written in LiveScript language.
+Take a look to the language [documentation][livescript] if you are new with it.
+and follow the LiveScript language conventions defined in the [coding style guide][coding-style]
+
+You must add new test cases for any new feature or refactor you do,
+always following the same design/code patterns that already exist
+
+### Development
+
+Only [node.js](http://nodejs.org) is required for development
+
+Clone/fork this repository
+```
+$ git clone https://github.com/h2non/nar.git && cd nar
+```
+
+Install dependencies
+```
+$ npm install
+```
+
+Compile code
+```
+$ make compile
+```
+
+Run tests
+```
+$ make test
+```
+
+Publish a new version
+```
+$ make publish
+```
 
 ## License
 
 Copyright (c) 2014 Tomas Aparicio
 
 Released under the MIT license
+
+[livescript]: http://livescript.net
+[coding-style]: https://github.com/gkz/LiveScript-style-guide

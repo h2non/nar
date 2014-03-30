@@ -1,6 +1,6 @@
 require! {
   path
-  _: 'lodash'
+  _: 'hu'
 }
 
 { env, platform, exit } = process
