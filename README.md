@@ -12,14 +12,19 @@ ship and deploy
 It creates a gzipped archive with all your applications sources, packages dependencies and
 optionally node binary
 
+### Rationale
+
+
 ## Features
 
 - Simple command-line interface
 - Provides a easy-to-use programmatic API
-- Gzip compression/decompression
-- Package discovery and dependencies
-
-## Rationale
+- Tarball with gzip compression/decompression
+- Package extraction and run
+- Automatic package discovery
+- Full configurable from package.json
+- Allow to bundle dependencies by type
+- Bundle node binary for platform-specific deployments
 
 ## Installation
 
@@ -28,9 +33,9 @@ It's recommended you install it as global package
 $ npm install -g nar
 ```
 
-Otherwise you can install it as package dependency
+If you need to use the API, you should install it as package dependency
 ```
-$ nom install nar --save
+$ npm install nar --save
 ```
 
 ## Command-line interface
@@ -174,3 +179,6 @@ Released under the MIT license
 
 [livescript]: http://livescript.net
 [coding-style]: https://github.com/gkz/LiveScript-style-guide
+[travis]: http://travis-ci.org/h2non/nar
+[gemnasium]: https://gemnasium.com/h2non/nar
+[npm]: http://npmjs.org/package/nar
