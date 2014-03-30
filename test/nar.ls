@@ -13,10 +13,16 @@ describe 'nar', ->
   describe 'API', (_) ->
 
     it 'should expose the Nar class', ->
-      expect nar .to.be.an 'function'
+      expect nar .to.be.a 'function'
+
+    it 'should expose the create method', ->
+      expect nar.create .to.be.a 'function'
+
+    it 'should expose the extract method', ->
+      expect nar.extract .to.be.a 'function'
 
     it 'should expose the package version', ->
-      expect nar.VERSION .to.be.a 'string'
+      expect nar.VERSION .to.be.equal version
 
   describe 'basic', ->
 
