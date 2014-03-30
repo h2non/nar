@@ -38,7 +38,6 @@ $ npm install nar --save
 It supports specific archive build configuration that can be defined as meta-data
 in the `package.json` of your application
 
-Example
 ```json
 {
   "name": "my-package",
