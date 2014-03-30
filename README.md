@@ -143,7 +143,7 @@ Create a new archive from an existent application
 
 ### extract
 
-Extract archive files to a given directory
+Extract archive files into directory
 
 ```
   Usage: extract [archive] [options]
