@@ -1,21 +1,36 @@
-# nar
+# nar [![Build Status](https://secure.travis-ci.org/h2non/nar.png?branch=master)][travis] [![Dependency Status](https://gemnasium.com/h2non/nar.png)][gemnasium] [![NPM version](https://badge.fury.io/js/nar.png)][npm]
 
-> Bundle, package and ship self-contained node applications
+> Node.js application archive. Bundle, package and ship self-contained applications easily
 
-> **work in progress!**
+> **Spoiler! Work in progress!**
 
 ## About
 
-**nar** (node.js aplication archive) is a helper utility for creating self-contained node applications that was easy to
+**nar** is a simple utility for creating self-contained node applications that are easy to
 ship and deploy
 
 It creates a gzipped archive with all your applications sources, packages dependencies and
 optionally node binary
 
+## Features
+
+- Simple command-line interface
+- Provides a easy-to-use programmatic API
+- Gzip compression/decompression
+- Package discovery and dependencies
+
+## Rationale
+
 ## Installation
 
+It's recommended you install it as global package
 ```
 $ npm install -g nar
+```
+
+Otherwise you can install it as package dependency
+```
+$ nom install nar --save
 ```
 
 ## Command-line interface
@@ -52,8 +67,10 @@ in the `package.json` manifest file of your application
     "devDependencies": false,
     "peerDependencies": true,
     "commands": {
-      "pre-run": "npm install",
-      "run": "node ./app"
+      "pre-run": [
+        "npm install -g grunt"
+      ],
+      "run": "./app"
     }
   }
 }
@@ -78,7 +95,7 @@ Default: `false`
 
 #### peerDependencies
 Type: `boolean`
-Default: `false`
+Default: `true`
 
 #### binary
 Type: `boolean`

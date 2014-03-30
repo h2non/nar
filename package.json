@@ -55,7 +55,7 @@
   "devDependencies": {
     "chai": "~1.8.1",
     "suppose": "~0.3.0",
-    "semver": "^2.2.1",
+    "semver": "~2.2.1",
     "mocha": "~1.18.2",
     "LiveScript": "~1.2.0"
   }
