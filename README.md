@@ -46,13 +46,7 @@ in the `package.json` of your application
     "binary": true,
     "dependencies": true,
     "devDependencies": false,
-    "peerDependencies": true,
-    "commands": {
-      "pre-run": [
-        "npm install -g grunt"
-      ],
-      "run": "./app"
-    }
+    "peerDependencies": true
   }
 }
 ```
