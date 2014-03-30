@@ -106,6 +106,30 @@ describe 'nar', ->
           it 'should be a valid JSON', ->
             expect (require "#{dest}/package.json").name .to.be.equal 'test'
 
+          it 'should exist the node_modules directory', ->
+            expect exists "#{dest}/node_modules" .to.be.true
+
+          it 'should exist the package dependency', ->
+            expect exists "#{dest}/node_modules/hu" .to.be.true
+
+          it 'should exist package.json in package dependency', ->
+            expect exists "#{dest}/node_modules/hu/package.json" .to.be.true
+
+          it 'should be a valid package.json dependency', ->
+            expect (require "#{dest}/node_modules/hu/package.json").name .to.be.equal 'hu'
+
+          it 'should exist the "a" directory', ->
+            expect exists "#{dest}/a" .to.be.true
+
+          it 'should exist the "b" directory', ->
+            expect exists "#{dest}/a/b" .to.be.true
+
+          it 'should exist the .node directory', ->
+            expect exists "#{dest}/.node" .to.be.true
+
+          it 'should exist the node binary', ->
+            expect exists "#{dest}/.node/bin/node" .to.be.true
+
           describe 'nar manifest', (_) ->
 
             it 'should exist nar.json', ->
@@ -145,28 +169,3 @@ describe 'nar', ->
                 expect file.type .to.be.equal 'binary'
                 expect file.dest .to.be.equal '.node/bin'
                 expect file.checksum .to.be.a 'string'
-
-          it 'should exist the node_modules directory', ->
-            expect exists "#{dest}/node_modules" .to.be.true
-
-          it 'should exist the package dependency', ->
-            expect exists "#{dest}/node_modules/hu" .to.be.true
-
-          it 'should exist package.json in package dependency', ->
-            expect exists "#{dest}/node_modules/hu/package.json" .to.be.true
-
-          it 'should be a valid package.json dependency', ->
-            expect (require "#{dest}/node_modules/hu/package.json").name .to.be.equal 'hu'
-
-          it 'should exist the "a" directory', ->
-            expect exists "#{dest}/a" .to.be.true
-
-          it 'should exist the "b" directory', ->
-            expect exists "#{dest}/a/b" .to.be.true
-
-          it 'should exist the .node directory', ->
-            expect exists "#{dest}/.node" .to.be.true
-
-          it 'should exist the node binary', ->
-            expect exists "#{dest}/.node/bin/node" .to.be.true
-
