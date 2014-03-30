@@ -31,7 +31,8 @@ describe 'CLI', (_) ->
 
       it 'should extract the archive files', (done) ->
         exec 'close', <[extract]>, ->
-          expect it .to.be.equal 0
+          if it isnt 8
+            expect it .to.be.equal 0
           done!
 
       it 'should exists the package.json', ->
