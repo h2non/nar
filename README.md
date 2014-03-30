@@ -42,11 +42,11 @@ Extend sources from a nar archive
 nar specific build configuration should be defined as meta-data
 in the `package.json` manifest file of your application
 
-```js
+```json
 {
   "name": "my-package",
   "version": "1.0.0",
-  "nar": {
+  "archive": {
     "binary": true,
     "deployPath": "${HOME}/apps/my-cool-package",
     "dependencies": true,
