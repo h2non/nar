@@ -44,9 +44,6 @@ module.exports = class Nar
     dependencies: yes
     dev-dependencies: no
     peer-dependencies: yes
-    commands:
-      pre-run: null
-      run: null
 
   (options) ->
     @options = (@defaults |> hu.clone) |> hu.extend _, options
@@ -113,7 +110,6 @@ module.exports = class Nar
     config =
       name: @name!
       time: new Date!get-time!
-      commands: @options.commands
       info:
         platform: process.platform
         arch: process.arch
