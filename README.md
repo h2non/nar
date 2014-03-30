@@ -48,7 +48,6 @@ in the `package.json` manifest file of your application
   "version": "1.0.0",
   "archive": {
     "binary": true,
-    "deployPath": "${HOME}/apps/my-cool-package",
     "dependencies": true,
     "devDependencies": false,
     "peerDependencies": true,
