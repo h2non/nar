@@ -24,8 +24,7 @@
     "node": ">= 0.8.0"
   },
   "scripts": {
-    "test": "make test",
-    "prepublish": "make test"
+    "test": "make test"
   },
   "keywords": [
     "node",
