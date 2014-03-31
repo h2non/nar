@@ -161,6 +161,25 @@ Extract archive files into directory
 
 ## Programmatic API
 
+```js
+var nar = require('nar')
+
+var options = {
+  dest: 'path/to/pkg'
+  binary: true,
+  dependencies: true,
+  devDependencies: true
+}
+
+try {
+  nar.create(options, function (err, nar) {
+    console.log('Archive created successfully in:', nar.output)
+  })
+} catch (e) {
+  console.error('Cannot create the archive:', e.message)
+}
+```
+
 ### Nar(options)
 
 ### Nar.create(options, cb)
