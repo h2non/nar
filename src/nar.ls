@@ -185,7 +185,7 @@ module.exports = class Nar
     options =
       name: @name!
       dest: dest
-      patterns: [ '**', '!node_modules/**' ]
+      patterns: [ '**', '.*', '!node_modules/**' ]
       src: @pkg-path |> path.dirname
 
     pkg-info =

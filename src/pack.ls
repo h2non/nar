@@ -18,7 +18,7 @@ module.exports = pack =
     src ||= process.cwd!
     dest ||= tmpdir!
     ext ||= 'tar'
-    patterns ||= [ '**' ]
+    patterns ||= [ '**', '.*' ]
 
     tar = archiver 'tar', zlib-options
     file = name |> get-name _, ext

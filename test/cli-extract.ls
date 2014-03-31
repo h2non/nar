@@ -3,6 +3,7 @@
   mk
   cwd
   exec
+  read
   exists
   expect
   version
@@ -31,22 +32,41 @@ describe 'CLI', (_) ->
 
       it 'should extract the archive files', (done) ->
         exec 'close', <[extract]>, ->
-          if it isnt 8
-            expect it .to.be.equal 0
+          expect it .to.be.equal 0 if it isnt 8
           done!
 
       it 'should exists the package.json', ->
         expect exists "#{dir}/package.json" .to.be.true
 
       it 'should be a valid package.json file', ->
-        expect (require "#{dir}/package.json" .name) .to.be.equal 'nar'
+        expect (read "#{dir}/package.json" .name) .to.be.equal 'nar'
+
+      it 'should exists .nar.json', ->
+        expect exists "#{dir}/.nar.json" .to.be.true
+
+      it 'should be a valid .nar.json file', ->
+        expect (read "#{dir}/.nar.json" .name) .to.be.equal 'nar'
+
+      it 'should exists the README file', ->
+        expect exists "#{dir}/README.md" .to.be.true
+
+      it 'should exists the .gitignore hidden file', ->
+        expect exists "#{dir}/.gitignore" .to.be.true
+
+      it 'should exists the lib directory', ->
+        expect exists "#{dir}/lib" .to.be.true
+
+      it 'should exists the lib/nar.js files', ->
+        expect exists "#{dir}/lib/nar.js" .to.be.true
 
       it 'should exists the node_modules directory', ->
         expect exists "#{dir}/node_modules" .to.be.true
 
-      it 'should exists the exists the package dependency directory', ->
+      it 'should exists the package dependency directory', ->
         expect exists "#{dir}/node_modules/commander" .to.be.true
 
       it 'should exists the exists the package.json in dependency', ->
         expect exists "#{dir}/node_modules/commander/package.json" .to.be.true
 
+      it 'should not exists a devDependency package', ->
+        expect exists "#{dir}/node_modules/mocha" .to.be.false

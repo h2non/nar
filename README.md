@@ -53,8 +53,8 @@ in the `package.json` of your application
 
 ### Config options
 
-The following options can be declared in your application package.json as
-properties members of the `nar` or `package` first-level property
+The following options can be declared in your application `package.json` as
+properties members in the `archive` object
 
 #### dependencies
 Type: `boolean`
