@@ -68,5 +68,8 @@ describe 'CLI', (_) ->
       it 'should exists the exists the package.json in dependency', ->
         expect exists "#{dir}/node_modules/commander/package.json" .to.be.true
 
+      it 'should be a valid dependency package.json', ->
+        expect (read "#{dir}/node_modules/commander/package.json" .name) .to.be.equal 'commander'
+
       it 'should not exists a devDependency package', ->
         expect exists "#{dir}/node_modules/mocha" .to.be.false
