@@ -20,9 +20,7 @@ module.exports = extract =
 extract-gzip = (stream, dest, cb) ->
   gzstream = stream.pipe zlib.create-gunzip!
   gzstream.on 'error', -> on-err cb, it
-  tstream = gzstream.pipe tar.Extract path: dest
-  tstream.on 'error', -> on-err cb, it
-  tstream.on 'end', -> cb!
+  gzstream |> extract-normal _, dest, cb
 
 extract-normal = (stream, dest, cb) ->
   tstream = stream.pipe tar.Extract path: dest

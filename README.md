@@ -4,6 +4,12 @@
 
 > **Spoiler! Work in progress!**
 
+<table>
+<tr>
+<td><b>Version</b></td><td>beta</td>
+</tr>
+</table>
+
 ## About
 
 **nar** is a simple utility for creating self-contained node applications
