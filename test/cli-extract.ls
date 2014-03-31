@@ -50,8 +50,8 @@ describe 'CLI', (_) ->
       it 'should exists the README file', ->
         expect exists "#{dir}/README.md" .to.be.true
 
-      it 'should exists the .gitignore hidden file', ->
-        expect exists "#{dir}/.gitignore" .to.be.true
+      it 'should exists the .npmignore hidden file', ->
+        expect exists "#{dir}/.npmignore" .to.be.true
 
       it 'should exists the lib directory', ->
         expect exists "#{dir}/lib" .to.be.true
