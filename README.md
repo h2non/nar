@@ -52,7 +52,11 @@ in the `package.json` of your application
     "binary": true,
     "dependencies": true,
     "devDependencies": false,
-    "peerDependencies": true
+    "peerDependencies": true,
+    "commands": {
+      "pre-run": [ "rm -rf dir" ],
+      "run": "node app --env DEV"
+    }
   }
 }
 ```
