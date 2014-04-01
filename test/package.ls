@@ -16,6 +16,9 @@ describe '#package', ->
     before ->
       @archive = new Package
 
+    after ->
+      rm "nar-#{version}.nar"
+
     it 'should have the default options', ->
       expect @archive.options.binary .to.be.false
       expect @archive.options.dependencies .to.be.true
