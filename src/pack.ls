@@ -15,6 +15,7 @@ module.exports = pack =
 
   (options, cb) ->
     { name, src, dest, gzip, patterns, ext } = options |> apply
+    error = null
 
     tar = archiver 'tar', zlib-options
     file = "#{name}.#{ext}"
@@ -26,15 +27,18 @@ module.exports = pack =
       path: dest-path
 
     stream = fs.create-write-stream dest-path
-    stream.on 'close', -> cb null, values
+    stream.on 'close', -> cb error, values
 
     if gzip
       tar.pipe zlib.create-gzip! .pipe stream
     else
       tar.pipe stream
 
-    tar.on 'error', cb
-    tar.bulk [{ expand: true, cwd: src, src: patterns, dest: '.' }]
+    tar.on 'error', ->
+      error := it
+      cb it
+
+    tar.bulk [{ expand: yes, cwd: src, src: patterns, dest: '.' }]
     tar.finalize!
 
 apply = (options = {}) ->
@@ -43,7 +47,4 @@ apply = (options = {}) ->
   ext: options.ext or 'tar'
   patterns: options.patterns or [ '**', '.*' ]
   name: options.name or 'unnamed'
-  gzip: options.gzip or false
-
-
-
+  gzip: options.gzip or no
