@@ -11,8 +11,10 @@ require! {
 }
 { read, random, tmpdir, clone, extend, is-object, is-file, mk, now, stringify, vals, exists, checksum, EOL } = require './helper'
 
+
 const nar-file = '.nar.json'
 const ext = 'nar'
+const ignore-files = <[ .gitignore .npmignore .buildignore .narignore ]>
 const defaults =
   path: null
   binary: no
@@ -135,7 +137,7 @@ class Package extends EventEmitter
 compress-pkg = (options, cb) ->
   { dest, base, name } = options
 
-  patterns = [ '**', '.*', '!node_modules/**' ] ++ (base |> get-ignored-files)
+  patterns = [ '**', '.*', '!node_modules/**' ] ++ ignore-files ++ (base |> get-ignored-files)
 
   options = {
     name, dest, patterns
@@ -231,14 +233,13 @@ resolve-pkg-path = ->
   else
     it
 
-ignore-files = <[ .gitignore .npmignore .buildignore .narignore ]>
-
 get-ignored-files = (dir) ->
   patterns = []
   ignore-files
     .map -> it |> path.join "#{dir}", _
     .filter -> it |> exists
-    #.filter -> (@index-of '.narignore' is -1) and it.index-of '.narignore'
+    .filter ->
+      not (((it.index-of '.gitignore') isnt -1) and @length > 1)
     .for-each ->
       patterns = ((it |> read).split EOL) ++ patterns
   patterns
