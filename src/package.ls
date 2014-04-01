@@ -14,7 +14,7 @@ require! {
 
 const nar-file = '.nar.json'
 const ext = 'nar'
-const ignore-files = <[ .gitignore .npmignore .buildignore .narignore ]>
+const ignore-files = [ '.gitignore' '.npmignore' '.buildignore' '.narignore' ]
 const defaults =
   path: null
   binary: no
@@ -47,20 +47,8 @@ class Package extends EventEmitter
       rm @tmpdir
       rm @file if @file
 
-  nar-config: ->
-    { platform, arch, version } = process
-    name: @name
-    time: now!
-    info: {
-      platform
-      arch
-      version
-    }
-    manifest: @pkg
-    files: []
-
   compress: (cb) ->
-    nar-config = @nar-config!
+    nar-config = @name |> nar-manifest _, @pkg
 
     deps = (done) ~>
       config =
@@ -130,9 +118,23 @@ class Package extends EventEmitter
           exec!
 
     if @options.binary
+      config <<< binary: yes
       add-binary!
     else
       exec!
+
+nar-manifest = (name, pkg) ->
+  { platform, arch, version } = process
+  name: name
+  time: now!
+  binary: no
+  info: {
+    platform
+    arch
+    version
+  }
+  manifest: pkg
+  files: []
 
 compress-pkg = (options, cb) ->
   { dest, base, name } = options
