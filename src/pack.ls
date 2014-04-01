@@ -14,32 +14,36 @@ const zlib-options =
 module.exports = pack =
 
   (options, cb) ->
-    { name, src, dest, gzip, patterns, ext } = options
-    src ||= process.cwd!
-    dest ||= tmpdir!
-    ext ||= 'tar'
-    patterns ||= [ '**', '.*' ]
+    { name, src, dest, gzip, patterns, ext } = options |> apply
 
     tar = archiver 'tar', zlib-options
     file = "#{name}.#{ext}"
-    dest-path = path.join dest, file
+    dest-path = file |> path.join dest, _
+
+    values =
+      name: name
+      archive: file
+      path: dest-path
 
     stream = fs.create-write-stream dest-path
-    stream.on 'close', ->
-      cb null,
-        name: name
-        archive: file
-        path: dest-path
+    stream.on 'close', -> cb null, values
 
     if gzip
       tar.pipe zlib.create-gzip! .pipe stream
     else
       tar.pipe stream
 
-    tar.on 'error', -> on-err cb, it
+    tar.on 'error', cb
     tar.bulk [{ expand: true, cwd: src, src: patterns, dest: '.' }]
     tar.finalize!
 
-on-err = (cb, err) ->
-  cb err
-  throw err
+apply = (options = {}) ->
+  src: options.src or process.cwd!
+  dest: options.dest or tmpdir!
+  ext: options.ext or 'tar'
+  patterns: options.patterns or [ '**', '.*' ]
+  name: options.name or 'unnamed'
+  gzip: options.gzip or false
+
+
+
