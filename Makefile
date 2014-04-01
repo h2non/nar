@@ -33,6 +33,7 @@ compile: clean mkdir
 	cat src/package.ls | $(LS) -c -s -b > ./lib/package.js
 	cat src/commands/create.ls | $(LS) -c -s -b > ./lib/commands/create.js
 	cat src/commands/extract.ls | $(LS) -c -s -b > ./lib/commands/extract.js
+	cat src/commands/run.ls | $(LS) -c -s -b > ./lib/commands/run.js
 
 mocha:
 	cat test/lib/helper.ls | $(LS) -c -s -b > ./test/lib/helper.js

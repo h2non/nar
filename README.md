@@ -92,33 +92,33 @@ Take that into account if you are going to deploy the archive in multiple platfo
 ## Command-line interface
 
 ```
-  Usage: nar [options] [command]
+Usage: nar [options] [command]
 
-  Commands:
+Commands:
 
-    help
-      Output the usage information
-    version
-      Output the version information
-    create [options] [path]
-      Create new aplication archive
-    extract [options] [archive]
-      Extract archive files
+  help
+    Output the usage information
+  version
+    Output the version information
+  create [options] [path]
+    Create new aplication archive
+  extract [options] [archive]
+    Extract archive files
 
-  Options:
+Options:
 
-    -h, --help     output usage information
-    -V, --version  output the version number
+  -h, --help     output usage information
+  -V, --version  output the version number
 
-  Usage examples:
+Usage examples:
 
-    $ nar create [path]
-    $ nar run [archive]
-    $ nar extract [archive] -o [directory]
+  $ nar create [path]
+  $ nar run [archive]
+  $ nar extract [archive] -o [directory]
 
-  Command specific help:
+Command specific help:
 
-    $ nar <command> --help
+  $ nar <command> --help
 ```
 
 ### create
@@ -126,23 +126,23 @@ Take that into account if you are going to deploy the archive in multiple platfo
 Create a new archive from an existent application
 
 ```
-  Usage: create [path] [options]
+Usage: create [path] [options]
 
-  Options:
+Options:
 
-    -h, --help     output usage information
-    -o, --output   Output directory
-    -f, --force    Forces archive creation passing warnings or errors
-    -d, --debug    Enable debugging mode for tasks that support it
-    -v, --verbose  Verbose mode. A lot of information will be showed
-    --no-color     Disable colored output
+  -h, --help     output usage information
+  -o, --output   Output directory
+  -f, --force    Forces archive creation passing warnings or errors
+  -d, --debug    Enable debugging mode for tasks that support it
+  -v, --verbose  Verbose mode. A lot of information will be showed
+  --no-color     Disable colored output
 
-  Usage examples:
+Usage examples:
 
-    $ nar create
-    $ nar create some/path
-    $ nar create path/to/package.json -o some-dir
-    $ nar create --debug --verbose --no-color
+  $ nar create
+  $ nar create some/path
+  $ nar create path/to/package.json -o some-dir
+  $ nar create --debug --verbose --no-color
 ```
 
 ### extract
@@ -150,23 +150,23 @@ Create a new archive from an existent application
 Extract archive files into directory
 
 ```
-  Usage: extract [archive] [options]
+Usage: extract [archive] [options]
 
-  Options:
+Options:
 
-    -h, --help     output usage information
-    -o, --output   Output directory
-    -f, --force    Forces archive creation passing warnings or errors
-    -d, --debug    Enable debugging mode for tasks that support it
-    -v, --verbose  Verbose mode. A lot of information will be showed
-    --no-color     Disable colored output
+  -h, --help     output usage information
+  -o, --output   Output directory
+  -f, --force    Forces archive creation passing warnings or errors
+  -d, --debug    Enable debugging mode for tasks that support it
+  -v, --verbose  Verbose mode. A lot of information will be showed
+  --no-color     Disable colored output
 
-  Usage examples:
+Usage examples:
 
-    $ nar extract
-    $ nar extract app.nar
-    $ nar extract app.nar -o some-dir
-    $ nar extract app.nar --debug --verbose --no-color
+  $ nar extract
+  $ nar extract app.nar
+  $ nar extract app.nar -o some-dir
+  $ nar extract app.nar --debug --verbose --no-color
 ```
 
 ## Programmatic API

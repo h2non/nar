@@ -21,7 +21,7 @@ module.exports = pack =
     patterns ||= [ '**', '.*' ]
 
     tar = archiver 'tar', zlib-options
-    file = name |> get-name _, ext
+    file = "#{name}.#{ext}"
     dest-path = path.join dest, file
 
     stream = fs.create-write-stream dest-path
@@ -39,9 +39,6 @@ module.exports = pack =
     tar.on 'error', -> on-err cb, it
     tar.bulk [{ expand: true, cwd: src, src: patterns, dest: '.' }]
     tar.finalize!
-
-get-name = (name, ext) ->
-  "#{name}." + ext
 
 on-err = (cb, err) ->
   cb err
