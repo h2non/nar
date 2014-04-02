@@ -11,7 +11,7 @@
 
 describe 'CLI', (_) ->
 
-  describe 'extract', (_) ->
+  xdescribe 'extract', (_) ->
 
     describe 'basic', (_) ->
       dir = "#{__dirname}/fixtures/.tmp"

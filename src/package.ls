@@ -9,7 +9,7 @@ require! {
   events.EventEmitter
   findup: 'findup-sync'
 }
-{ read, random, tmpdir, clone, extend, is-object, is-file, mk, now, stringify, vals, exists, checksum, EOL } = require './helper'
+{ read, random, tmpdir, clone, extend, is-object, is-file, mk, now, stringify, vals, exists, checksum, lines } = require './helper'
 
 
 const nar-file = '.nar.json'
@@ -75,7 +75,7 @@ class Package extends EventEmitter
 
     async.series [ deps, pkg, all ], ~>
       @clean!
-      cb!
+      @emit 'end'
 
   write-config: (config, cb) ->
     file = @tmpdir |> path.join _, nar-file
@@ -112,8 +112,8 @@ class Package extends EventEmitter
           dest: '.node/bin'
           type: 'binary'
 
-        checksum it, ->
-          info <<< checksum: it
+        checksum it, (err, hash) ->
+          info <<< checksum: hash
           info |> config.files.push
           exec!
 
@@ -153,8 +153,8 @@ compress-pkg = (options, cb) ->
 
   pack options, (err, pkg) ->
     throw err if err
-    checksum pkg.path, ->
-      pkg-info <<< checksum: it
+    checksum pkg.path, (err, hash) ->
+      pkg-info <<< checksum: hash
       cb pkg-info
 
 compress-dependencies = (options, cb) ->
@@ -170,17 +170,14 @@ compress-dependencies = (options, cb) ->
   is-valid = ->
     it and it.length
 
-  calculate-checksum = (path, done) ->
-    checksum ...
-
   create-pkg = (pkg, done) ->
     pkg-info =
       archive: pkg.archive
       dest: pkg.name |> path.join 'node_modules', _
       type: 'dependency'
 
-    calculate-checksum pkg.path, ->
-      pkg-info <<< checksum: it
+    checksum pkg.path, (err, hash) ->
+      pkg-info <<< checksum: hash
       pkg-info |> files.push
       done null, pkg-info
 
@@ -237,13 +234,15 @@ resolve-pkg-path = ->
 
 get-ignored-files = (dir) ->
   patterns = []
-  ignore-files
+  files = ignore-files
     .map -> it |> path.join "#{dir}", _
     .filter -> it |> exists
-    .filter ->
-      not (((it.index-of '.gitignore') isnt -1) and @length > 1)
-    .for-each ->
-      patterns = ((it |> read).split EOL) ++ patterns
+  files.splice 1 if files.length > 1
+  if files.length
+    patterns =
+      ((files[0] |> read) |> lines)
+        .filter -> it
+        .map (.trim!)
   patterns
 
 get-module-path = ->

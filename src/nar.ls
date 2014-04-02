@@ -13,7 +13,7 @@ require! {
   findup: 'findup-sync'
   '../package.json'.version
 }
-{ read } = require './helper'
+{ read, checksum } = require './helper'
 
 const pkgfile = 'package.json'
 const attr = 'archive'
@@ -168,8 +168,8 @@ module.exports = class Nar
           dest: '.node/bin'
           type: 'binary'
 
-        checksum it, ->
-          info <<< checksum: it
+        checksum it, (err, hash) ->
+          info <<< checksum: hash
           info |> config.files.push
           exec!
 
@@ -195,8 +195,8 @@ module.exports = class Nar
 
     pack options, (err, pkg) ->
       throw err if err
-      checksum pkg.path, ->
-        pkg-info <<< checksum: it
+      checksum pkg.path, (err, hash) ->
+        pkg-info <<< checksum: hash
         cb pkg-info
 
   compress-deps: (config, cb) ->
@@ -219,8 +219,8 @@ module.exports = class Nar
           dest: path.join pkg-dir, pkg.name
           type: 'dependency'
 
-        checksum pkg.path, ->
-          pkg-info <<< checksum: it
+        checksum pkg.path, (err, hash) ->
+          pkg-info <<< checksum: hash
           done null, pkg-info
 
       async.map it, pack, (err, results) ->
@@ -262,8 +262,8 @@ module.exports = class Nar
     extract-files = (files, cb) ->
       async.each files, ((file, done) ->
         archive = path.join tmp, file.archive
-        checksum archive, ->
-          if it is file.checksum
+        checksum archive, (err, hash) ->
+          if hash is file.checksum
             cwd = path.join dest, file.dest
             mk cwd
             if file.type is 'binary'
@@ -273,13 +273,6 @@ module.exports = class Nar
           else
             throw new Error "Checksum verification was failed for archive '#{file.archive}'"
         ), on-err cb
-
-checksum = (file, cb) ->
-  hash = crypto.create-hash 'sha1'
-  (file |> fs.create-read-stream)
-    .on('data', -> it |> hash.update)
-    .on('end', -> hash.digest 'hex' |> cb)
-    .on('error', -> throw it)
 
 copy = (file, dest, cb) ->
   filename = file |> path.basename

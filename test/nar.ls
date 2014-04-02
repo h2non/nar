@@ -8,7 +8,7 @@
   version
 } = require './lib/helper'
 
-describe 'nar', ->
+xdescribe 'nar', ->
 
   describe 'API', (_) ->
 
@@ -85,7 +85,7 @@ describe 'nar', ->
           expect exists './test-0.0.1.nar' .to.be.true
 
         it 'should match dependencies', ->
-          expect @nar.match-deps!dep .to.be.deep.equal ['hu']
+          expect @nar.match-deps!dep .to.be.deep.equal ['some']
 
       describe '#extract()', (_) ->
         dest = "#{__dirname}/fixtures/.tmp"
@@ -117,13 +117,13 @@ describe 'nar', ->
             expect exists "#{dest}/node_modules" .to.be.true
 
           it 'should exist the package dependency', ->
-            expect exists "#{dest}/node_modules/hu" .to.be.true
+            expect exists "#{dest}/node_modules/some" .to.be.true
 
           it 'should exist package.json in package dependency', ->
-            expect exists "#{dest}/node_modules/hu/package.json" .to.be.true
+            expect exists "#{dest}/node_modules/some/package.json" .to.be.true
 
           it 'should be a valid package.json dependency', ->
-            expect (require "#{dest}/node_modules/hu/package.json").name .to.be.equal 'hu'
+            expect (require "#{dest}/node_modules/some/package.json").name .to.be.equal 'some'
 
           it 'should exist the "a" directory', ->
             expect exists "#{dest}/a" .to.be.true
@@ -165,9 +165,9 @@ describe 'nar', ->
 
               it 'should have a valid dependency file object', ->
                 file = (require "#{dest}/.nar.json").files[0]
-                expect file.archive .to.be.equal 'hu.tar'
+                expect file.archive .to.be.equal 'some.tar'
                 expect file.type .to.be.equal 'dependency'
-                expect file.dest .to.be.equal 'node_modules/hu'
+                expect file.dest .to.be.equal 'node_modules/some'
                 expect file.checksum .to.be.a 'string'
 
               it 'should have the node binary file object', ->

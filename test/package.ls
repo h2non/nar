@@ -57,6 +57,9 @@ describe '#package', ->
 
     describe 'compression', (_) ->
 
-      it 'should compress', (done) ->
-        (@archive.compress -> done!)
+      before ->
+        @archive.compress!
+
+      it 'should compress files sucessfully', (done) ->
+        @archive.on 'end', done
 

@@ -1,24 +1,37 @@
 require! {
   fs
   tar
-  zlib
+  zlib.create-gunzip
 }
+{ checksum, once } = require './helper'
 
 module.exports = extract =
 
-  (options, cb) ->
-    { archive, dest, gzip } = options |> apply
+  (options = {}, cb) ->
+    { path, checksum } = options |> apply
+    cb = (cb |> once)
 
-    stream = fs.create-read-stream archive
-    stream.on 'error', cb
+    return (new Error 'path option is required' |> cb) unless path
 
-    if gzip
-      stream |> extract-gzip _, dest, cb
+    extractor = options |> extract-archive _, cb
+    if checksum
+      extractor |> calculate-checksum checksum, path, _
     else
-      stream |> extract-normal _, dest, cb
+      extractor!
+
+extract-archive = (options, cb) -> ->
+  { path, dest, gzip } = options
+  return cb it if it
+
+  stream = fs.create-read-stream path
+  stream.on 'error', cb
+  if gzip
+    stream |> extract-gzip _, dest, cb
+  else
+    stream |> extract-normal _, dest, cb
 
 extract-gzip = (stream, dest, cb) ->
-  gzstream = stream.pipe zlib.create-gunzip!
+  gzstream = stream.pipe create-gunzip!
   gzstream.on 'error', cb
   gzstream |> extract-normal _, dest, cb
 
@@ -27,9 +40,18 @@ extract-normal = (stream, dest, cb) ->
   tstream.on 'error', cb
   tstream.on 'end', cb
 
-apply = (options = {})->
+calculate-checksum = (hash, file, cb) ->
+  file |> checksum _, (err, nhash) ->
+    return cb err if err
+    if hash is nhash
+      cb!
+    else
+      new Error "checksum verification failed: #{nhash}" |> cb
+
+apply = (options)->
   {
     options.dest or process.cwd!
     options.gzip or no
-    options.archive or null
+    options.path or null
+    options.checksum or null
   }

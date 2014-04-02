@@ -12,15 +12,17 @@
 
 ## About
 
-**nar** is a simple utility for creating self-contained node applications
-that are ready to ship and deploy
+**nar** is a simple utility for creating self-contained node.js
+applications that are ready to ship, run and fun
 
 ## Features
 
 - Simple command-line interface
 - Provides a easy-to-use programmatic API
 - Tarball with gzip compression/decompression
-- Package extraction and run
+- Built-in package extraction
+- Built-in support app execution
+- Application pre/post run hooks
 - Automatic package discovery
 - Full configurable from package.json
 - Allow to bundle dependencies by type
@@ -52,11 +54,7 @@ in the `package.json` of your application
     "binary": true,
     "dependencies": true,
     "devDependencies": false,
-    "peerDependencies": true,
-    "commands": {
-      "pre-run": [ "rm -rf dir" ],
-      "run": "node app --env DEV"
-    }
+    "peerDependencies": true
   }
 }
 ```
@@ -88,6 +86,46 @@ in a sandboxed deployment or runtime environment
 
 **Note**: node binary is OS and platform specific.
 Take that into account if you are going to deploy the archive in multiple platforms
+
+### Run hooks
+
+`nar` supports application pre/post execution hooks, that are also supported by `npm`.
+
+You should define it the `package.json` in the `scripts` properties
+
+Supported hooks:
+- `prestart`
+- `start`
+- `stop`
+
+Configuration example:
+```json
+{
+  "name": "app",
+  "version: "1.0.0",
+  "scripts": {
+    "prestart": "rm -rf dir",
+    "start": "node app --env ${ENV}",
+    "stop" "rm -rf cache"
+  }
+```
+
+It's recommended you call shell scripts from hooks if your need to want to run
+more than one command
+
+#### Notes about hooks
+
+##### Environment variables in hook commands
+
+You can consum environment variables from hook comands using the `${VARNAME}` notation
+
+##### Passing arguments to hook commands
+
+You can pass arguments to hooks commands from nar CLI
+
+```
+$ nar run app.nar --start-args "--env ${ENV} --debug"
+```
 
 ## Command-line interface
 
@@ -198,12 +236,11 @@ try {
 
 ### Options
 
-- **base** `string` Path to package output directory
-- **pkgPath** `string` Path to package.json
 - **dependencies** `boolean` Add package dependencies
 - **devDependencies** `boolean` Add package development dependencies
 - **peerDependencies** `boolean` Add package development dependencies
 - **binary** `boolean` Add node binary (warning! binary is platform specific)
+- **commands** `array` Command to execute in different app stages
 
 ## Contributing
 

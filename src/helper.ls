@@ -37,10 +37,11 @@ module.exports = _ = {
   random: ->
     _.now! + (Math.floor Math.random! * 10000)
 
+  lines: ->
+    it.split os.EOL if it
+
   exit: (code) ->
-    if code is 0 or not code
-      code |> exit
-    # if code is not 0, return a partial function
+    code |> exit if code is 0 or not code
     (message) ->
       if message?
         message = message.red if String::red?
@@ -57,12 +58,18 @@ module.exports = _ = {
     else
       null
 
+  once: (cb) ->
+    error = no
+    ->
+      cb ... unless error
+      error := yes if it
+
   checksum: (file, cb) ->
     hash = crypto.create-hash 'sha1'
     (file |> fs.create-read-stream)
       .on('data', -> it |> hash.update)
-      .on('end', -> hash.digest 'hex' |> cb)
-      .on('error', -> throw it)
+      .on('end', -> hash.digest 'hex' |> cb null, _)
+      .on('error', -> it |> cb)
 
   copy: (file, dest, cb) ->
     filename = file |> path.basename

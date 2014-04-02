@@ -1,11 +1,11 @@
 require! {
-  hu
   fs
   path
-  zlib
   archiver
   'os-shim'.tmpdir
+  zlib.create-gzip
 }
+{ checksum, once, exists } = require './helper'
 
 # See: http://zlib.net/manual.html#Constants
 const zlib-options =
@@ -13,38 +13,57 @@ const zlib-options =
 
 module.exports = pack =
 
-  (options, cb) ->
-    { name, src, dest, gzip, patterns, ext } = options |> apply
-    error = null
+  (options = {}, cb) ->
+    { name, src, dest, patterns, ext } = options = options |> apply
 
-    tar = archiver 'tar', zlib-options
     file = "#{name}.#{ext}"
-    dest-path = file |> path.join dest, _
+    file-path = file |> path.join dest, _
 
-    values =
+    return new Error 'source path do not exists' |> cb unless src |> exists
+    return new Error 'destination path do not exists' |> cb unless dest |> exists
+
+    data =
       name: name
       archive: file
-      path: dest-path
+      path: file-path
 
-    stream = fs.create-write-stream dest-path
-    stream.on 'close', -> cb error, values
+    cb = (cb |> calculate-checksum file-path, data, _) |> once
 
-    if gzip
-      tar.pipe zlib.create-gzip! .pipe stream
-    else
-      tar.pipe stream
+    (file-path
+      |> create-stream _, cb)
+      |> create-tar _, options, cb
 
-    tar.on 'error', ->
-      error := it
-      cb it
+create-stream = (file, cb) ->
+  fs.create-write-stream file
+    .on 'error', cb
+    .on 'close', cb
 
-    tar.bulk [{ expand: yes, cwd: src, src: patterns, dest: '.' }]
-    tar.finalize!
+create-tar = (stream, options, cb) ->
+  { src, gzip, patterns } = options
 
-apply = (options = {}) ->
-  src: options.src or process.cwd!
-  dest: options.dest or tmpdir!
-  ext: options.ext or 'tar'
-  patterns: options.patterns or [ '**', '.*' ]
-  name: options.name or 'unnamed'
-  gzip: options.gzip or no
+  tar = archiver 'tar', zlib-options
+  tar.on 'error', cb
+  tar.bulk [{ expand: yes, cwd: src, src: patterns, dest: '.' }]
+
+  if gzip
+    (create-gzip! |> tar.pipe).pipe stream
+  else
+    stream |> tar.pipe
+
+  tar.finalize!
+
+calculate-checksum = (file, data, cb) -> ->
+  return cb it if it
+  file |> checksum _, (err, hash) ->
+    data <<< checksum: hash
+    data |> cb err, _
+
+apply = (options) ->
+  {
+    options.src or process.cwd!
+    options.dest or tmpdir!
+    options.ext or 'tar'
+    options.patterns or [ '**', '.*' ]
+    options.name or 'unnamed'
+    options.gzip or no
+  }
