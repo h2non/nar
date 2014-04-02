@@ -1,4 +1,5 @@
 {
+  fs
   rm
   mk
   exists
@@ -109,7 +110,7 @@ describe 'extract', ->
     it 'should exist sample.js', ->
       expect exists "#{dest}/a/b/sample.js" .to.be.true
 
-  describe 'invalid', (_) ->
+  describe 'error', (_) ->
 
     describe 'tar file' (_) ->
 

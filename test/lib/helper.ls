@@ -16,6 +16,7 @@ home-var = if process.platform is 'win32' then 'USERPROFILE' else 'HOME'
 
 module.exports =
 
+  fs: fs
   nar: nar
   cwd: cwd
   node: node
@@ -43,6 +44,25 @@ module.exports =
 
   exists: ->
     fs.exists-sync it
+
+  spy: (fn) ->
+    call = ->
+      unless call.called
+        fn ...
+        call.called = yes
+    call.called = no
+    call
+
+  once: (fn) ->
+    call = no
+    ->
+      unless call
+        call := yes
+        fn ...
+
+  uncaught: ->
+    process.remove-listener 'uncaughtException', (process.listeners 'uncaughtException')[0]
+    process.add-listener 'uncaughtException', ->
 
   exec: (type, args, callback) ->
     command = spawn node, [ croak ] ++ args
