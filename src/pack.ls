@@ -5,7 +5,7 @@ require! {
   'os-shim'.tmpdir
   zlib.create-gzip
 }
-{ checksum, once, exists } = require './helper'
+{ checksum, once, exists } = require './utils'
 
 # See: http://zlib.net/manual.html#Constants
 const zlib-options =

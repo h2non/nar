@@ -9,7 +9,7 @@ require! {
   events.EventEmitter
   findup: 'findup-sync'
 }
-{ read, random, tmpdir, clone, extend, is-object, is-file, mk, now, stringify, vals, exists, checksum, lines } = require './helper'
+{ read, random, tmpdir, clone, extend, is-object, is-file, mk, now, stringify, vals, exists, checksum, lines } = require './utils'
 
 
 const nar-file = '.nar.json'

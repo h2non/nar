@@ -4,7 +4,7 @@ require! {
   './nar'
   program: commander
 }
-{ echo } = require './helper'
+{ echo } = require './utils'
 
 module.exports <<< parse: -> it |> program.parse
 

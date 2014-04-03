@@ -3,7 +3,7 @@ require! {
   tar
   zlib.create-gunzip
 }
-{ checksum, once } = require './helper'
+{ checksum, once } = require './utils'
 
 module.exports = extract =
 

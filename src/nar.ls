@@ -13,7 +13,7 @@ require! {
   findup: 'findup-sync'
   '../package.json'.version
 }
-{ read, checksum } = require './helper'
+{ read, checksum } = require './utils'
 
 const pkgfile = 'package.json'
 const attr = 'archive'
