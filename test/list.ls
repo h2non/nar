@@ -88,18 +88,3 @@ describe 'list', ->
         expect it .to.match /invalid tar/
         done!
 
-  xdescribe 'passing stream', (_) ->
-
-    bus = null
-    options =
-      stream: fs.create-read-stream "#{archives}/sample.tar"
-
-    before ->
-      bus := list options
-
-    it 'should emit the end event with an array of files', (done) ->
-      entry = spy!
-      bus.once 'end', once ->
-        expect it .to.be.an 'array'
-        expect it.length .to.be.equal 6
-        done!

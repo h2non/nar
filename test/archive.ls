@@ -3,6 +3,7 @@
   mk
   nar
   read
+  chdir
   exists
   expect
   version
@@ -11,13 +12,20 @@ Archive = require '../lib/archive'
 
 describe 'Archive', ->
 
+  dest = "#{__dirname}/fixtures/.tmp"
+
   describe 'options', (_) ->
+
+    before ->
+      mk dest
+      chdir dest
 
     before ->
       @archive = new Archive
 
     after ->
-      rm "nar-#{version}.nar"
+      chdir "#{__dirname}/.."
+      rm dest
 
     it 'should have the default options', ->
       expect @archive.options.binary .to.be.false
@@ -45,6 +53,7 @@ describe 'Archive', ->
 
       it 'should have runtime dependencies', ->
         expect @archive.dependencies.run .to.be.an 'array'
+        expect @archive.dependencies.run.length .to.be.equal 11
 
       it 'should have a valid runtime dependency', ->
         expect @archive.dependencies.run .to.include 'hu'
@@ -61,5 +70,7 @@ describe 'Archive', ->
         @archive.compress!
 
       it 'should compress files sucessfully', (done) ->
-        @archive.on 'end', done
+        @archive.on 'end', ->
+          expect it .to.be.equal "#{dest}/nar-#{version}.nar"
+          done!
 

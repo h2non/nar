@@ -101,6 +101,6 @@ describe 'pack', ->
           expect err .to.match /destination path do not/
           done!
 
-      it 'should  exist the tar file', ->
+      it 'should exist the tar file', ->
         expect exists dest .to.be.false
 

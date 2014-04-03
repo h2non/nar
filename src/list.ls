@@ -8,7 +8,7 @@ require! {
 module.exports = list =
 
   (options) ->
-    { file, stream, gzip } = options
+    { file, gzip } = options
     emitter = new EventEmitter
     ended = no
     error = no
@@ -26,20 +26,7 @@ module.exports = list =
       it.props |> files.push
       emitter.emit 'entry', it.props
 
-    parse = ->
-      parse = tar.Parse!
-
-      unless stream
-        stream := file |> fs.create-read-stream
-        stream.on 'error', on-error
-
-      stream := stream.pipe create-gunzip! if gzip
-      stream.pipe parse
-      parse.on 'error', on-error
-      parse.on 'entry', on-entry
-      parse.on 'end', on-end
-
-    emitter.on 'newListener', (ev, fn) ->
+    on-listener = (ev, fn) ->
       if error
         if ev is 'error'
           fn error
@@ -50,6 +37,20 @@ module.exports = list =
           fn files
         else
           emitter.emit 'end', files
+
+    parse = ->
+      parse = tar.Parse!
+
+      stream = file |> fs.create-read-stream
+      stream.on 'error', on-error
+      stream = stream.pipe create-gunzip! if gzip
+      stream.pipe parse
+
+      parse.on 'error', on-error
+      parse.on 'entry', on-entry
+      parse.on 'end', on-end
+
+    emitter.on 'newListener', on-listener
 
     process.next-tick parse
 

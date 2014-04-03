@@ -27,20 +27,17 @@ class Archive extends EventEmitter
   (options, cb) ->
     @pkg = {}
     @options = options |> apply-options
-    @pkg-path = @options.path |> discover-pkg
-    # update package base path
-    @options <<< path: @pkg-path |> path.dirname if @pkg-path
+    @pkg-path = @options.path
     @set-values!
 
   set-values: ->
     @pkg = @pkg-path |> read-pkg-file if @pkg-path
     @options = @pkg |> apply-pkg-options @options, _ if @pkg
-
     @tmpdir = tmpdir @pkg.name
 
     @name = @pkg.name or 'unnamed'
     @file = get-filename @pkg
-    @output = @file |> output-file _, @options.path
+    @output = @file |> output-file _, @options.dest
     @dependencies = @options |> match-dependencies _, @pkg
 
   clean: ->
@@ -54,7 +51,7 @@ class Archive extends EventEmitter
     deps = (done) ~>
       config =
         dest: @tmpdir
-        base: @options.path
+        base: @options.dest
         dependencies: @dependencies
 
       compress-dependencies config, ->
@@ -64,7 +61,7 @@ class Archive extends EventEmitter
     pkg = (done) ~>
       config =
         dest: @tmpdir
-        base: @options.path
+        base: @options.dest
         name: @name
 
       compress-pkg config, ->
@@ -74,16 +71,22 @@ class Archive extends EventEmitter
     all = (done) ~>
       nar-config |> @compress-all _, done
 
-    @tmpdir |> create-dir
+    do-compression = (done) ->
+      async.series [ deps, pkg, all ], done
 
-    async.series [ deps, pkg, all ], ~>
+    try
+      @tmpdir |> mk
+      do-compression ~>
+        @clean!
+        @emit 'end', @output
+    catch
       @clean!
-      @emit 'end'
+      @emit 'error', e
 
   compress-all: (config, cb) ->
     options =
       name: @file
-      dest: @options.path
+      dest: @options.dest
       patterns: [ '*.tar', nar-file ]
       src: @tmpdir
       ext: 'nar'
@@ -164,13 +167,6 @@ compress-dependencies = (options, cb) ->
   { dest, base, dependencies } = options
   files = []
 
-  find-pkg = ->
-    it.map ->
-      name: it
-      dest: dest
-      src: findup (it |> get-module-path), cwd: base
-    it |> add-bin-directory
-
   add-bin-directory = ->
     bin-dir = path.join base, ('.bin' |> get-module-path)
     if exists bin-dir
@@ -179,6 +175,13 @@ compress-dependencies = (options, cb) ->
         dest: '.bin' |> get-module-path
         src: bin-dir
       } |> it.push
+
+  find-pkg = ->
+    it.map ->
+      name: it
+      dest: dest
+      src: findup (it |> get-module-path), cwd: base
+    it |> add-bin-directory
 
   create-pkg = (pkg, done) ->
     pkg-info =
@@ -202,14 +205,11 @@ compress-dependencies = (options, cb) ->
     |> async.each _, compress-pkg, ->
       it |> cb _, files
 
-module.exports = Archive
+exports = module.exports = Archive
 
 #
 # Pure functions helpers
 #
-
-create-dir = ->
-  it |> mk
 
 is-valid = ->
   it and it.length
@@ -234,14 +234,17 @@ discover-pkg = (dir = process.cwd!) ->
 apply-options = (options) ->
   options = (defaults |> clone) |> extend _, options
   if options.path
-    options <<< path: options.path |> resolve-pkg-path
+    pkg-path = options.path |> resolve-pkg-path
   else
-    options <<< path: process.cwd!
+    pkg-path = process.cwd!
+  options <<< path: pkg-path |> discover-pkg
+  unless options.dest
+    options <<< dest: process.cwd!
   options
 
 resolve-pkg-path = ->
   if it |> is-file
-    it |> path.dirname |> set-path
+    it |> path.dirname |> resolve-pkg-path
   else
     it
 

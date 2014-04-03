@@ -48,7 +48,7 @@ calculate-checksum = (hash, file, cb) ->
     else
       new Error "checksum verification failed: #{nhash}" |> cb
 
-apply = (options)->
+apply = (options) ->
   {
     options.dest or process.cwd!
     options.gzip or no
