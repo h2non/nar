@@ -167,7 +167,9 @@ describe 'extract', ->
 
       options =
         path: "#{orig}/sample.tar"
-        dest: "an/invalid/path"
+        dest: dest
+
+      after -> rm dest
 
       it 'should not return an error', (done) ->
         extract options, (err) ->
@@ -175,4 +177,4 @@ describe 'extract', ->
           done!
 
       it 'should not exist files', ->
-        expect exists "#{dest}/package.json" .to.be.false
+        expect exists "#{dest}/package.json" .to.be.true
