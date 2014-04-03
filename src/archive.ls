@@ -31,7 +31,7 @@ class Archive extends EventEmitter
     @set-values!
 
   set-values: ->
-    @pkg = @pkg-path |> read-pkg-file if @pkg-path
+    @pkg = @pkg-path |> read if @pkg-path
     @options = @pkg |> apply-pkg-options @options, _ if @pkg
     @tmpdir = tmpdir @pkg.name
 
@@ -224,9 +224,6 @@ get-filename = (pkg = {}) ->
 
 apply-pkg-options = (options, pkg) ->
   pkg.archive |> extend options, _
-
-read-pkg-file = ->
-  it |> read
 
 discover-pkg = (dir = process.cwd!) ->
   findup 'package.json', cwd: dir
