@@ -51,11 +51,6 @@ module.exports = list =
         else
           emitter.emit 'end', files
 
-    process.next-tick ->
-      try
-        parse!
-      catch
-        error := e
-        emitter.emit 'error', e
+    process.next-tick parse
 
     emitter

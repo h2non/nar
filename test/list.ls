@@ -88,7 +88,7 @@ describe 'list', ->
         expect it .to.match /invalid tar/
         done!
 
-  describe 'passing stream', (_) ->
+  xdescribe 'passing stream', (_) ->
 
     bus = null
     options =
