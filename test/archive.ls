@@ -17,6 +17,7 @@ describe 'Archive', ->
   describe 'options', (_) ->
 
     before ->
+      rm dest
       mk dest
       chdir dest
 

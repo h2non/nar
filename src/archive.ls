@@ -24,6 +24,9 @@ const defaults =
 
 class Archive extends EventEmitter
 
+  @create = (options, cb) ->
+    new Archive options, cb
+
   (options, cb) ->
     @pkg = {}
     @options = options |> apply-options
@@ -36,12 +39,13 @@ class Archive extends EventEmitter
     @tmpdir = tmpdir @pkg.name
 
     @name = @pkg.name or 'unnamed'
-    @file = get-filename @pkg
+    @file = if @options.file then @options.file else get-filename @pkg
     @output = @file |> output-file _, @options.dest
     @dependencies = @options |> match-dependencies _, @pkg
 
   clean: ->
     try
+      #@remove-all-listeners!
       rm @tmpdir
       rm @file if @file
 
@@ -78,7 +82,10 @@ class Archive extends EventEmitter
       @tmpdir |> mk
       do-compression ~>
         @clean!
-        @emit 'end', @output
+        if it
+          @emit 'error', it
+        else
+          @emit 'end', @output
     catch
       @clean!
       @emit 'error', e
@@ -101,7 +108,8 @@ class Archive extends EventEmitter
       config |> write-config _, @tmpdir, done
 
     exec = ->
-      async.series [ save-config, pack-all ], -> cb!
+      async.series [ save-config, pack-all ], ->
+        cb it
 
     add-binary = ~>
       copy process.exec-path, @tmpdir, ~>
@@ -142,10 +150,13 @@ nar-manifest = (name, pkg) ->
   manifest: pkg
   files: []
 
+files-to-include = ->
+  [ '**', '.*', '!node_modules/**' ] ++ ignore-files ++ (it |> get-ignored-files)
+
 compress-pkg = (options, cb) ->
   { dest, base, name } = options
 
-  patterns = [ '**', '.*', '!node_modules/**' ] ++ ignore-files ++ (base |> get-ignored-files)
+  patterns = base |> files-to-include
 
   options = {
     name, dest, patterns

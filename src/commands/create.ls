@@ -9,7 +9,7 @@ program
   .command 'create [path]'
   .description '\n  Create new aplication archive'
   .usage '[path] [options]'
-  .option '-o, --output', 'Output directory'
+  .option '-o, --output <path>', 'Output directory'
   .option '-f, --force', 'Forces archive creation passing warnings or errors'
   .option '-d, --debug', 'Enable debugging mode for tasks that support it'
   .option '-v, --verbose', 'Verbose mode. A lot of information will be showed'

@@ -32,9 +32,11 @@ compile: clean mkdir
 	cat src/list.ls | $(LS) -c -s -b > ./lib/list.js
 	cat src/utils.ls | $(LS) -c -s -b > ./lib/utils.js
 	cat src/archive.ls | $(LS) -c -s -b > ./lib/archive.js
+	cat src/run.ls | $(LS) -c -s -b > ./lib/run.js
 	cat src/commands/create.ls | $(LS) -c -s -b > ./lib/commands/create.js
 	cat src/commands/extract.ls | $(LS) -c -s -b > ./lib/commands/extract.js
 	cat src/commands/run.ls | $(LS) -c -s -b > ./lib/commands/run.js
+	cat src/commands/list.ls | $(LS) -c -s -b > ./lib/commands/list.js
 
 mocha:
 	cat test/lib/helper.ls | $(LS) -c -s -b > ./test/lib/helper.js

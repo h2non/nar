@@ -22,7 +22,7 @@ describe 'CLI', (_) ->
         rm "#{__dirname}/fixtures/.tmp"
         process.chdir "#{__dirname}/.."
 
-      it 'should create the archive', (done) ->
+      xit 'should create the archive', (done) ->
         exec 'close', <[create]>, ->
           expect exists "#{__dirname}/fixtures/.tmp/nar-#{version}.nar" .to.be.true
           expect it .to.be.equal 0

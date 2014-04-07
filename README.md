@@ -1,6 +1,6 @@
 # nar [![Build Status](https://secure.travis-ci.org/h2non/nar.png?branch=master)][travis] [![Dependency Status](https://gemnasium.com/h2non/nar.png)][gemnasium] [![NPM version](https://badge.fury.io/js/nar.png)][npm]
 
-> node.js application archive. Bundle and package self-contained applications ready-to-ship
+> Bundle and package self-contained applications that are ready-to-ship-and-run
 
 > **Spoiler! Work in progress!**
 
@@ -12,7 +12,7 @@
 
 ## About
 
-**nar** is a simple utility for creating self-contained node.js
+**nar** (node.js application archive) is a simple utility for creating self-contained node.js
 applications that are ready to ship, run and fun
 
 ## Features
@@ -207,6 +207,11 @@ Usage examples:
   $ nar extract app.nar --debug --verbose --no-color
 ```
 
+### run
+
+### list
+
+
 ## Programmatic API
 
 ```js
@@ -228,11 +233,15 @@ try {
 }
 ```
 
-### Nar(options)
+### nar.create(options, cb)
 
-### Nar.create(options, cb)
+### nar.extract(options, cb)
 
-### Nar.extract(options, cb)
+### nar.run(options, cb)
+
+### nar.list(options, cb)
+
+### nar.VERSION
 
 ### Options
 
