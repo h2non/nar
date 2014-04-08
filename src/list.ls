@@ -4,6 +4,7 @@ require! {
   zlib.create-gunzip
   events.EventEmitter
 }
+{ next } = require './utils'
 
 module.exports = list =
 
@@ -14,18 +15,16 @@ module.exports = list =
     error = no
     files = []
 
-    on-error = ->
-      error := it
-      emitter.emit 'error', it
+    on-error = (err) ->
+      error := err
+      next -> err |> emitter.emit 'error', _
 
     on-end = ->
       ended := yes
-      emitter.emit 'end', files
+      next -> files |> emitter.emit 'end', _
 
-    on-entry = ->
-      if it
-        it.props |> files.push
-        emitter.emit 'entry', it.props
+    on-entry = (entry) ->
+      next -> entry.props |> files.push |> emitter.emit 'entry', _ if entry
 
     on-listener = (name, fn) ->
       switch name
