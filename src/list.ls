@@ -23,35 +23,27 @@ module.exports = list =
       emitter.emit 'end', files
 
     on-entry = ->
-      it.props |> files.push
-      emitter.emit 'entry', it.props
+      if it
+        it.props |> files.push
+        emitter.emit 'entry', it.props
 
-    on-listener = (ev, fn) ->
-      if error
-        if ev is 'error'
-          fn error
-        else
-          emitter.emit 'error', error
-      else if ended
-        if ev is 'end'
-          fn files
-        else
-          emitter.emit 'end', files
+    on-listener = (name, fn) ->
+      switch name
+        case 'error' then fn error if error
+        case 'end' then fn files if ended
 
     parse = ->
       parse = tar.Parse!
+      parse.on 'error', on-error
+      parse.on 'entry', on-entry
+      parse.on 'end', on-end
 
       stream = file |> fs.create-read-stream
       stream.on 'error', on-error
       stream = stream.pipe create-gunzip! if gzip
       stream.pipe parse
 
-      parse.on 'error', on-error
-      parse.on 'entry', on-entry
-      parse.on 'end', on-end
-
     emitter.on 'newListener', on-listener
 
     process.next-tick parse
-
     emitter

@@ -22,7 +22,6 @@ describe 'list', ->
       @bus = list options
 
     it 'should emit the end event with an array of files', (done) ->
-      entry = spy!
       @bus.once 'end', once (files) ->
         expect files .to.be.an 'array'
         done!
@@ -50,7 +49,6 @@ describe 'list', ->
       @bus = list options
 
     it 'should emit the end event with an array of files', (done) ->
-      entry = spy!
       @bus.once 'end', once (files) ->
         expect files .to.be.an 'array'
         done!

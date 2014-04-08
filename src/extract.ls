@@ -4,7 +4,7 @@ require! {
   zlib.create-gunzip
   events.EventEmitter
 }
-{ once, exists }:_ = require './utils'
+{ once }:_ = require './utils'
 
 module.exports = extract =
 
@@ -15,12 +15,12 @@ module.exports = extract =
 
     on-end = -> emitter.emit 'end' unless errored
     on-entry = -> emitter.emit 'entry', it.props if it
-    on-err = once ->
+    on-error = once ->
       errored := yes
       emitter.emit 'error', it
 
     do-extract = ->
-      return (new Error 'Path option is required' |> on-err) unless path
+      return (new Error 'Path option is required' |> on-error) unless path
       extractor = options |> extract-archive _
       if checksum
         extractor |> calculate-checksum checksum, path, _
@@ -31,7 +31,7 @@ module.exports = extract =
       { dest, gzip } = options
       dest = process.cwd! unless dest
       stream = fs.create-read-stream path
-      stream.on 'error', on-err
+      stream.on 'error', on-error
       if gzip
         stream |> extract-gzip _, dest
       else
@@ -39,23 +39,23 @@ module.exports = extract =
 
     extract-gzip = (stream, dest) ->
       gzstream = stream.pipe create-gunzip!
-      gzstream.on 'error', on-err
+      gzstream.on 'error', on-error
       gzstream |> extract-normal _, dest
 
     extract-normal = (stream, dest) ->
       extract = tar.Extract path: dest
       extract.on 'entry', on-entry
       tstream = stream.pipe extract
-      tstream.on 'error', on-err
+      tstream.on 'error', on-error
       tstream.on 'end', on-end
 
     calculate-checksum = (hash, file, cb) ->
       file |> _.checksum _, (err, nhash) ->
-        return (err |> on-err) if err
+        return (err |> on-error) if err
         if hash is nhash
           cb!
         else
-          new Error "checksum verification failed: #{nhash}" |> on-err
+          new Error "checksum verification failed: #{nhash}" |> on-error
 
     do-extract!
     emitter

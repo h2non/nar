@@ -153,6 +153,7 @@ Usage examples:
   $ nar create [path]
   $ nar run [archive]
   $ nar extract [archive] -o [directory]
+  $ nar list [archive]
 
 Command specific help:
 
