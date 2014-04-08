@@ -14,9 +14,6 @@ program
 program.command 'help' .action (-> help |> echo)
   .description '\n  Output the usage information'
 
-program.command 'version' .action (-> version |> echo)
-  .description '\n  Output the version information'
-
 program.on '--help', help = ->
   echo '''
     Usage examples:
@@ -24,6 +21,7 @@ program.on '--help', help = ->
       $ nar create [path]
       $ nar run [archive]
       $ nar extract [archive] -o [directory]
+      $ nar list [archive]
 
     Command specific help:
 
@@ -31,4 +29,4 @@ program.on '--help', help = ->
   \t
   '''
 
-<[ create extract ]>for-each -> "./commands/#{it}" |> require
+<[ create extract run list ]>for-each -> "./commands/#{it}" |> require

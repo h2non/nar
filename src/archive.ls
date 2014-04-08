@@ -45,7 +45,6 @@ class Archive extends EventEmitter
 
   clean: ->
     try
-      #@remove-all-listeners!
       rm @tmpdir
       rm @file if @file
 

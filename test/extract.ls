@@ -2,6 +2,7 @@
   fs
   rm
   mk
+  chdir
   exists
   expect
 } = require './lib/helper'
@@ -18,16 +19,17 @@ describe 'extract', ->
       path: "#{orig}/sample.tar"
       dest: dest
 
-    before ->
-      mk dest
-
-    after ->
-      rm dest
+    before -> mk dest
+    after -> rm dest
 
     it 'should extract files', (done) ->
-      extract options, (err) ->
-        expect err .to.not.exist
-        done!
+      files = 0
+      extract options
+        .on 'error', -> throw it
+        .on 'entry', -> files += 1
+        .on 'end', ->
+          expect files .to.be.equal 6
+          done!
 
     it 'should exist package.json', ->
       expect exists "#{dest}/package.json" .to.be.true
@@ -51,16 +53,17 @@ describe 'extract', ->
       dest: dest
       gzip: yes
 
-    before ->
-      mk dest
-
-    after ->
-      rm dest
+    before -> mk dest
+    after -> rm dest
 
     it 'should extract files', (done) ->
-      extract options, (err) ->
-        expect err .to.not.exist
-        done!
+      files = 0
+      extract options
+        .on 'error', -> throw it
+        .on 'entry', -> files += 1
+        .on 'end', ->
+          expect files .to.be.equal 6
+          done!
 
     it 'should exist package.json', ->
       expect exists "#{dest}/package.json" .to.be.true
@@ -84,16 +87,17 @@ describe 'extract', ->
       dest: dest
       checksum: '50c3aaacaafa0fb55829aa553121f04f1a78400e'
 
-    before ->
-      mk dest
-
-    after ->
-      rm dest
+    before -> mk dest
+    after -> rm dest
 
     it 'should extract files', (done) ->
-      extract options, (err) ->
-        expect err .to.not.exist
-        done!
+      files = 0
+      extract options
+        .on 'error', -> throw it
+        .on 'entry', -> files += 1
+        .on 'end', ->
+          expect files .to.be.equal 6
+          done!
 
     it 'should exist package.json', ->
       expect exists "#{dest}/package.json" .to.be.true
@@ -110,6 +114,28 @@ describe 'extract', ->
     it 'should exist sample.js', ->
       expect exists "#{dest}/a/b/sample.js" .to.be.true
 
+  describe 'default destination', (_) ->
+
+    options =
+      path: "#{orig}/sample.tar"
+
+    before -> mk dest
+    before -> chdir dest
+    after -> chdir "#{dest}/../../"
+    after -> rm dest
+
+    it 'should not return an error', (done) ->
+      files = 0
+      extract options
+        .on 'error', -> throw it
+        .on 'entry', -> files += 1
+        .on 'end', ->
+          expect files .to.be.equal 6
+          done!
+
+    it 'should exist file', ->
+      expect exists "#{dest}/package.json" .to.be.true
+
   describe 'error', (_) ->
 
     describe 'tar file' (_) ->
@@ -119,11 +145,18 @@ describe 'extract', ->
         dest: dest
         gzip: yes
 
+      before -> mk dest
+      after -> rm dest
+
       it 'should return an file header check error', (done) ->
-        extract options, (err) ->
-          expect err.code .to.be.equal 'Z_DATA_ERROR'
-          expect err.message .to.match /incorrect header check/
-          done!
+        files = 0
+        extract options
+          .on 'entry', -> files += 1
+          .on 'error', (err) ->
+            expect files .to.be.equal 0
+            expect err.code .to.be.equal 'Z_DATA_ERROR'
+            expect err.message .to.match /incorrect header check/
+            done!
 
       it 'should exist the tar file', ->
         expect exists "#{dest}/package.json" .to.be.false
@@ -135,10 +168,17 @@ describe 'extract', ->
         dest: dest
         checksum: 'invalid'
 
+      before -> mk dest
+      after -> rm dest
+
       it 'should return a checksum verification error', (done) ->
-        extract options, (err) ->
-          expect err .to.match /checksum verification failed/
-          done!
+        files = 0
+        extract options
+          .on 'entry', -> files += 1
+          .on 'error', (err) ->
+            expect files .to.be.equal 0
+            expect err.message .to.match /checksum verification failed/
+            done!
 
       it 'should not exist files', ->
         expect exists "#{dest}/package.json" .to.be.false
@@ -149,32 +189,18 @@ describe 'extract', ->
         path: "#{orig}/nonexistent.tar"
         dest: dest
 
-      before ->
-        mk dest
-
-      after ->
-        rm dest
+      before -> mk dest
+      after -> rm dest
 
       it 'should return a ENOENT read error', (done) ->
-        extract options, (err) ->
-          expect err.code .to.be.equal 'ENOENT'
-          done!
+        files = 0
+        extract options
+          .on 'entry', -> files += 1
+          .on 'error', (err) ->
+            expect files .to.be.equal 0
+            expect err.code .to.be.equal 'ENOENT'
+            done!
 
       it 'should not exist files', ->
         expect exists "#{dest}/package.json" .to.be.false
 
-    describe 'destination', (_) ->
-
-      options =
-        path: "#{orig}/sample.tar"
-        dest: dest
-
-      after -> rm dest
-
-      it 'should not return an error', (done) ->
-        extract options, (err) ->
-          expect err .to.be.empty
-          done!
-
-      it 'should not exist files', ->
-        expect exists "#{dest}/package.json" .to.be.true

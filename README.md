@@ -136,12 +136,12 @@ Commands:
 
   help
     Output the usage information
-  version
-    Output the version information
   create [options] [path]
     Create new aplication archive
   extract [options] [archive]
     Extract archive files
+  list [options] [archive]
+    List archive files
 
 Options:
 

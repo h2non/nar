@@ -2,51 +2,63 @@ require! {
   fs
   tar
   zlib.create-gunzip
+  events.EventEmitter
 }
-{ checksum, once } = require './utils'
+{ once, exists }:_ = require './utils'
 
 module.exports = extract =
 
-  (options = {}, cb) ->
+  (options = {}) ->
     { path, checksum } = options |> apply
-    cb = (cb |> once)
+    errored = no
+    emitter = new EventEmitter
 
-    return (new Error 'path option is required' |> cb) unless path
+    on-end = -> emitter.emit 'end' unless errored
+    on-entry = -> emitter.emit 'entry', it.props if it
+    on-err = once ->
+      errored := yes
+      emitter.emit 'error', it
 
-    extractor = options |> extract-archive _, cb
-    if checksum
-      extractor |> calculate-checksum checksum, path, _
-    else
-      extractor!
+    do-extract = ->
+      return (new Error 'Path option is required' |> on-err) unless path
+      extractor = options |> extract-archive _
+      if checksum
+        extractor |> calculate-checksum checksum, path, _
+      else
+        extractor!
 
-extract-archive = (options, cb) -> ->
-  { path, dest, gzip } = options
-  return cb it if it
+    extract-archive = (options) -> ->
+      { dest, gzip } = options
+      dest = process.cwd! unless dest
+      stream = fs.create-read-stream path
+      stream.on 'error', on-err
+      if gzip
+        stream |> extract-gzip _, dest
+      else
+        stream |> extract-normal _, dest
 
-  stream = fs.create-read-stream path
-  stream.on 'error', cb
-  if gzip
-    stream |> extract-gzip _, dest, cb
-  else
-    stream |> extract-normal _, dest, cb
+    extract-gzip = (stream, dest) ->
+      gzstream = stream.pipe create-gunzip!
+      gzstream.on 'error', on-err
+      gzstream |> extract-normal _, dest
 
-extract-gzip = (stream, dest, cb) ->
-  gzstream = stream.pipe create-gunzip!
-  gzstream.on 'error', cb
-  gzstream |> extract-normal _, dest, cb
+    extract-normal = (stream, dest) ->
+      extract = tar.Extract path: dest
+      extract.on 'entry', on-entry
+      tstream = stream.pipe extract
+      tstream.on 'error', on-err
+      tstream.on 'end', on-end
 
-extract-normal = (stream, dest, cb) ->
-  tstream = stream.pipe tar.Extract path: dest
-  tstream.on 'error', cb
-  tstream.on 'end', cb
+    calculate-checksum = (hash, file, cb) ->
+      file |> _.checksum _, (err, nhash) ->
+        return (err |> on-err) if err
+        if hash is nhash
+          cb!
+        else
+          new Error "checksum verification failed: #{nhash}" |> on-err
 
-calculate-checksum = (hash, file, cb) ->
-  file |> checksum _, (err, nhash) ->
-    return cb err if err
-    if hash is nhash
-      cb!
-    else
-      new Error "checksum verification failed: #{nhash}" |> cb
+    do-extract!
+    emitter
 
 apply = (options) ->
   {
