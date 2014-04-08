@@ -16,6 +16,8 @@ module.exports = _ = {
 
   echo: -> console.log ...
 
+  next: process.next-tick
+
   env: -> env[it] or null
 
   now: -> new Date!get-time!

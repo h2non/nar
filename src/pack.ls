@@ -4,8 +4,9 @@ require! {
   archiver
   'os-shim'.tmpdir
   zlib.create-gzip
+  events.EventEmitter
 }
-{ checksum, once, exists } = require './utils'
+{ checksum, once, exists, next } = require './utils'
 
 # See: http://zlib.net/manual.html#Constants
 const zlib-options =
@@ -13,50 +14,57 @@ const zlib-options =
 
 module.exports = pack =
 
-  (options = {}, cb) ->
+  (options = {}) ->
     { name, src, dest, patterns, ext } = options = options |> apply
+    emitter = new EventEmitter
+    errored = no
 
-    file = "#{name}.#{ext}"
-    file-path = file |> path.join dest, _
+    on-end = (data) -> next -> (data |> emitter.emit 'end', _) unless errored
+    on-entry = (entry) -> next -> (entry.props |> emitter.emit 'entry', _) if entry
+    on-error = once (err) ->
+      errored := yes
+      next -> err |> emitter.emit 'error', _
 
-    return new Error 'source path do not exists' |> cb unless src |> exists
-    return new Error 'destination path do not exists' |> cb unless dest |> exists
+    do-pack = ->
+      return new Error 'source path do not exists' |> on-error unless src |> exists
+      return new Error 'destination path do not exists' |> on-error unless dest |> exists
 
-    data =
-      name: name
-      archive: file
-      path: file-path
+      file = "#{name}.#{ext}"
+      file-path = file |> path.join dest, _
+      data = { name, file, path: file-path }
 
-    cb = (cb |> calculate-checksum file-path, data, _) |> once
+      cb = file-path |> calculate-checksum _, data
+      (file-path
+        |> create-stream _, cb)
+        |> create-tar _, options, cb
 
-    (file-path
-      |> create-stream _, cb)
-      |> create-tar _, options, cb
+    create-stream = (file, cb) ->
+      fs.create-write-stream file
+        .on 'error', on-error
+        .on 'close', cb
 
-create-stream = (file, cb) ->
-  fs.create-write-stream file
-    .on 'error', cb
-    .on 'close', cb
+    create-tar = (stream, options, cb) ->
+      { src, gzip, patterns } = options
+      tar = archiver 'tar', zlib-options
+      tar.on 'entry', on-entry
+      tar.on 'error', on-error
+      tar.bulk [{ expand: yes, cwd: src, src: patterns, dest: '.' }]
 
-create-tar = (stream, options, cb) ->
-  { src, gzip, patterns } = options
+      if gzip
+        stream |> (create-gzip! |> tar.pipe).pipe
+      else
+        stream |> tar.pipe
 
-  tar = archiver 'tar', zlib-options
-  tar.on 'error', cb
-  tar.bulk [{ expand: yes, cwd: src, src: patterns, dest: '.' }]
+      tar.finalize!
 
-  if gzip
-    (create-gzip! |> tar.pipe).pipe stream
-  else
-    stream |> tar.pipe
+    calculate-checksum = (file, data) -> ->
+      file |> checksum _, (err, hash) ->
+        return (err |> on-error) if err
+        data <<< checksum: hash
+        data |> on-end
 
-  tar.finalize!
-
-calculate-checksum = (file, data, cb) -> ->
-  return cb it if it
-  file |> checksum _, (err, hash) ->
-    data <<< checksum: hash
-    data |> cb err, _
+    do-pack!
+    emitter
 
 apply = (options) ->
   {

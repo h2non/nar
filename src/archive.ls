@@ -99,9 +99,9 @@ class Archive extends EventEmitter
       gzip: yes
 
     pack-all = (done) ->
-      pack options, (err) ->
-        throw err if err
-        done!
+      pack options
+        .on 'error', -> throw it
+        .on 'end', -> done!
 
     save-config = (done) ~>
       config |> write-config _, @tmpdir, done
@@ -154,24 +154,20 @@ files-to-include = ->
 
 compress-pkg = (options, cb) ->
   { dest, base, name } = options
-
   patterns = base |> files-to-include
-
-  options = {
-    name, dest, patterns
-    src: base
-  }
+  options = { name, dest, patterns, src: base }
 
   pkg-info =
     archive: "#{@name}.tar"
     dest: '.'
     type: 'package'
 
-  pack options, (err, pkg) ->
-    throw err if err
-    checksum pkg.path, (err, hash) ->
-      pkg-info <<< checksum: hash
-      cb pkg-info
+  pack options
+    .on 'error', -> throw it
+    .on 'end', (pkg) ->
+      checksum pkg.path, (err, hash) ->
+        pkg-info <<< checksum: hash
+        cb pkg-info
 
 compress-dependencies = (options, cb) ->
   { dest, base, dependencies } = options
@@ -195,7 +191,7 @@ compress-dependencies = (options, cb) ->
 
   create-pkg = (pkg, done) ->
     pkg-info =
-      archive: pkg.archive
+      archive: pkg.file
       dest: pkg.name |> get-module-path
       type: 'dependency'
 

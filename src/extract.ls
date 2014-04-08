@@ -20,7 +20,6 @@ module.exports = extract =
       emitter.emit 'error', it
 
     do-extract = ->
-      return (new Error 'Path option is required' |> on-error) unless path
       extractor = options |> extract-archive _
       if checksum
         extractor |> calculate-checksum checksum, path, _
@@ -56,6 +55,8 @@ module.exports = extract =
           cb!
         else
           new Error "checksum verification failed: #{nhash}" |> on-error
+
+    return (new Error 'Path option is required' |> on-error) unless path
 
     do-extract!
     emitter
