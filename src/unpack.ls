@@ -13,13 +13,13 @@ module.exports = unpack =
     errored = no
     emitter = new EventEmitter
 
-    on-end = -> next -> emitter.emit 'end' unless errored
-    on-entry = (entry) -> next -> entry.props |> emitter.emit 'entry', _ if entry
+    on-end = -> emitter.emit 'end' unless errored
+    on-entry = (entry) -> entry.props |> emitter.emit 'entry', _ if entry
     on-error = once (err) ->
       errored := yes
-      next -> err |> emitter.emit 'error', _
+      err |> emitter.emit 'error', _
 
-    do-extract = ->
+    do-extract = -> next ->
       extractor = options |> extract-archive _
       if checksum
         extractor |> calculate-checksum checksum, path, _
