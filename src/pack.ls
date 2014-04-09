@@ -43,7 +43,7 @@ module.exports = pack =
         .on 'error', on-error
         .on 'close', cb
 
-    create-tar = (stream, options, cb) ->
+    create-tar = (stream, options) ->
       { src, gzip, patterns } = options
       tar = archiver 'tar', zlib-options
       tar.on 'entry', on-entry
