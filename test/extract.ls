@@ -8,7 +8,7 @@
 } = require './lib/helper'
 extract = require '../lib/extract'
 
-describe 'extract', ->
+xdescribe 'extract', ->
 
   dest = "#{__dirname}/fixtures/.tmp"
   orig = "#{__dirname}/fixtures/archives"

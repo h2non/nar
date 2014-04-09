@@ -15,9 +15,9 @@ module.exports = unpack =
 
     on-end = -> next -> emitter.emit 'end' unless errored
     on-entry = (entry) -> next -> entry.props |> emitter.emit 'entry', _ if entry
-    on-error = once (err) -> next ->
+    on-error = once (err) ->
       errored := yes
-      err |> emitter.emit 'error', _
+      next -> err |> emitter.emit 'error', _
 
     do-extract = ->
       extractor = options |> extract-archive _
@@ -55,8 +55,6 @@ module.exports = unpack =
           cb!
         else
           new Error "checksum verification failed: #{nhash}" |> on-error
-
-    return (new Error 'Path option is required' |> on-error) unless path
 
     do-extract!
     emitter

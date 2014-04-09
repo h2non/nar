@@ -94,7 +94,7 @@ describe 'pack', ->
         pack options
           .on 'error', (err) ->
             expect err .to.instanceof Error
-            expect err .to.match /destination path do not/
+            expect err .to.match /is not a directory/
             done!
           .on 'end', -> throw "Test error"
 

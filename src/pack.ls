@@ -6,7 +6,7 @@ require! {
   zlib.create-gzip
   events.EventEmitter
 }
-{ checksum, once, exists, next } = require './utils'
+{ checksum, once, exists, next, is-dir } = require './utils'
 
 # See: http://zlib.net/manual.html#Constants
 const zlib-options = level: 1
@@ -24,9 +24,9 @@ module.exports = pack =
       errored := yes
       next -> err |> emitter.emit 'error', _
 
-    do-pack = ->
+    do-pack = -> next ->
       return new Error 'source path do not exists' |> on-error unless src |> exists
-      return new Error 'destination path do not exists' |> on-error unless dest |> exists
+      return new Error 'destination path is not a directory' |> on-error unless dest |> is-dir
 
       file = "#{name}.#{ext}"
       file-path = file |> path.join dest, _
