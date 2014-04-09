@@ -16,8 +16,12 @@ module.exports = pack = (options = {}) ->
   emitter = new EventEmitter
   errored = no
 
-  on-end = (data) -> data |> emitter.emit 'end', _ unless errored
-  on-entry = (entry) -> entry |> emitter.emit 'entry', _ if entry
+  on-end = (data) ->
+    data |> emitter.emit 'end', _ unless errored
+
+  on-entry = (entry) ->
+    entry |> emitter.emit 'entry', _ if entry
+
   on-error = once (err) ->
     errored := yes
     err |> emitter.emit 'error', _

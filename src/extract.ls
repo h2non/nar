@@ -9,8 +9,12 @@ module.exports = extract = (options = {}) ->
   errored = no
   emitter = new EventEmitter
 
-  on-end = -> emitter.emit 'end' unless errored
-  on-entry = (entry) -> entry.props |> emitter.emit 'entry', _ if entry
+  on-end = ->
+    emitter.emit 'end' unless errored
+
+  on-entry = (entry) ->
+    entry.props |> emitter.emit 'entry', _ if entry
+
   on-error = once (err) ->
     errored := yes
     err |> emitter.emit 'error', _
