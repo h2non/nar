@@ -9,8 +9,7 @@ require! {
 { checksum, once, exists, next } = require './utils'
 
 # See: http://zlib.net/manual.html#Constants
-const zlib-options =
-  level: 1
+const zlib-options = level: 1
 
 module.exports = pack =
 
