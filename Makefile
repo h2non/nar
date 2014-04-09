@@ -29,6 +29,7 @@ compile: clean mkdir
 	cat src/cli.ls | $(LS) -c -s -b > ./lib/cli.js
 	cat src/extract.ls | $(LS) -c -s -b > ./lib/extract.js
 	cat src/pack.ls | $(LS) -c -s -b > ./lib/pack.js
+	cat src/unpack.ls | $(LS) -c -s -b > ./lib/unpack.js
 	cat src/list.ls | $(LS) -c -s -b > ./lib/list.js
 	cat src/utils.ls | $(LS) -c -s -b > ./lib/utils.js
 	cat src/archive.ls | $(LS) -c -s -b > ./lib/archive.js

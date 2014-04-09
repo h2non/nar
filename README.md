@@ -1,6 +1,6 @@
 # nar [![Build Status](https://secure.travis-ci.org/h2non/nar.png?branch=master)][travis] [![Dependency Status](https://gemnasium.com/h2non/nar.png)][gemnasium] [![NPM version](https://badge.fury.io/js/nar.png)][npm]
 
-> Bundle and package self-contained applications that are ready-to-ship-and-run
+> Bundle and package self-contained node.js applications that are ready-to-ship-and-run
 
 > **Spoiler! Work in progress!**
 

@@ -2,7 +2,6 @@ require! {
   fs
   path
   async
-  crypto
   matchdep
   './pack'
   './extract'
