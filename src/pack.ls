@@ -18,11 +18,11 @@ module.exports = pack =
     emitter = new EventEmitter
     errored = no
 
-    on-end = (data) -> next -> (data |> emitter.emit 'end', _) unless errored
-    on-entry = (entry) -> next -> (entry.props |> emitter.emit 'entry', _) if entry
+    on-end = (data) -> data |> emitter.emit 'end', _ unless errored
+    on-entry = (entry) -> entry.props |> emitter.emit 'entry', _ if entry
     on-error = once (err) ->
       errored := yes
-      next -> err |> emitter.emit 'error', _
+      err |> emitter.emit 'error', _
 
     do-pack = -> next ->
       return new Error 'source path do not exists' |> on-error unless src |> exists
