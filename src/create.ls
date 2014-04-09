@@ -8,7 +8,12 @@ require! {
   events.EventEmitter
   findup: 'findup-sync'
 }
-{ read, random, tmpdir, clone, extend, is-object, is-file, is-dir, mk, now, stringify, vals, exists, checksum, lines, next } = require './utils'
+
+{
+  read, rm, random, tmpdir, clone, extend,
+  is-object, is-file, is-dir, mk, now, stringify,
+  vals, exists, checksum, lines, next
+} = require './utils'
 
 const nar-file = '.nar.json'
 const ext = 'nar'
@@ -23,7 +28,6 @@ const defaults =
   patterns: null
 
 module.exports = create = (options) ->
-  pkg = {}
   errored = no
   emitter = new EventEmitter
 
@@ -45,6 +49,7 @@ module.exports = create = (options) ->
 
   clean = ->
     try
+      emitter.emit 'status', 'Clean temporary directory'
       rm tmp-path
       rm file if file
 
@@ -106,7 +111,7 @@ module.exports = create = (options) ->
 
     pack-all = (done) ->
       pack config
-        .on 'error', -> throw it
+        .on 'error', done
         .on 'end', -> done!
 
     save-config = (done) ->
@@ -136,29 +141,6 @@ module.exports = create = (options) ->
 
   do-create!
   emitter
-
-write-config = (config, tmpdir, cb) ->
-  file = tmpdir |> path.join _, nar-file
-  data = config |> stringify
-  fs.writeFile file, data, (err) ->
-    throw err if err
-    cb!
-
-nar-manifest = (name, pkg) ->
-  { platform, arch, version } = process
-  name: name
-  time: now!
-  binary: no
-  info: {
-    platform
-    arch
-    version
-  }
-  manifest: pkg
-  files: []
-
-files-to-include = ->
-  [ '**', '.*', '!node_modules/**' ] ++ ignore-files ++ (it |> get-ignored-files)
 
 compress-pkg = (options, cb) ->
   { dest, base, name, patterns } = options
@@ -221,10 +203,32 @@ compress-dependencies = (options, cb) ->
 
   list |> async.each _, compress-pkg, -> it |> cb _, files
 
+write-config = (config, tmpdir, cb) ->
+  file = tmpdir |> path.join _, nar-file
+  data = config |> stringify
+  fs.write-file file, data, (err) ->
+    throw err if err
+    cb!
+
+nar-manifest = (name, pkg) ->
+  { platform, arch, version } = process
+  name: name
+  time: now!
+  binary: no
+  info: {
+    platform
+    arch
+    version
+  }
+  manifest: pkg
+  files: []
+
+files-to-include = ->
+  [ '**', '.*', '!node_modules/**' ] ++ ignore-files ++ (it |> get-ignored-files)
+
 # Pure functions helpers
 
-is-valid = ->
-  it and it.length
+is-valid = -> it and it.length
 
 output-file = (file, dir) ->
   "#{file}.nar" |> path.join dir, _
