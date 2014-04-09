@@ -78,7 +78,6 @@ module.exports = _ = {
     dest = filename |> path.join dest, _
     (fs.create-read-stream file)
       .pipe(fs.create-write-stream dest)
-      .on('error', -> throw it)
-      .on('close', -> cb dest)
-
+      .on('close', -> cb null, dest)
+      .on('error', cb)
 }
