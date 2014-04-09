@@ -71,7 +71,7 @@ module.exports = _ = {
     (file |> fs.create-read-stream)
       .on('data', -> it |> hash.update)
       .on('end', -> hash.digest 'hex' |> cb null, _)
-      .on('error', -> it |> cb)
+      .on('error', cb)
 
   copy: (file, dest, cb) ->
     filename = file |> path.basename

@@ -121,14 +121,17 @@ module.exports = create = (options) ->
       async.series [ save-config, pack-all ], cb
 
     add-binary = ->
-      copy process.exec-path, tmp-path, ->
-        it |> path.basename |> config.patterns.push
+      copy process.exec-path, tmp-path, (err, file) ->
+        return "Error while copying the node binary: #{err}"
+          |> emitter.emit 'error', _ if err
+
+        file |> path.basename |> config.patterns.push
         info =
           archive: 'node'
           dest: '.node/bin'
           type: 'binary'
 
-        checksum it, (err, hash) ->
+        checksum file, (err, hash) ->
           info <<< checksum: hash
           info |> nar-config.files.push
           exec!
