@@ -117,7 +117,7 @@ module.exports = create = (options) ->
 
     add-binary = ->
       copy process.exec-path, tmp-path, ->
-        (path.basename it) |> config.patterns.push
+        it |> path.basename |> config.patterns.push
         info =
           archive: 'node'
           dest: '.node/bin'
