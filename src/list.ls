@@ -17,13 +17,13 @@ module.exports = list =
 
     on-error = (err) ->
       error := err
-      next -> err |> emitter.emit 'error', _
+      err |> emitter.emit 'error', _
 
     on-end = ->
       ended := yes
-      next -> files |> emitter.emit 'end', _
+      files |> emitter.emit 'end', _
 
-    on-entry = (entry) -> next ->
+    on-entry = (entry) ->
       if entry
         entry := { entry.type, entry.path, entry.size, entry.props }
         entry |> files.push
@@ -34,7 +34,7 @@ module.exports = list =
         case 'error' then fn error if error
         case 'end' then fn files if ended
 
-    parse = ->
+    parse = -> next ->
       parse = tar.Parse!
       parse.on 'error', on-error
       parse.on 'entry', on-entry
