@@ -18,17 +18,14 @@ module.exports = extract =
       err |> emitter.emit 'error', _
 
     do-extract = -> next ->
+      return (new Error 'Path do not exists or is invalid' |> on-error) unless path |> is-file
       extractor = options |> extract-archive _
       if checksum
         extractor |> calculate-checksum checksum, path, _
       else
         extractor!
 
-    unless path |> is-file
-      (new Error 'Path do not exists or is invalid' |> on-error)
-    else
-      do-extract!
-
+    do-extract!
     emitter
 
 apply = (options) ->

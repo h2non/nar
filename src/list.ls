@@ -34,7 +34,7 @@ module.exports = list =
         case 'error' then fn error if error
         case 'end' then fn files if ended
 
-    parse = ->
+    parse = -> next ->
       parse = tar.Parse!
       parse.on 'error', on-error
       parse.on 'entry', on-entry
@@ -47,5 +47,5 @@ module.exports = list =
 
     emitter.on 'newListener', on-listener
 
-    process.next-tick parse
+    parse!
     emitter
