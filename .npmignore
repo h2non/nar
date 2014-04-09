@@ -1,5 +1,5 @@
-src/
-test/
+src/*
+test
 *.ls
 .gitignore
 .travis.yml

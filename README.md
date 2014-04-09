@@ -12,8 +12,7 @@
 
 ## About
 
-**nar** (node.js application archive) is a simple utility for creating self-contained node.js
-applications that are ready to ship, run and fun
+**nar** is a simple utility for creating and running self-contained node.js applications
 
 ## Features
 
@@ -27,7 +26,7 @@ applications that are ready to ship, run and fun
 - Full configurable from package.json
 - Allow to bundle dependencies by type
 - Allow to bundle node binary for platform-specific runtime environments
-- Transparent checksum file integrity verification
+- Native checksum file integrity verification
 
 ## Installation
 
@@ -108,10 +107,8 @@ Configuration example:
     "start": "node app --env ${ENV}",
     "stop" "rm -rf cache"
   }
+}
 ```
-
-It's recommended you call shell scripts from hooks if your need to want to run
-more than one command
 
 #### Notes about hooks
 

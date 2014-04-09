@@ -12,7 +12,7 @@ program
   .usage '[archive] [options]'
   .option '-d, --debug', 'Enable debugging mode'
   .option '-x, --no-gzip', 'Process archive without gzip compression'
-  .option '--no-color', 'Disable colored output'
+  .option '--no-table', 'Disable table format output'
   .on '--help', ->
     echo '''
       Usage examples:
@@ -35,6 +35,9 @@ list = (archive, options) ->
     "Error while reading the archive: #{it.message}".red |> echo
     it.stack |> echo if debug
     exit 1
+
+  on-entry = ->
+    it |> map-entry |> table.push
 
   unless archive |> exists
     "Error: the given path do not exists" |> exit 1

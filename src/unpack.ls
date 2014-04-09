@@ -12,7 +12,7 @@ module.exports = unpack = (options = {}) ->
   emitter = new EventEmitter
 
   on-end = -> emitter.emit 'end' unless errored
-  on-entry = (entry) -> entry.props |> emitter.emit 'entry', _ if entry
+  on-entry = (entry) -> entry |> emitter.emit 'entry', _ if entry
   on-error = once (err) ->
     errored := yes
     err |> emitter.emit 'error', _

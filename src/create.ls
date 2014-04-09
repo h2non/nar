@@ -8,110 +8,116 @@ require! {
   events.EventEmitter
   findup: 'findup-sync'
 }
-{ read, random, tmpdir, clone, extend, is-object, is-file, mk, now, stringify, vals, exists, checksum, lines } = require './utils'
-
+{ read, random, tmpdir, clone, extend, is-object, is-file, is-dir, mk, now, stringify, vals, exists, checksum, lines, next } = require './utils'
 
 const nar-file = '.nar.json'
 const ext = 'nar'
 const ignore-files = [ '.gitignore' '.npmignore' '.buildignore' '.narignore' ]
+
 const defaults =
   path: null
   binary: no
   dependencies: yes
   dev-dependencies: no
   peer-dependencies: yes
+  patterns: null
 
-class Archive extends EventEmitter
+module.exports = create = (options) ->
+  pkg = {}
+  errored = no
+  emitter = new EventEmitter
 
-  @create = (options, cb) ->
-    new Archive options, cb
+  options = options |> apply-options
+  pkg-path = options.path
 
-  (options, cb) ->
-    @pkg = {}
-    @options = options |> apply-options
-    @pkg-path = @options.path
-    @set-values!
+  throw new Error 'Cannot discover package.json' unless pkg-path
 
-  set-values: ->
-    @pkg = @pkg-path |> read if @pkg-path
-    @options = @pkg |> apply-pkg-options @options, _ if @pkg
-    @tmpdir = tmpdir @pkg.name
+  # aditional
+  pkg = pkg-path |> read if pkg-path
+  options = pkg |> apply-pkg-options options, _ if pkg
+  options.patterns ||= []
+  name = pkg.name or 'unnamed'
+  tmp-path = tmpdir name
+  base-dir = options <<< base: pkg-path |> path.dirname
 
-    @name = @pkg.name or 'unnamed'
-    @file = if @options.file then @options.file else get-filename @pkg
-    @output = @file |> output-file _, @options.dest
-    @dependencies = @options |> match-dependencies _, @pkg
+  file = if options.file then options.file else get-filename pkg
+  output = file |> output-file _, options.dest
 
-  clean: ->
+  clean = ->
     try
-      rm @tmpdir
-      rm @file if @file
+      rm tmp-path
+      rm file if file
 
-  compress: (cb) ->
-    nar-config = @name |> nar-manifest _, @pkg
+  do-create = -> next ->
+    nar-config = name |> nar-manifest _, pkg
 
-    deps = (done) ~>
+    deps = (done) ->
+      dependencies = options |> match-dependencies _, pkg
+
       config =
-        dest: @tmpdir
-        base: @options.dest
-        dependencies: @dependencies
+        dest: tmp-path
+        base: options.base
+        dependencies: dependencies
 
-      compress-dependencies config, ->
-        nar-config.files = nar-config.files ++ it
+      compress-dependencies config, (err, files) ->
+        return emitter.emit 'error', err if err
+        nar-config.files = nar-config.files ++ files
         done!
 
-    pkg = (done) ~>
+    base-pkg = (done) ->
       config =
-        dest: @tmpdir
-        base: @options.dest
-        name: @name
+        dest: tmp-path
+        base: options.base
+        name: name
+        patterns: options.patterns
 
       compress-pkg config, ->
         it |> nar-config.files.push
         done!
 
-    all = (done) ~>
-      nar-config |> @compress-all _, done
+    all = (done) ->
+      nar-config |> compress-all _, done
 
     do-compression = (done) ->
-      async.series [ deps, pkg, all ], done
+      async.series [ deps, base-pkg, all ], done
+
+    on-compress = ->
+      clean!
+      if it
+        emitter.emit 'error', it
+      else
+        emitter.emit 'end', output
 
     try
-      @tmpdir |> mk
-      do-compression ~>
-        @clean!
-        if it
-          @emit 'error', it
-        else
-          @emit 'end', @output
+      tmp-path |> mk
+      on-compress |> do-compression
     catch
-      @clean!
-      @emit 'error', e
+      clean!
+      emitter.emit 'error', e
 
-  compress-all: (config, cb) ->
-    options =
-      name: @file
-      dest: @options.dest
+  compress-all = (nar-config, cb) ->
+    config =
+      name: file
+      dest: options.dest
       patterns: [ '*.tar', nar-file ]
-      src: @tmpdir
+      src: tmp-path
       ext: 'nar'
       gzip: yes
 
     pack-all = (done) ->
-      pack options
+      pack config
         .on 'error', -> throw it
         .on 'end', -> done!
 
-    save-config = (done) ~>
-      config |> write-config _, @tmpdir, done
+    save-config = (done) ->
+      nar-config |> write-config _, tmp-path, done
 
     exec = ->
-      async.series [ save-config, pack-all ], ->
-        cb it
+      async.series [ save-config, pack-all ], cb
 
-    add-binary = ~>
-      copy process.exec-path, @tmpdir, ~>
-        (path.basename it) |> options.patterns.push
+    add-binary = ->
+      copy process.exec-path, tmp-path, ->
+        (path.basename it) |> config.patterns.push
         info =
           archive: 'node'
           dest: '.node/bin'
@@ -119,14 +125,17 @@ class Archive extends EventEmitter
 
         checksum it, (err, hash) ->
           info <<< checksum: hash
-          info |> config.files.push
+          info |> nar-config.files.push
           exec!
 
-    if @options.binary
-      config <<< binary: yes
+    if options.binary
+      nar-config <<< binary: yes
       add-binary!
     else
       exec!
+
+  do-create!
+  emitter
 
 write-config = (config, tmpdir, cb) ->
   file = tmpdir |> path.join _, nar-file
@@ -152,10 +161,9 @@ files-to-include = ->
   [ '**', '.*', '!node_modules/**' ] ++ ignore-files ++ (it |> get-ignored-files)
 
 compress-pkg = (options, cb) ->
-  { dest, base, name } = options
-  patterns = base |> files-to-include
+  { dest, base, name, patterns } = options
+  patterns = patterns.concat (base |> files-to-include)
   options = { name, dest, patterns, src: base }
-
   pkg-info =
     archive: "#{name}.tar"
     dest: '.'
@@ -174,10 +182,10 @@ compress-dependencies = (options, cb) ->
 
   add-bin-directory = ->
     bin-dir = path.join base, ('.bin' |> get-module-path)
-    if exists bin-dir
+    if bin-dir |> is-dir
       {
         name: '.bin'
-        dest: '.bin' |> get-module-path
+        dest: dest
         src: bin-dir
       } |> it.push
 
@@ -186,9 +194,8 @@ compress-dependencies = (options, cb) ->
       name: it
       dest: dest
       src: findup (it |> get-module-path), cwd: base
-    it |> add-bin-directory
 
-  create-pkg = (pkg, done) ->
+  define-pkg-info = (pkg, done) ->
     pkg-info =
       archive: pkg.file
       dest: pkg.name |> get-module-path
@@ -199,22 +206,22 @@ compress-dependencies = (options, cb) ->
       pkg-info |> files.push
       done null, pkg-info
 
+  do-pack = (options, done) ->
+    (options |> pack)
+      .on 'error', done
+      .on 'end', -> done null, it
+
   compress-pkg = (pkg, done) ->
-    async.map pkg, pack, (err, results) ->
+    async.map pkg, do-pack, (err, results) ->
       return done err if err
-      async.map results, create-pkg, done
+      async.map results, define-pkg-info, done
 
-  ((dependencies |> vals)
-    .map find-pkg
-    .filter is-valid)
-    |> async.each _, compress-pkg, ->
-      it |> cb _, files
+  list = (dependencies |> vals).map find-pkg .filter is-valid
+  list[0] |> add-bin-directory if list.length
 
-exports = module.exports = Archive
+  list |> async.each _, compress-pkg, -> it |> cb _, files
 
-#
 # Pure functions helpers
-#
 
 is-valid = ->
   it and it.length
@@ -255,12 +262,12 @@ get-ignored-files = (dir) ->
   files = ignore-files
     .map -> it |> path.join "#{dir}", _
     .filter -> it |> exists
-  files.splice 1 if files.length > 1
+  files = files.slice -1 if files.length > 1
   if files.length
     patterns =
       ((files[0] |> read) |> lines)
         .filter -> it
-        .map (.trim!)
+        .map -> "!#{it.trim!}"
   patterns
 
 get-module-path = ->
