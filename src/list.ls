@@ -23,7 +23,7 @@ module.exports = list = (options) ->
 
   on-entry = (entry) ->
     if entry
-      entry := { entry.type, entry.path, entry.size, entry.props }
+      entry = { entry.type, entry.path, entry.size, entry.props }
       entry |> files.push
       entry |> emitter.emit 'entry', _
 
