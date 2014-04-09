@@ -13,6 +13,7 @@ program
   .option '-f, --force', 'Forces archive creation passing warnings or errors'
   .option '-d, --debug', 'Enable debugging mode for tasks that support it'
   .option '-v, --verbose', 'Verbose mode. A lot of information will be showed'
+  .option '-x, --no-gzip', 'Process archive without gzip compression'
   .option '--no-color', 'Disable colored output'
   .on '--help', ->
     echo '''
@@ -38,15 +39,17 @@ create = (pkgpath, options) ->
     if pkgpath |> is-file
       pkgpath = pkgpath |> path.dirname
     else
-      unless pkgpath |> is-dir
-        "Error: path must be a directory" |> exit 1
+      "Error: path must be a directory" |> exit 1 unless pkgpath |> is-dir
     opts <<< base: pkgpath
 
   try
     "Creating archive..." |> echo
-    archive = nar.create opts, ->
-      "Archive created in: #{archive.output}" |> echo
-      exit 0
+    archive = nar.create opts
+      .on 'error', -> throw it
+      .on 'entry', -> it |> echo
+      .on 'end', ->
+        "Archive created in: #{archive.output}" |> echo
+        exit 0
   catch
     "Error: cannot create the archive: #{e.message} \n" |> echo
     e.stack |> echo if debug

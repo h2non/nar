@@ -158,7 +158,7 @@ compress-pkg = (options, cb) ->
   options = { name, dest, patterns, src: base }
 
   pkg-info =
-    archive: "#{@name}.tar"
+    archive: "#{name}.tar"
     dest: '.'
     type: 'package'
 
@@ -229,7 +229,7 @@ get-filename = (pkg = {}) ->
   name
 
 apply-pkg-options = (options, pkg) ->
-  pkg.archive |> extend options, _
+  pkg.file |> extend options, _
 
 discover-pkg = (dir = process.cwd!) ->
   findup 'package.json', cwd: dir

@@ -6,18 +6,13 @@ require! {
   '../package.json'.version
 }
 
-exports = module.exports =
+exports = module.exports = {
 
   VERSION: version
 
   create: (options, cb) ->
     archive.create ...
 
-  extract: (options, cb) ->
-    extract ...
+  extract, run, list
 
-  run: (options, cb) ->
-    run ...
-
-  list: (options) ->
-    list ...
+}

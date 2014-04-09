@@ -4,7 +4,7 @@ require! {
   zlib.create-gunzip
   events.EventEmitter
 }
-{ once }:_ = require './utils'
+{ once, next }:_ = require './utils'
 
 module.exports = extract =
 
@@ -13,11 +13,11 @@ module.exports = extract =
     errored = no
     emitter = new EventEmitter
 
-    on-end = -> emitter.emit 'end' unless errored
-    on-entry = -> emitter.emit 'entry', it.props if it
-    on-error = once ->
+    on-end = -> next -> emitter.emit 'end' unless errored
+    on-entry = (entry) -> next -> entry.props |> emitter.emit 'entry', _ if entry
+    on-error = once (err) -> next ->
       errored := yes
-      emitter.emit 'error', it
+      err |> emitter.emit 'error', _
 
     do-extract = ->
       extractor = options |> extract-archive _

@@ -13,7 +13,7 @@ program
   .option '-f, --force', 'Forces archive creation passing warnings or errors'
   .option '-d, --debug', 'Enable debugging mode for tasks that support it'
   .option '-v, --verbose', 'Verbose mode. A lot of information will be showed'
-  .option '--no-color', 'Disable colored output'
+  .option '-x, --no-gzip', 'Process archive without gzip compression'
   .on '--help', ->
     echo '''
       Usage examples:
@@ -21,7 +21,7 @@ program
         $ nar extract
         $ nar extract app.nar
         $ nar extract app.nar -o some-dir
-        $ nar extract app.nar --debug --verbose --no-color
+        $ nar extract app.nar --debug --verbose
     \t
     '''
   .action -> create ...
@@ -29,8 +29,7 @@ program
 create = (archive, options) ->
   { debug, force, verbose, output } = options
 
-  opts =
-    dest: output
+  opts = dest: output
 
   if archive
     unless archive |> exists

@@ -13,6 +13,7 @@ program
   .option '-f, --force', 'Forces archive creation passing warnings or errors'
   .option '-d, --debug', 'Enable debugging mode for tasks that support it'
   .option '-v, --verbose', 'Verbose mode. A lot of information will be showed'
+  .option '-x, --no-gzip', 'Process archive without gzip compression'
   .option '--no-color', 'Disable colored output'
   .on '--help', ->
     echo '''

@@ -23,8 +23,11 @@ module.exports = list =
       ended := yes
       next -> files |> emitter.emit 'end', _
 
-    on-entry = (entry) ->
-      next -> entry.props |> files.push |> emitter.emit 'entry', _ if entry
+    on-entry = (entry) -> next ->
+      if entry
+        entry := { entry.type, entry.path, entry.size, entry.props }
+        entry |> files.push
+        entry |> emitter.emit 'entry', _
 
     on-listener = (name, fn) ->
       switch name

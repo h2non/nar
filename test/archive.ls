@@ -54,7 +54,7 @@ describe 'Archive', ->
 
       it 'should have runtime dependencies', ->
         expect @archive.dependencies.run .to.be.an 'array'
-        expect @archive.dependencies.run.length .to.be.equal 11
+        expect @archive.dependencies.run.length .to.be.equal 12
 
       it 'should have a valid runtime dependency', ->
         expect @archive.dependencies.run .to.include 'hu'
