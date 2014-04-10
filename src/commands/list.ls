@@ -42,6 +42,10 @@ list = (archive, options) ->
     else
       it.path |> path.basename |> echo
 
+  on-end = ->
+    table-list.to-string! |> echo if table
+    exit 0
+
   unless archive |> exists
     "Error: the given path do not exists" |> exit 1
   unless archive |> is-file
@@ -51,9 +55,7 @@ list = (archive, options) ->
     nar.list opts
       .on 'error', on-error
       .on 'entry', on-entry
-      .on 'end', ->
-        table-list.to-string! |> echo if table
-        exit 0
+      .on 'end', on-end
   catch
     e |> on-error
 
