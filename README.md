@@ -31,12 +31,12 @@
 ## Installation
 
 It's recommended you install it as global package
-```
+```bash
 $ npm install -g nar
 ```
 
 If you need to use the API, you should install it as package dependency
-```
+```bash
 $ npm install nar --save
 ```
 

@@ -18,7 +18,7 @@ program
       Usage examples:
 
         $ nar list app.nar
-        $ nar list app.nar --verbose
+        $ nar list app.nar --no-table
     \t
     '''
   .action -> list ...
