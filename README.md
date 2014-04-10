@@ -12,7 +12,7 @@
 
 ## About
 
-**nar** is a simple utility for creating and running self-contained [node.js](http://nodejs.org) applications
+**nar** is a simple application packager utility for [node.js](http://nodejs.org)
 
 It provides built-in support for creating, extracting and running applications
 easily through a featured [command-line interface](#command-line-interface)

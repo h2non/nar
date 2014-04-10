@@ -34,12 +34,11 @@ module.exports = create = (options) ->
   options = options |> apply-options
   pkg-path = options.path
 
-  throw new Error 'Cannot discover package.json' unless pkg-path
+  throw new Error 'Cannot discover the package.json' unless pkg-path
 
   # aditional
   pkg = pkg-path |> read if pkg-path
   options = pkg |> apply-pkg-options options, _ if pkg
-  options.patterns ||= []
   name = pkg.name or 'unnamed'
   tmp-path = tmpdir name
   base-dir = options <<< base: pkg-path |> path.dirname
@@ -149,6 +148,7 @@ compress-pkg = (options, cb) ->
   { dest, base, name, patterns } = options
   patterns = patterns.concat (base |> files-to-include)
   options = { name, dest, patterns, src: base }
+
   pkg-info =
     archive: "#{name}.tar"
     dest: '.'
@@ -197,7 +197,7 @@ compress-dependencies = (options, cb) ->
 
   compress-pkg = (pkg, done) ->
     async.map pkg, do-pack, (err, results) ->
-      return done err if err
+      return err |> done if err
       async.map results, define-pkg-info, done
 
   list = (dependencies |> vals).map find-pkg .filter is-valid
@@ -246,13 +246,15 @@ discover-pkg = (dir = process.cwd!) ->
 
 apply-options = (options) ->
   options = (defaults |> clone) |> extend _, options
+  options.patterns ||= []
+
   if options.path
     pkg-path = options.path |> resolve-pkg-path
   else
     pkg-path = process.cwd!
+
   options <<< path: pkg-path |> discover-pkg
-  unless options.dest
-    options <<< dest: process.cwd!
+  options <<< dest: process.cwd! unless options.dest
   options
 
 resolve-pkg-path = ->
