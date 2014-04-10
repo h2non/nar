@@ -167,12 +167,11 @@ compress-dependencies = (options, cb) ->
 
   add-bin-directory = ->
     bin-dir = path.join base, ('.bin' |> get-module-path)
-    if bin-dir |> is-dir
-      {
-        name: '.bin'
-        dest: dest
-        src: bin-dir
-      } |> it.push
+    {
+      name: '.bin'
+      dest: dest
+      src: bin-dir
+    } |> it.push if bin-dir |> is-dir
 
   find-pkg = ->
     it.map ->
