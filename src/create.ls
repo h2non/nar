@@ -208,9 +208,7 @@ compress-dependencies = (options, cb) ->
 write-config = (config, tmpdir, cb) ->
   file = tmpdir |> path.join _, nar-file
   data = config |> stringify
-  fs.write-file file, data, (err) ->
-    throw err if err
-    cb!
+  fs.write-file file, data, cb
 
 nar-manifest = (name, pkg) ->
   { platform, arch, version } = process
