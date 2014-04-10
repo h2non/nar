@@ -86,7 +86,7 @@ in a sandboxed deployment or runtime environment
 **Note**: node binary is OS and platform specific.
 Take that into account if you are going to deploy the archive in multiple platforms
 
-### Run hooks
+### Stage hooks
 
 `nar` supports application pre/post execution hooks, that are also supported by `npm`.
 
