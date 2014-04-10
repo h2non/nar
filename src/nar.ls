@@ -7,9 +7,6 @@ require! {
 }
 
 exports = module.exports = {
-
   VERSION: version
-
   create, extract, run, list
-
 }
