@@ -49,7 +49,7 @@ module.exports = create = (options) ->
 
   clean = ->
     try
-      emitter.emit 'status', 'Clean temporary directory'
+      emitter.emit 'message', 'Clean temporary directory'
       rm tmp-path
       rm file if file
 

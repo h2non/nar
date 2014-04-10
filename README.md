@@ -137,6 +137,8 @@ Commands:
     Create new aplication archive
   extract [options] [archive]
     Extract archive files
+  run [options] [archive]
+    Run archive files
   list [options] [archive]
     List archive files
 
