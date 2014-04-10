@@ -171,7 +171,6 @@ Options:
   -f, --force    Forces archive creation passing warnings or errors
   -d, --debug    Enable debugging mode for tasks that support it
   -v, --verbose  Verbose mode. A lot of information will be showed
-  --no-color     Disable colored output
 
 Usage examples:
 
@@ -195,7 +194,6 @@ Options:
   -f, --force    Forces archive creation passing warnings or errors
   -d, --debug    Enable debugging mode for tasks that support it
   -v, --verbose  Verbose mode. A lot of information will be showed
-  --no-color     Disable colored output
 
 Usage examples:
 
@@ -237,9 +235,16 @@ var options = {
 }
 
 try {
-  nar.create(options, function (err, nar) {
-    console.log('Archive created successfully in:', nar.output)
-  })
+  nar.create(options)
+    .on('error', function (err) {
+      throw err
+    })
+    .on('message', function (msg) {
+      console.log(msg)
+    })
+    .on('end', function (path) {
+      console.log('Archive created in: ' + path)
+    })
 } catch (e) {
   console.error('Cannot create the archive:', e.message)
 }
