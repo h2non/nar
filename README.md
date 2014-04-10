@@ -252,13 +252,13 @@ try {
 }
 ```
 
-### nar.create(options, cb)
+### nar.create(options)
 
-### nar.extract(options, cb)
+### nar.extract(options)
 
-### nar.run(options, cb)
+### nar.run(options)
 
-### nar.list(options, cb)
+### nar.list(options)
 
 ### nar.VERSION
 
