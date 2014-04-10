@@ -24,20 +24,23 @@ program
   .action -> list ...
 
 list = (archive, options) ->
-  { debug, verbose, gzip } = options
-  table = new Table head: [ 'Filename', 'Path', 'Size', 'Type' ]
+  { debug, gzip, table } = options
+  table-list = new Table head: [ 'Filename', 'Path', 'Size', 'Type' ]
 
   opts =
     file: archive
     gzip: gzip
 
-  error = ->
+  on-error = ->
     "Error while reading the archive: #{it.message}".red |> echo
     it.stack |> echo if debug
     exit 1
 
   on-entry = ->
-    it |> map-entry |> table.push
+    if table
+      it |> map-entry |> table-list.push
+    else
+      it.path |> path.basename |> echo
 
   unless archive |> exists
     "Error: the given path do not exists" |> exit 1
@@ -46,13 +49,13 @@ list = (archive, options) ->
 
   try
     nar.list opts
-      .on 'error', error
-      .on 'entry', -> it |> map-entry |> table.push
+      .on 'error', on-error
+      .on 'entry', on-entry
       .on 'end', ->
-        table.to-string! |> echo
+        table-list.to-string! |> echo if table
         exit 0
   catch
-    e |> error
+    e |> on-error
 
 map-entry = ->
-  [ (it.path |> path.basename), it.path, it.size + ' KB', it.type ] if it
+  [ (it.path |> path.basename _, '.tar'), it.path, it.size + ' KB', it.type ] if it
