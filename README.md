@@ -208,7 +208,21 @@ Usage examples:
 ### run
 
 ### list
+```
+Usage: list [archive] [options]
 
+Options:
+
+  -h, --help     output usage information
+  -d, --debug    Enable debugging mode
+  -x, --no-gzip  Process archive without gzip compression
+  --no-table     Disable table format output
+
+Usage examples:
+
+  $ nar list app.nar
+  $ nar list app.nar --no-table
+```
 
 ## Programmatic API
 
