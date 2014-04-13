@@ -44,9 +44,7 @@ $ npm install nar --save
 
 ## Configuration
 
-It supports specific archive build configuration that can be defined as meta-data
-in the `package.json` of your application
-
+Example `package.json`
 ```json
 {
   "name": "my-package",
@@ -56,6 +54,9 @@ in the `package.json` of your application
     "dependencies": true,
     "devDependencies": false,
     "peerDependencies": true
+  },
+  "dependencies": {
+    "some": "~0.1.0"
   }
 }
 ```
@@ -63,7 +64,7 @@ in the `package.json` of your application
 ### Config options
 
 The following options can be declared in your application `package.json` as
-properties members in the `archive` object
+properties members of the `archive` object
 
 #### dependencies
 Type: `boolean`
