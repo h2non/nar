@@ -127,7 +127,7 @@ Configuration example:
 
 You can consum environment variables from hook comands using the `${VARNAME}` notation
 
-##### Check nar execution environment
+##### Nar-specific execution environment
 
 nar will expose the `NODE_NAR` environment variable in the hooks execution contexts and node application
 
@@ -247,8 +247,8 @@ try {
     .on('error', function (err) {
       throw err
     })
-    .on('message', function (msg) {
-      console.log(msg)
+    .on('info', function (nar) {
+      console.log(nar.name)
     })
     .on('end', function (path) {
       console.log('Archive created in: ' + path)
@@ -259,10 +259,19 @@ try {
 ```
 
 ### nar.create(options)
-Fired events: `end, error, entry, message`
+Fired events: `end, error, entry, message, info, start`
+
+Create new archive from a given package.json
+
+##### Options
+
+- **path** `string` Path to package.json or application directory. Required
+- **dest** `string` Extract destination path. Default to random temporal directory
 
 ### nar.extract(options)
 Fired events: `end, error, entry, message, info, start`
+
+Extract archive files into a output directory
 
 ##### Options
 
