@@ -4,7 +4,7 @@ require! {
   zlib.create-gunzip
   events.EventEmitter
 }
-{ once, next }:_ = require './utils'
+{ next }:_ = require './utils'
 
 module.exports = unpack = (options = {}) ->
   { path, checksum } = options |> apply
@@ -17,9 +17,11 @@ module.exports = unpack = (options = {}) ->
   on-entry = (entry) ->
     entry |> emitter.emit 'entry', _ if entry
 
-  on-error = once (err) ->
-    errored := yes
-    err |> emitter.emit 'error', _
+  on-error = (err) ->
+    # fix EOF issue, PR pending: https://github.com/isaacs/node-tar/pull/32
+    if err and not /unexpected eof/.test err.message
+      err |> emitter.emit 'error', _ unless errored
+      errored := yes
 
   do-extract = -> next ->
     extractor = options |> extract-archive _
@@ -46,9 +48,9 @@ module.exports = unpack = (options = {}) ->
   extract-normal = (stream, dest) ->
     extract = tar.Extract path: dest
     extract.on 'entry', on-entry
-    tstream = stream.pipe extract
-    tstream.on 'error', on-error
-    tstream.on 'end', on-end
+    stream.pipe extract
+      .on 'error', on-error
+      .on 'end', on-end
 
   calculate-checksum = (hash, file, cb) ->
     file |> _.checksum _, (err, nhash) ->
@@ -56,7 +58,7 @@ module.exports = unpack = (options = {}) ->
       if hash is nhash
         cb!
       else
-        new Error "checksum verification failed: #{nhash}" |> on-error
+        new Error "Checksum verification failed: #{nhash}" |> on-error
 
   do-extract!
   emitter

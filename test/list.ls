@@ -81,4 +81,3 @@ describe 'list', ->
         expect it .to.instanceof Error
         expect it .to.match /invalid tar/
         done!
-

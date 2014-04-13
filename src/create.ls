@@ -10,7 +10,7 @@ require! {
 }
 
 {
-  read, rm, random, tmpdir, clone, extend,
+  read, rm, tmpdir, clone, extend, copy,
   is-object, is-file, is-dir, mk, now, stringify,
   vals, exists, checksum, lines, next
 } = require './utils'
@@ -34,8 +34,6 @@ module.exports = create = (options) ->
   options = options |> apply-options
   pkg-path = options.path
 
-  throw new Error 'Cannot discover the package.json' unless pkg-path
-
   # aditional
   pkg = pkg-path |> read if pkg-path
   options = pkg |> apply-pkg-options options, _ if pkg
@@ -47,12 +45,19 @@ module.exports = create = (options) ->
   output = file |> output-file _, options.dest
 
   clean = ->
-    try
-      emitter.emit 'message', 'Clean temporary directory'
-      rm tmp-path
-      rm file if file
+    emitter.emit 'message', 'Cleaning temporary directories'
+    try rm tmp-path
+
+  on-error = (err) ->
+    clean!
+    err |> emitter.emit 'error', _ unless errored
+    errored := yes
+
+  on-entry = ->
+    it |> emitter.emit 'entry', _ if it
 
   do-create = -> next ->
+    return new Error 'Cannot discover the package.json' |> on-error unless pkg-path
     nar-config = name |> nar-manifest _, pkg
 
     deps = (done) ->
@@ -64,7 +69,7 @@ module.exports = create = (options) ->
         dependencies: dependencies
 
       compress-dependencies config, (err, files) ->
-        return emitter.emit 'error', err if err
+        return err |> on-error if err
         nar-config.files = nar-config.files ++ files
         done!
 
@@ -85,19 +90,16 @@ module.exports = create = (options) ->
     do-compression = (done) ->
       async.series [ deps, base-pkg, all ], done
 
-    on-compress = ->
+    on-compress = (err) ->
+      return err |> on-error if err
       clean!
-      if it
-        emitter.emit 'error', it
-      else
-        emitter.emit 'end', output
+      emitter.emit 'end', output
 
     try
       tmp-path |> mk
       on-compress |> do-compression
     catch
-      clean!
-      emitter.emit 'error', e
+      e |> on-error
 
   compress-all = (nar-config, cb) ->
     config =
@@ -111,6 +113,7 @@ module.exports = create = (options) ->
     pack-all = (done) ->
       pack config
         .on 'error', done
+        .on 'entry', on-entry
         .on 'end', -> done!
 
     save-config = (done) ->
@@ -121,8 +124,7 @@ module.exports = create = (options) ->
 
     add-binary = ->
       copy process.exec-path, tmp-path, (err, file) ->
-        return "Error while copying the node binary: #{err}"
-          |> emitter.emit 'error', _ if err
+        return new Error "Error while copying the node binary: #{err}" |> on-error if err
 
         file |> path.basename |> config.patterns.push
         info =
@@ -168,7 +170,7 @@ compress-dependencies = (options, cb) ->
   add-bin-directory = ->
     bin-dir = path.join base, ('.bin' |> get-module-path)
     {
-      name: '.bin'
+      name: '_modules-bin'
       dest: dest
       src: bin-dir
     } |> it.push if bin-dir |> is-dir
@@ -202,7 +204,6 @@ compress-dependencies = (options, cb) ->
 
   list = (dependencies |> vals).map find-pkg .filter is-valid
   list[0] |> add-bin-directory if list.length
-
   list |> async.each _, compress-pkg, -> it |> cb _, files
 
 write-config = (config, tmpdir, cb) ->
@@ -226,8 +227,6 @@ nar-manifest = (name, pkg) ->
 files-to-include = ->
   [ '**', '.*', '!node_modules/**' ] ++ ignore-files ++ (it |> get-ignored-files)
 
-# Pure functions helpers
-
 is-valid = -> it and it.length
 
 output-file = (file, dir) ->
@@ -239,7 +238,7 @@ get-filename = (pkg = {}) ->
   name
 
 apply-pkg-options = (options, pkg) ->
-  pkg.file |> extend options, _
+  pkg.archive |> extend options, _
 
 discover-pkg = (dir = process.cwd!) ->
   findup 'package.json', cwd: dir
@@ -277,6 +276,8 @@ get-ignored-files = (dir) ->
   patterns
 
 get-module-path = ->
+  if it is '_modules-bin'
+    it = '.bin'
   it |> path.join 'node_modules', _
 
 match-dependencies = (options, pkg) ->

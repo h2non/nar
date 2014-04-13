@@ -3,17 +3,18 @@
   mk
   nar
   read
+  chdir
   exists
   expect
   version
 } = require './lib/helper'
 
-xdescribe 'nar', ->
+describe 'nar', ->
 
   describe 'API', (_) ->
 
     it 'should expose the Nar class', ->
-      expect nar .to.be.a 'function'
+      expect nar .to.be.an 'object'
 
     it 'should expose the create method', ->
       expect nar.create .to.be.a 'function'
@@ -21,158 +22,85 @@ xdescribe 'nar', ->
     it 'should expose the extract method', ->
       expect nar.extract .to.be.a 'function'
 
+    it 'should expose the list method', ->
+      expect nar.list .to.be.a 'function'
+
+    it 'should expose the run method', ->
+      expect nar.run .to.be.a 'function'
+
     it 'should expose the package version', ->
       expect nar.VERSION .to.be.equal version
 
-  describe 'basic', ->
+  describe 'E2E', ->
 
-    describe '#create()', (_) ->
+    dest = "#{__dirname}/fixtures/.tmp"
+    orig = "#{__dirname}/fixtures/complex"
 
-      before ->
-        process.chdir "#{__dirname}/fixtures/basic/a/b"
+    before ->
+      rm dest
+      mk dest
+      chdir dest
 
-      after ->
-        rm "test-0.0.1.nar"
+    after ->
+      chdir "#{__dirname}/.."
+      rm "#{dest}/test-0.1.0.nar"
+      rm dest
 
-      after ->
-        process.chdir "#{__dirname}/../"
+    describe 'create', (_) ->
+
+      options = path: "#{orig}"
 
       it 'should create the archive', (done) ->
-        @nar = nar.create null, done
+        nar.create options
+          .on 'error', -> throw it
+          .on 'end', ->
+            expect it .to.be.equal "#{dest}/test-0.1.0.nar"
+            done!
 
-      it 'should have the package object', ->
-        expect @nar.pkg .to.be.an 'object'
-        expect @nar.pkg.name .to.be.equal 'test'
+      it 'should exists the archive', ->
+        expect exists "#{dest}/test-0.1.0.nar" .to.be.true
 
-      it 'should have the proper package path', ->
-        expect @nar.pkg-path .to.match /package.json/
+    describe 'extract', (_) ->
 
-      it 'should use the default options', ->
-        expect @nar.options.base .to.be.equal process.cwd!
-        expect @nar.options.dependencies .to.be.true
-        expect @nar.options.binary .to.be.true
-        expect @nar.options.dev-dependencies .to.be.true
-        expect @nar.options.peer-dependencies .to.be.false
+      options = path: "#{dest}/test-0.1.0.nar"
 
-      it 'should have the default package path', ->
-        expect @nar.pkg-path .to.be.equal "#{__dirname}/fixtures/basic/package.json"
+      it 'should create the archive', (done) ->
+        nar.extract options
+          .on 'error', -> throw it
+          .on 'end', -> done!
 
-      it 'should exists the package file', ->
-        expect @nar.exists! .to.be.true
+      it 'should exists package.json', ->
+        expect exists "#{dest}/package.json" .to.be.true
 
-      it 'should discover in higher directories', ->
-        expect @nar.discover! .to.not.throw
-        expect @nar.pkg-path .to.be.equal "#{__dirname}/fixtures/basic/package.json"
+      it 'should exists the node binary', ->
+        expect exists "#{dest}/.node/bin/node" .to.be.true
 
-      it 'should add the node binary', ->
-        expect @nar.options.binary .to.be.true
+      it 'should exists nar.json', ->
+        expect exists "#{dest}/.nar.json" .to.be.true
 
-      it 'should add dependencies by default', ->
-        expect @nar.options.dependencies .to.be.true
+      it 'should exists main.js', ->
+        expect exists "#{dest}/main.js" .to.be.true
 
-      it 'should add devDependencies', ->
-        expect @nar.options.dev-dependencies .to.be.true
+      it 'should exists .gitignore', ->
+        expect exists "#{dest}/.gitignore" .to.be.true
 
-      it 'should not add peerDepedencies', ->
-        expect @nar.options.peer-dependencies .to.be.false
+      it 'should exists .narignore', ->
+        expect exists "#{dest}/.narignore" .to.be.true
 
-      describe 'files', (_) ->
+      it 'should exists node_modules', ->
+        expect exists "#{dest}/node_modules" .to.be.true
 
-        it 'should remove the temporary directory', ->
-          expect exists @nar.tmp-dir .to.be.false
+      it 'should exists hu dependency', ->
+        expect exists "#{dest}/node_modules/hu/package.json" .to.be.true
 
-        it 'should exist the archive', ->
-          expect exists './test-0.0.1.nar' .to.be.true
+      it 'should exists dev dependency', ->
+        expect exists "#{dest}/node_modules/dev/package.json" .to.be.true
 
-        it 'should match dependencies', ->
-          expect @nar.match-deps!dep .to.be.deep.equal ['some']
+      it 'should exists .bin directory', ->
+        expect exists "#{dest}/node_modules/.bin" .to.be.true
 
-      describe '#extract()', (_) ->
-        dest = "#{__dirname}/fixtures/.tmp"
+      it 'should exists .bin/hu', ->
+        expect exists "#{dest}/node_modules/.bin/hu" .to.be.true
 
-        before ->
-          mk dest
-
-        after ->
-          rm dest
-
-        it 'should extract the archive', (done) ->
-          @nar = nar.extract { dest }, done
-
-        it 'should exist the temporal folder', ->
-          expect exists @nar.tmp-dir .to.be.true
-
-        it 'should exist the .nar.json file', ->
-          expect exists "#{@nar.tmp-dir}/.nar.json" .to.be.true
-
-        describe 'extracted files', (_) ->
-
-          it 'should exist the package.json', ->
-            expect exists "#{dest}/package.json" .to.be.true
-
-          it 'should be a valid JSON', ->
-            expect (read "#{dest}/package.json").name .to.be.equal 'test'
-
-          it 'should exist the node_modules directory', ->
-            expect exists "#{dest}/node_modules" .to.be.true
-
-          it 'should exist the package dependency', ->
-            expect exists "#{dest}/node_modules/some" .to.be.true
-
-          it 'should exist package.json in package dependency', ->
-            expect exists "#{dest}/node_modules/some/package.json" .to.be.true
-
-          it 'should be a valid package.json dependency', ->
-            expect (require "#{dest}/node_modules/some/package.json").name .to.be.equal 'some'
-
-          it 'should exist the "a" directory', ->
-            expect exists "#{dest}/a" .to.be.true
-
-          it 'should exist the "b" directory', ->
-            expect exists "#{dest}/a/b" .to.be.true
-
-          it 'should exist the .node directory', ->
-            expect exists "#{dest}/.node" .to.be.true
-
-          it 'should exist the node binary', ->
-            expect exists "#{dest}/.node/bin/node" .to.be.true
-
-          describe 'nar manifest', (_) ->
-
-            it 'should exist nar.json', ->
-              expect exists "#{dest}/.nar.json" .to.be.true
-
-            it 'should have a valid package name', ->
-              expect (require "#{dest}/.nar.json").name .to.be.equal 'test'
-
-            it 'should have the time property', ->
-              expect (require "#{dest}/.nar.json").time .to.be.a 'number'
-
-            it 'should have a valid info object', ->
-              expect (require "#{dest}/.nar.json").info .to.be.deep.equal {
-                platform: process.platform
-                arch: process.arch
-                version: process.version
-              }
-
-            it 'should have a valid manifest object', ->
-              manifest = (require "#{dest}/.nar.json").manifest
-              expect manifest.name .to.be.equal 'test'
-              expect manifest.version .to.be.equal '0.0.1'
-              expect manifest.archive .to.be.an 'object'
-
-            describe 'files', (_) ->
-
-              it 'should have a valid dependency file object', ->
-                file = (require "#{dest}/.nar.json").files[0]
-                expect file.archive .to.be.equal 'some.tar'
-                expect file.type .to.be.equal 'dependency'
-                expect file.dest .to.be.equal 'node_modules/some'
-                expect file.checksum .to.be.a 'string'
-
-              it 'should have the node binary file object', ->
-                file = ((require "#{dest}/.nar.json").files.slice -1)[0]
-                expect file.archive .to.be.equal 'node'
-                expect file.type .to.be.equal 'binary'
-                expect file.dest .to.be.equal '.node/bin'
-                expect file.checksum .to.be.a 'string'
+      it 'should not exists test directory', ->
+        expect exists "#{dest}/test" .to.be.false

@@ -1,18 +1,21 @@
 {
   "name": "test",
-  "version": "1.0.0",
-  "main": "a/b/sample.js",
+  "version": "0.1.0",
+  "main": "./main",
   "scripts": {
     "prestart": "echo 'prestart ${NODE_NAR}'",
-    "start": "node a/b/sample.js",
+    "start": "node main",
     "stop": "rm -rf .tmp"
   },
   "archive": {
-    "binary": false,
+    "dependencies": true,
     "devDependencies": true,
-    "peerDependencies": false
+    "binary": true
   },
   "dependencies": {
-    "some": "~1.0.0"
+    "hu": "~0.1.0"
+  },
+  "devDependencies": {
+    "dev": "~0.1.0"
   }
 }

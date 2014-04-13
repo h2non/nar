@@ -11,8 +11,8 @@ require! {
 
 module.exports = _ = {
 
-  path, platform, hu.extend, hu.vals,
-  hu.clone, hu.is-object, mk, rm, os.EOL
+  path, platform, hu.extend, hu.vals, hu.has,
+  hu.clone, hu.is-object, mk, rm, os.EOL, path.delimiter
 
   echo: -> console.log ...
 
@@ -69,15 +69,15 @@ module.exports = _ = {
   checksum: (file, cb) ->
     hash = crypto.create-hash 'sha1'
     (file |> fs.create-read-stream)
-      .on('data', -> it |> hash.update)
-      .on('end', -> hash.digest 'hex' |> cb null, _)
-      .on('error', cb)
+      .on 'data', -> it |> hash.update
+      .on 'end', -> hash.digest 'hex' |> cb null, _
+      .on 'error', cb
 
   copy: (file, dest, cb) ->
     filename = file |> path.basename
     dest = filename |> path.join dest, _
     (fs.create-read-stream file)
-      .pipe(fs.create-write-stream dest)
-      .on('close', -> cb null, dest)
-      .on('error', cb)
+      .pipe fs.create-write-stream dest
+      .on 'close', -> cb null, dest
+      .on 'error', cb
 }

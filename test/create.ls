@@ -10,66 +10,48 @@
 } = require './lib/helper'
 create = require '../lib/create'
 
-describe 'Create', ->
+describe 'create', ->
 
   dest = "#{__dirname}/fixtures/.tmp"
 
-  describe 'options', (_) ->
+  describe 'basic', (_) ->
 
     before ->
       rm dest
       mk dest
-      chdir dest
+      chdir "#{__dirname}/fixtures/basic"
 
     before ->
-      @archive = create!
+      @archive = create dest: dest
 
     after ->
       chdir "#{__dirname}/.."
       rm dest
 
-    describe 'default', (_) ->
+    it 'should compress files sucessfully', (done) ->
+      @archive
+        .on 'error', -> throw it
+        .on 'end', ->
+          expect it .to.be.equal "#{dest}/test-1.0.0.nar"
+          done!
 
-      it 'should compress files sucessfully', (done) ->
-        @archive
-          .on 'error', -> throw it
-          .on 'end', ->
-            expect it .to.be.equal "#{dest}/nar-#{version}.nar"
-            done!
+  describe 'complex', (_) ->
 
-    xit 'should have the default options', ->
-      expect @archive.options.binary .to.be.false
-      expect @archive.options.dependencies .to.be.true
-      expect @archive.options.dev-dependencies .to.be.false
+    before ->
+      rm dest
+      mk dest
+      chdir "#{__dirname}/fixtures/complex/test" # discover
 
-    xdescribe 'values', (_) ->
+    before ->
+      @archive = create dest: dest
 
-      it 'should have a valid temporal directory', ->
-        expect @archive.tmpdir .to.match /nar-nar/
+    after ->
+      chdir "#{__dirname}/.."
+      rm dest
 
-      it 'should have a proper output path', ->
-        expect @archive.output .to.match /nar-(.*)\.nar/
-
-      it 'should have a valid package name', ->
-        expect @archive.name .to.be.equal 'nar'
-
-      it 'should have a valid archive file name', ->
-        expect @archive.file .to.match /nar-(.*)/
-
-    xdescribe 'dependencies matching', (_) ->
-
-      it 'should match package dependencies', ->
-        expect @archive.dependencies .to.be.an 'object'
-
-      it 'should have runtime dependencies', ->
-        expect @archive.dependencies.run .to.be.an 'array'
-        expect @archive.dependencies.run.length .to.be.equal 12
-
-      it 'should have a valid runtime dependency', ->
-        expect @archive.dependencies.run .to.include 'hu'
-
-      it 'should not have dev dependencies', ->
-        expect @archive.dependencies.dev .to.be.equal undefined
-
-      it 'should not have peer dependencies', ->
-        expect @archive.dependencies.peer .to.be.an 'array'
+    it 'should compress files sucessfully', (done) ->
+      @archive
+        .on 'error', -> throw it
+        .on 'end', ->
+          expect it .to.be.equal "#{dest}/test-0.1.0.nar"
+          done!

@@ -177,7 +177,7 @@ describe 'unpack', ->
           .on 'entry', -> files += 1
           .on 'error', (err) ->
             expect files .to.be.equal 0
-            expect err.message .to.match /checksum verification failed/
+            expect err.message .to.match /checksum verification failed/i
             done!
 
       it 'should not exist files', ->

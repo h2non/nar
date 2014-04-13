@@ -74,7 +74,6 @@ describe 'pack', ->
       it 'should return an invalid path error', (done) ->
         pack options
           .on 'error', (err) ->
-            expect err .to.instanceof Error
             expect err .to.match /source path do not/
             done!
           .on 'end', -> throw "Test error"
@@ -93,7 +92,6 @@ describe 'pack', ->
       it 'should return an invalid path error', (done) ->
         pack options
           .on 'error', (err) ->
-            expect err .to.instanceof Error
             expect err .to.match /is not a directory/
             done!
           .on 'end', -> throw "Test error"

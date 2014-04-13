@@ -3,8 +3,8 @@ require! {
   tar
   zlib.create-gunzip
   events.EventEmitter
+  './utils'.next
 }
-{ next } = require './utils'
 
 module.exports = list = (options) ->
   { file, gzip } = options

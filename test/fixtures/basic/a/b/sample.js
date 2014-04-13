@@ -1,1 +1,1 @@
-// just a sample
+console.log(process.argv.join('\n'))

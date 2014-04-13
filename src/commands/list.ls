@@ -32,7 +32,7 @@ list = (archive, options) ->
     gzip: gzip
 
   on-error = ->
-    "Error while reading the archive: #{it.message}".red |> echo
+    new Error "Error while reading the archive: #{it.message}".red |> echo
     it.stack |> echo if debug
     exit 1
 
