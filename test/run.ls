@@ -15,10 +15,11 @@ describe 'run', ->
 
   describe 'basic', (_) ->
 
-    stdout = stderr = messages = ''
+    stdout = stderr = commands = ''
     options =
       path: "#{orig}/sample.nar"
       dest: dest
+      clean: no
       args:
         start: "--os #{process.platform} --path ${PATH} --invalid ${_INVALID_}"
 
@@ -29,7 +30,7 @@ describe 'run', ->
     it 'should run the archive', (done) ->
       run options
         .on 'error', -> throw it
-        .on 'message', -> messages += it
+        .on 'command', -> commands += it
         .on 'stdout', -> stdout += it
         .on 'stderr', -> stderr += it
         .on 'end', -> done!
@@ -60,13 +61,13 @@ describe 'run', ->
         expect stdout .to.match /--invalid\n/
         expect stdout .to.not.match new RegExp '${_INVALID_}'
 
-    describe 'messages', (_) ->
+    describe 'commands', (_) ->
 
-      it 'should match "Extracting archive"', ->
-        expect messages .to.match /Extracting archive/i
+      it 'should match echo command', ->
+        expect commands .to.match /echo \'prestart 1\'/i
 
-      it 'should match running command', ->
-        expect messages .to.match /running command/i
+      it 'should match sample.js', ->
+        expect commands .to.match /sample\.js/i
 
     describe 'files', (_) ->
 

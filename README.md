@@ -2,8 +2,6 @@
 
 > Bundle and package self-contained node.js applications that are ready-to-ship-and-run
 
-> **Spoiler! Work in progress!**
-
 <table>
 <tr>
 <td><b>Version</b></td><td>beta</td>
@@ -21,16 +19,15 @@ and asynchronous event-based [programmatic API](#programmatic-api)
 ## Features
 
 - Simple command-line interface
-- Provides a easy-to-use programmatic API
+- Easy-to-use asynchronous programmatic API
+- Fully configurable from package.json
 - Tarball with gzip compression/decompression
-- Built-in package extraction
-- Built-in support app execution
-- Application pre/post run hooks
-- Automatic package discovery
-- Full configurable from package.json
+- Built-in support for archive extraction
+- Built-in support for archive execution
+- Supports application pre/post run hooks (also configurable from package.json)
 - Allow to bundle dependencies by type
 - Allow to bundle node binary for platform-specific runtime environments
-- Native checksum file integrity verification
+- Transparent checksum file integrity verification
 
 ## Installation
 
@@ -92,7 +89,7 @@ Take that into account if you are going to deploy the archive in multiple platfo
 
 ### Stage hooks
 
-`nar` supports application pre/post execution hooks, that are also supported by `npm`.
+`nar` supports application pre/post execution hooks, that are also supported by `npm`
 
 You should define it the `package.json` in the `scripts` properties
 
@@ -100,6 +97,7 @@ Supported hooks:
 - `prestart`
 - `start`
 - `stop`
+- `poststop`
 
 Configuration example:
 ```json
@@ -128,6 +126,13 @@ You can pass arguments to hooks commands from nar CLI
 $ nar run app.nar --start-args "--env ${ENV} --debug"
 ```
 
+##### Check if it's under nar execution environment
+
+nar will expose the `NODE_NAR` environment variable in the hooks execution contexts
+
+You can make any environment runtime checks if your application needs a different behavior
+dependending of the environment context
+
 ## Command-line interface
 
 ```
@@ -135,8 +140,6 @@ Usage: nar [options] [command]
 
 Commands:
 
-  help
-    Output the usage information
   create [options] [path]
     Create new aplication archive
   extract [options] [archive]
@@ -167,69 +170,46 @@ Command specific help:
 
 Create a new archive from an existent application
 
-```
-Usage: create [path] [options]
-
-Options:
-
-  -h, --help     output usage information
-  -o, --output   Output directory
-  -f, --force    Forces archive creation passing warnings or errors
-  -d, --debug    Enable debugging mode for tasks that support it
-  -v, --verbose  Verbose mode. A lot of information will be showed
-
-Usage examples:
-
-  $ nar create
-  $ nar create some/path
-  $ nar create path/to/package.json -o some-dir
-  $ nar create --debug --verbose --no-color
+```bash
+$ nar create
+$ nar create some/path
+$ nar create path/to/package.json -o some-dir
+$ nar create --debug --verbose --no-color
 ```
 
 ### extract
 
 Extract archive files into directory
 
-```
-Usage: extract [archive] [options]
-
-Options:
-
-  -h, --help     output usage information
-  -o, --output   Output directory
-  -f, --force    Forces archive creation passing warnings or errors
-  -d, --debug    Enable debugging mode for tasks that support it
-  -v, --verbose  Verbose mode. A lot of information will be showed
-
-Usage examples:
-
-  $ nar extract
-  $ nar extract app.nar
-  $ nar extract app.nar -o some-dir
-  $ nar extract app.nar --debug --verbose --no-color
+```bash
+$ nar extract
+$ nar extract app.nar
+$ nar extract app.nar -o some-dir
+$ nar extract app.nar --debug --verbose --no-color
 ```
 
 ### run
+```bash
+$ nar run app.nar
+$ nar run app.nar --no-hooks
+$ nar run app.nar --args-start '--env ${ENV}'
+$ nar run app.nar --args-stop '--path ${PATH}'
+```
 
 ### list
-```
-Usage: list [archive] [options]
-
-Options:
-
-  -h, --help     output usage information
-  -d, --debug    Enable debugging mode
-  -x, --no-gzip  Process archive without gzip compression
-  --no-table     Disable table format output
-
-Usage examples:
-
-  $ nar list app.nar
-  $ nar list app.nar --no-table
+```bash
+$ nar list app.nar
+$ nar list app.nar --no-table
 ```
 
 ## Programmatic API
 
+`nar` provides a ful featured programmatic API that can be consumed easily from other
+node.js applications
+
+For better approach, it's a fully event-based asynchronous API,
+
+Basic example:
 ```js
 var nar = require('nar')
 
@@ -257,22 +237,54 @@ try {
 ```
 
 ### nar.create(options)
+Fired events: `end, error, entry, message`
 
 ### nar.extract(options)
+Fired events: `end, error, entry, message`
+
+##### Options
+
+- **path** `string` Path to nar archive. Required
+- **dest** `string` Extract destination path. Default to random temporal directory
+- **tmpdir** `string` Temporal directory to use. Default to random temporal directory
 
 ### nar.run(options)
+Fired events: `end, error, entry, command, info`
+
+Read, extract and run an application. It will read [command scripts][npm-scripts] hooks in `package.json`
+
+##### Options
+
+- **path** `string` Path to nar archive. Required
+- **dest** `string` Extract destination path. Defaults to random temporal directory
+- **args** `object` Aditional argument to pass to hooks. Keys must have the same hook name
+- **hooks** `boolean` Enable/disable run command hooks. Defaults to `true`
+- **clean** `boolean` Clean app directory on exit. Defaults to `true`
 
 ### nar.list(options)
+Options: `path`
+
+Fired events: `end, error, entry`
+
+Read and parse a given .nar archive, emitting the `entry` event for each existent file
+
+##### Options
+
+- **path** `string` Path to nar archive. Required
 
 ### nar.VERSION
+Type: `string`
 
-### Options
+### Events
 
-- **dependencies** `boolean` Add package dependencies
-- **devDependencies** `boolean` Add package development dependencies
-- **peerDependencies** `boolean` Add package development dependencies
-- **binary** `boolean` Add node binary (warning! binary is platform specific)
-- **commands** `array` Command to execute in different app stages
+List of available events to subscribe
+
+- **end** ([result]) When task was completed successfully
+- **error** `(error)` When some error happens, task cannot be completed
+- **entry** `(entry)` When read/write a file, usually handled from a file stream
+- **message** `(message)` General information status message, useful for debugging purposes
+- **command** `(command)` Hook command to execute when run an application
+- **info** `(config)` Expose the nar archive config
 
 ## Contributing
 
@@ -325,3 +337,4 @@ Released under the MIT license
 [travis]: http://travis-ci.org/h2non/nar
 [gemnasium]: https://gemnasium.com/h2non/nar
 [npm]: http://npmjs.org/package/nar
+[npm-scripts]: https://www.npmjs.org/doc/misc/npm-scripts.html

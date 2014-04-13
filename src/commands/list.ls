@@ -27,9 +27,7 @@ list = (archive, options) ->
   { debug, gzip, table } = options
   table-list = new Table head: [ 'File', 'Destination', 'Size', 'Type' ]
 
-  opts =
-    file: archive
-    gzip: gzip
+  opts = path: archive
 
   on-error = ->
     new Error "Error while reading the archive: #{it.message}".red |> echo

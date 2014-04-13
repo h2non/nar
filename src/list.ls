@@ -7,7 +7,7 @@ require! {
 { next, add-extension } = require './utils'
 
 module.exports = list = (options) ->
-  { file, gzip } = options |> apply
+  { path, gzip } = options |> apply
   emitter = new EventEmitter
   ended = no
   error = no
@@ -61,7 +61,7 @@ module.exports = list = (options) ->
       emit-entries!
       on-end!
 
-    stream = file |> add-extension |> fs.create-read-stream
+    stream = path |> add-extension |> fs.create-read-stream
     stream.on 'error', on-error
     stream = stream.pipe create-gunzip! if gzip
     stream.pipe parse
@@ -72,5 +72,5 @@ module.exports = list = (options) ->
   emitter
 
 apply = (options) ->
-  { gzip: yes, file: options.file or process.cwd! }
+  { gzip: yes, path: options.path }
 

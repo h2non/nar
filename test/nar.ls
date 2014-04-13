@@ -107,11 +107,16 @@ describe 'nar', ->
 
     describe 'run', (_) ->
 
+      stdout = stderr = messages = commands = ''
       options = path: "#{dest}/test-0.1.0.nar"
 
       it 'should create the archive', (done) ->
-        nar.extract options
+        nar.run options
           .on 'error', -> throw it
+          .on 'message', -> messages += "#{it}\n"
+          .on 'command', -> commands += "#{it}\n"
+          .on 'stdout', -> stdout += it
+          .on 'stderr', -> stderr += it
           .on 'end', -> done!
 
       it 'should exists package.json', ->
@@ -123,29 +128,13 @@ describe 'nar', ->
       it 'should exists nar.json', ->
         expect exists "#{dest}/.nar.json" .to.be.true
 
-      it 'should exists main.js', ->
-        expect exists "#{dest}/main.js" .to.be.true
+      it 'should have a valid command entries', ->
+        expect commands .to.match /echo \'prestart 1\'/
+        expect commands .to.match /node\.sh main/
+        expect commands .to.match /rm \-rf/
 
-      it 'should exists .gitignore', ->
-        expect exists "#{dest}/.gitignore" .to.be.true
+      it 'should have a valid stdout', ->
+        expect stdout .to.match /prestart 1/
 
-      it 'should exists .narignore', ->
-        expect exists "#{dest}/.narignore" .to.be.true
-
-      it 'should exists node_modules', ->
-        expect exists "#{dest}/node_modules" .to.be.true
-
-      it 'should exists hu dependency', ->
-        expect exists "#{dest}/node_modules/hu/package.json" .to.be.true
-
-      it 'should exists dev dependency', ->
-        expect exists "#{dest}/node_modules/dev/package.json" .to.be.true
-
-      it 'should exists .bin directory', ->
-        expect exists "#{dest}/node_modules/.bin" .to.be.true
-
-      it 'should exists .bin/hu', ->
-        expect exists "#{dest}/node_modules/.bin/hu" .to.be.true
-
-      it 'should not exists test directory', ->
-        expect exists "#{dest}/test" .to.be.false
+      it 'should have a valid stderr', ->
+        expect stderr.length .to.be.equal 0

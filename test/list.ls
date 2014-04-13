@@ -16,7 +16,7 @@ describe 'list', ->
 
   describe 'sample', (_) ->
 
-    options = file: "#{archives}/sample.nar"
+    options = path: "#{archives}/sample.nar"
 
     before ->
       @bus = list options
@@ -41,8 +41,7 @@ describe 'list', ->
 
   describe 'error', (_) ->
 
-    options =
-      file: "#{archives}/invalid"
+    options = path: "#{archives}/invalid"
 
     before ->
       uncaught!

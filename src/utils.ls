@@ -22,6 +22,8 @@ module.exports = _ = {
 
   now: -> new Date!get-time!
 
+  is-win: process.platform is 'win32'
+
   exists: -> it and (it |> fs.exists-sync)
 
   stringify: ->
