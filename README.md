@@ -231,7 +231,6 @@ be easily consumed from other node applications
 
 The API is fully asynchronous event-based, for a better approach
 
-Basic example:
 ```js
 var nar = require('nar')
 
