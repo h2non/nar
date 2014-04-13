@@ -24,7 +24,7 @@ and asynchronous event-based [programmatic API](#programmatic-api)
 - Fully configurable from package.json
 - Tarball with gzip compression/decompression
 - Built-in support for archive extraction
-- Built-in support for archive execution
+- Built-in support for application execution
 - Supports application pre/post run hooks (as [npm scripts][npm-scripts])
 - Allow to bundle dependencies by type
 - Allow to bundle node binary for platform-specific runtime environments
