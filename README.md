@@ -1,7 +1,5 @@
 # nar [![Build Status](https://secure.travis-ci.org/h2non/nar.png?branch=master)][travis] [![Dependency Status](https://gemnasium.com/h2non/nar.png)][gemnasium] [![NPM version](https://badge.fury.io/js/nar.png)][npm]
 
-> Bundle and package self-contained node.js applications that are ready-to-ship-and-run
-
 <table>
 <tr>
 <td><b>Version</b></td><td>beta</td>
@@ -11,6 +9,9 @@
 ## About
 
 **nar** is a simple application packager utility for [node.js](http://nodejs.org)
+
+Using nar you can easily create self-contained node.js applications
+that are ready-to-ship-and-run
 
 It provides built-in support for creating, extracting and running applications
 easily through a featured [command-line interface](#command-line-interface)
@@ -138,7 +139,7 @@ dependending of the runtime environment
 nar will find ignore-like files in order to load
 and match patterns of files to discard
 
-Supported files by priority are:
+Supported files (by priority):
 
 - `.narignore`
 - `.buildignore`
@@ -147,7 +148,7 @@ Supported files by priority are:
 
 ## Command-line interface
 
-```
+```bash
 Usage: nar [options] [command]
 
 Commands:
@@ -201,20 +202,21 @@ $ nar extract app.nar --debug --verbose --no-color
 ```
 
 ### run
+
+Run nar archive application
+
 ```bash
 $ nar run app.nar
 $ nar run app.nar --no-hooks
+$ nar run app.nar --no-clean --verbose
 $ nar run app.nar --args-start '--env ${ENV}'
 $ nar run app.nar --args-stop '--path ${PATH}'
 ```
 
-##### Passing arguments to hook commands
-
-```
-$ nar run app.nar --args-start "--env ${ENV} --debug"
-```
-
 ### list
+
+List files from a nar archive
+
 ```bash
 $ nar list app.nar
 $ nar list app.nar --no-table
@@ -222,10 +224,10 @@ $ nar list app.nar --no-table
 
 ## Programmatic API
 
-`nar` provides a ful featured programmatic API that can be consumed easily from other
-node.js applications
+`nar` provides a ful featured programmatic API that desgined to can be easily
+consumed from other node.js applications
 
-For better approach, it's a fully event-based asynchronous API,
+For a better approach, it's a fully event-based asynchronous API
 
 Basic example:
 ```js
@@ -258,7 +260,7 @@ try {
 Fired events: `end, error, entry, message`
 
 ### nar.extract(options)
-Fired events: `end, error, entry, message`
+Fired events: `end, error, entry, message, info, start`
 
 ##### Options
 

@@ -8,11 +8,10 @@ require! {
 
 module.exports = extract = (options = {}) ->
   { path, dest, tmpdir } = options = options |> apply
-  errored = no
   emitter = new EventEmitter
+  errored = no
 
-  clean = ->
-    try rm tmpdir
+  clean = -> try rm tmpdir
 
   on-end = ->
     clean!
@@ -42,11 +41,6 @@ module.exports = extract = (options = {}) ->
     catch
       e |> on-error
 
-  extract-nar = do ->
-    config = options |> clone
-    config <<< dest: tmpdir
-    config |> extractor
-
   extractor-fn = ->
     options =
       gzip: no
@@ -72,7 +66,7 @@ module.exports = extract = (options = {}) ->
 
   extract-archives = (done) ->
     nar = '.nar.json' |> join tmpdir, _ |> read
-    "Extracting #{nar.name} #{nar.manifest.version}" |> on-msg
+    nar |> emitter.emit 'info', _
     async.series (nar |> get-extract-files), done
 
   copy-nar-json = (done) ->
@@ -81,8 +75,14 @@ module.exports = extract = (options = {}) ->
       return err |> on-error if err
       done!
 
+  extract-nar = do ->
+    config = options |> clone
+    config <<< dest: tmpdir
+    config |> extractor
+
   do-extract = -> next ->
     mk-dirs dest, tmpdir
+    dest |> emitter.emit 'start', _
     try
       async.series [ extract-nar, extract-archives, copy-nar-json ], (err) ->
         return err |> on-error if err

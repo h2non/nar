@@ -3,7 +3,7 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit, exists, is-dir, is-file } = require '../utils'
+{ echo, exit } = require '../utils'
 
 program
   .command 'run [archive]'
