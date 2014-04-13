@@ -187,7 +187,7 @@ Create a new archive from an existent application
 
 ```bash
 $ nar create
-$ nar create some/path
+$ nar create some/path --debug
 $ nar create path/to/package.json -o some-dir
 $ nar create --debug --verbose --no-color
 ```

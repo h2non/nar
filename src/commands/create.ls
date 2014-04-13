@@ -55,11 +55,11 @@ create = (pkgpath, options) ->
 
   try
     archive = nar.create opts
+      .on 'start', on-start
       .on 'error', on-error
       .on 'end', on-end
 
     if debug
-      archive.on 'start', on-start
       archive.on 'entry', on-entry
   catch
     e |> on-error
