@@ -109,7 +109,7 @@ nar will ignore matched patterns defined in [ignore-like files](#ignoring-files)
 
 You should define them from `package.json` in the `scripts` member (see [npm scripts][npm-scripts])
 
-Supported hooks (by execution priority):
+Supported hooks (by execution order):
 
 - `prestart`
 - `start`
