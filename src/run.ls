@@ -17,10 +17,14 @@ module.exports = run = (options) ->
 
   on-error = (err, code, cmd) ->
     clean-dir!
-    err |> emitter.emit 'error', _, code, cmd
+    err |> emitter.emit 'error', _, code,  cmd
 
   on-entry = (entry) ->
     entry |> emitter.emit 'entry', _ if entry
+
+  on-end = (options, nar) ->
+    clean-dir!
+    options |> emitter.emit 'end', _, nar
 
   hooks-fn = (options, nar) ->
     buf = []
@@ -34,20 +38,18 @@ module.exports = run = (options) ->
 
   app-runner = (options) ->
     { dest } = options
-
     nar = dest |> read-nar-json
     nar |> emitter.emit 'info', _
+    dest |> set-environment
 
     if nar.binary
       dest |> extend-path
       unless nar |> is-binary-valid
         return new Error 'Unsupported binary platform or processor' |> on-error
 
-    dest |> set-environment
     async.series (nar |> hooks-fn options, _), (err) ->
       return err |> on-error if err
-      clean-dir!
-      options |> emitter.emit 'end', _, nar
+      options |> on-end _, nar
 
   do-extract = -> next ->
     'extract' |> emitter.emit

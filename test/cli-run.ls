@@ -1,7 +1,6 @@
 {
   rm
   mk
-  cwd
   exec
   chdir
   exists
@@ -25,7 +24,7 @@ describe 'CLI', (_) ->
         chdir "#{__dirname}/.."
         rm dest
 
-      it 'should create the archive', (done) ->
+      it 'should run the archive', (done) ->
         exec 'close', <[run ../archives/sample.nar]>, ->
           expect it .to.be.equal 0
           done!
@@ -43,7 +42,7 @@ describe 'CLI', (_) ->
         chdir "#{__dirname}/.."
         rm dest
 
-      it 'should create the archive', (done) ->
+      it 'should run the archive', (done) ->
         exec 'data', <[run ../archives/sample --no-clean -o]> ++ [ output ], (data, code) ->
           stdout := data
           expect code .to.be.equal 0
@@ -68,7 +67,7 @@ describe 'CLI', (_) ->
         chdir "#{__dirname}/.."
         rm dest
 
-      it 'should create the archive', (done) ->
+      it 'should run the archive', (done) ->
         exec 'data', <[run ../archives/sample --no-clean --debug -o]> ++ [ dest ], (data, code) ->
           stdout := data
           expect code .to.be.equal 0
@@ -95,7 +94,7 @@ describe 'CLI', (_) ->
         chdir "#{__dirname}/.."
         rm dest
 
-      it 'should create the archive', (done) ->
+      it 'should run the archive', (done) ->
         exec 'data', <[run ../archives/sample --no-clean --verbose -o]> ++ [ dest ], (data, code) ->
           stdout := data
           expect code .to.be.equal 0
@@ -129,7 +128,7 @@ describe 'CLI', (_) ->
         chdir "#{__dirname}/.."
         rm dest
 
-      it 'should create the archive', (done) ->
+      it 'should run the archive', (done) ->
         exec 'data', <[run ../archives/sample --verbose --args-start]> ++ ['--env ${ENV}'], (data, code) ->
           stdout := data
           expect code .to.be.equal 0
@@ -158,7 +157,7 @@ describe 'CLI', (_) ->
         chdir "#{__dirname}/.."
         rm dest
 
-      it 'should create the archive', (done) ->
+      it 'should run the archive', (done) ->
         exec 'data', <[run ../archives/sample --verbose --args-prestart]> ++ ['--env ${ENV}'], (data, code) ->
           stdout := data
           expect code .to.be.equal 0
@@ -184,7 +183,7 @@ describe 'CLI', (_) ->
         chdir "#{__dirname}/.."
         rm dest
 
-      it 'should create the archive', (done) ->
+      it 'should run the archive', (done) ->
         exec 'data', <[run ../archives/sample --verbose --no-hooks]>, (data, code) ->
           stdout := data
           expect code .to.be.equal 0
@@ -196,3 +195,16 @@ describe 'CLI', (_) ->
         expect stdout .to.match /start/
         expect stdout .to.not.match /\[stop\]/
         expect stdout .to.match /finished/i
+
+    describe 'error', (_) ->
+
+      stdout = null
+
+      it 'should not run an invalid archive', (done) ->
+        exec 'data', <[run ../invalid --verbose]>, (data, code) ->
+          stdout := data
+          expect code .to.be.equal 1
+          done!
+
+      it 'should have a valid path error', ->
+        expect stdout .to.match /invalid archive path/i

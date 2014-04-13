@@ -31,7 +31,7 @@ module.exports = extract = (options = {}) ->
 
   extractor = (options) -> (done) ->
     { path, dest } = options
-    return new Error 'Path do not exists or is invalid' |> on-error unless path |> is-file
+    return new Error 'Invalid archive path' |> on-error unless path |> is-file
 
     mk dest unless dest |> is-dir
     try

@@ -52,7 +52,9 @@ run = (archive, options) ->
   on-end = -> "Finished" |> echo
 
   on-error = (err, code) ->
-    err.message |> exit (code or 1)
+    err.message |> echo if err
+    err.stack |> echo if debug and err.stack
+    ((code or 1) |> exit)!
 
   on-command = (cmd, hook) ->
     "Run [".green + hook.cyan + "]: #{cmd}".green |> echo
@@ -88,9 +90,7 @@ run = (archive, options) ->
       archive.on 'stdout', on-stdout
       archive.on 'stderr', on-stderr
   catch
-    "Cannot run: #{e.message}\n" |> echo
-    e.stack |> echo if debug
-    exit 1
+    e |> on-error
 
 format-eol = ->
   it.replace /\n(\s+)?$/, '' .replace /\n/g, '\n> ' if it

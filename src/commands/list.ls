@@ -4,7 +4,7 @@ require! {
   Table: 'cli-table'
   program: commander
 }
-{ echo, exit, exists, is-file } = require '../utils'
+{ echo, exit, exists, is-file, add-extension } = require '../utils'
 
 program
   .command 'list [archive]'
@@ -26,10 +26,10 @@ list = (archive, options) ->
   { debug, gzip, table } = options
   table-list = new Table head: [ 'File', 'Destination', 'Size', 'Type' ]
 
-  opts = path: archive
+  opts = path: archive |> add-extension
 
   on-error = ->
-    new Error "Error while reading the archive: #{it.message}".red |> echo
+    it.message.red |> echo if it.message
     it.stack |> echo if debug
     exit 1
 
@@ -40,16 +40,14 @@ list = (archive, options) ->
     if table
       it |> map-entry |> table-list.push
     else
-      it.path |> path.basename |> echo
+      (it.archive |> path.join it.dest, _) + " (#{it.size} KB)".cyan |> echo
 
   on-end = ->
     table-list.to-string! |> echo if table
     exit 0
 
-  unless archive |> exists
-    "Error: the given path do not exists" |> exit 1
-  unless archive |> is-file
-    "Error: archive path must be a file" |> exit 1
+  unless opts.path |> is-file
+    "The given path is not a file" |> exit 1
 
   try
     nar.list opts
