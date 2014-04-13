@@ -107,15 +107,17 @@ nar will ignore matched patterns defined in [ignore-like files](#ignoring-files)
 
 `nar` supports application pre/post execution hooks, that are also supported by `npm`
 
-You should define it the `package.json` in the `scripts` properties
+You should define them from `package.json` in the `scripts` member (see [npm scripts][npm-scripts])
 
-Supported hooks:
+Supported hooks (by execution priority):
+
 - `prestart`
 - `start`
 - `stop`
 - `poststop`
 
 Configuration example:
+
 ```json
 {
   "name": "app",
