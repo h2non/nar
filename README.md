@@ -32,7 +32,7 @@ and asynchronous event-based [programmatic API](#programmatic-api)
 
 ## Installation
 
-It's recommended you install it as global package
+It's recommended you install nar as global package
 ```bash
 $ npm install -g nar
 ```
