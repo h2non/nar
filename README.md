@@ -70,23 +70,29 @@ properties members of the `archive` object
 Type: `boolean`
 Default: `true`
 
+Include package dependencies in the nar archive
+
 #### devDependencies
 Type: `boolean`
 Default: `false`
+
+Include development dependencies in the nar archive
 
 #### peerDependencies
 Type: `boolean`
 Default: `true`
 
+Include peer dependencies in the nar archive
+
 #### binary
 Type: `boolean`
 Default: `false`
 
-Include the node.js binary in the generated archive.
-This is usually useful when you want to deploy a obsessively fully self-contained application
+Include the node binary in the nar archive.
+This is useful when you want to deploy a fully self-contained application
 in a sandboxed deployment or runtime environment
 
-**Note**: node binary is OS and platform specific.
+**Note**: as you already know, the node binary is OS and platform dependent.
 Take that into account if you are going to deploy the archive in multiple platforms
 
 #### patterns
