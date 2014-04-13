@@ -226,10 +226,10 @@ $ nar list app.nar --no-table
 
 ## Programmatic API
 
-`nar` provides a ful featured programmatic API that designed to be easily
-consumed from other node applications
+nar provides a full featured programmatic API designed to
+be easily consumed from other node applications
 
-For a better approach, it's a fully event-based asynchronous API
+The API is fully asynchronous event-based, for a better approach
 
 Basic example:
 ```js
