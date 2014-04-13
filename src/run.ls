@@ -37,7 +37,9 @@ module.exports = run = (options) ->
 
     hooks-fn = []
     for own hook, cmd of hooks then
-      cmd += " #{args[hook]}" if args and (hook |> has args, _)
+      if args and (hook |> has args, _)
+        args[hook] = args[hook].join ' ' if args[hook] |> Array.is-array
+        cmd += " #{args[hook]}"
       exec emitter, cmd, options.dest |> hooks-fn.push
 
     if hooks-fn.length
