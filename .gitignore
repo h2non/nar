@@ -6,4 +6,4 @@ Thumbs.db
 test/fixtures/temp
 test/fixtures/.tmp
 test/lib/*.js
-*.nar
+/*.nar
