@@ -171,3 +171,28 @@ describe 'CLI', (_) ->
 
       it 'should have a print the start argument', ->
         expect stdout .to.match /\--env dev/
+
+    describe '--no-hooks', (_) ->
+
+      stdout = null
+
+      before ->
+        mk dest
+        chdir dest
+
+      after ->
+        chdir "#{__dirname}/.."
+        rm dest
+
+      it 'should create the archive', (done) ->
+        exec 'data', <[run ../archives/sample --verbose --no-hooks]>, (data, code) ->
+          stdout := data
+          expect code .to.be.equal 0
+          done!
+
+      it 'should have a valid stdout', ->
+        expect stdout .to.match /run /i
+        expect stdout .to.not.match /\[prestart\]/
+        expect stdout .to.match /start/
+        expect stdout .to.not.match /\[stop\]/
+        expect stdout .to.match /finished/i

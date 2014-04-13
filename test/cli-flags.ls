@@ -3,7 +3,6 @@
   cwd
   exec
   expect
-  suppose
   version
 } = require './lib/helper'
 
@@ -17,11 +16,7 @@ describe 'CLI', (_) ->
         done!
 
     it 'should show the help', (done) ->
-      exec 'data', <[--help]>, ->
-        expect it .to.match new RegExp "Usage examples"
-        done!
-
-    it 'should exit with 0 code', (done) ->
-      exec 'close', <[--help]>, ->
-        expect it .to.be.equal 0
+      exec 'data', <[--help]>, (data, code) ->
+        expect data .to.match new RegExp "Usage examples"
+        expect code .to.be.equal 0
         done!
