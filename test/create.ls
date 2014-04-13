@@ -29,9 +29,12 @@ describe 'create', ->
       rm dest
 
     it 'should compress files sucessfully', (done) ->
+      entries = 0
       @archive
         .on 'error', -> throw it
+        .on 'entry', -> entries += 1
         .on 'end', ->
+          expect entries .to.be.equal 3
           expect it .to.be.equal "#{dest}/test-1.0.0.nar"
           done!
 

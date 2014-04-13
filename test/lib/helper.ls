@@ -65,7 +65,7 @@ module.exports =
     process.add-listener 'uncaughtException', ->
 
   exec: (type, args, callback) ->
-    command = spawn node, [ croak ] ++ args
+    command = spawn node, [ croak ] ++ args, { process.env }
     if type is 'close'
       command.on type, callback
     else

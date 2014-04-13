@@ -15,9 +15,9 @@ module.exports = run = (options) ->
 
   clean-dir = -> try rm dest if clean
 
-  on-error = (err) ->
+  on-error = (err, code, cmd) ->
     clean-dir!
-    err |> emitter.emit 'error', _
+    err |> emitter.emit 'error', _, code, cmd
 
   on-entry = (entry) ->
     entry |> emitter.emit 'entry', _ if entry
@@ -27,10 +27,9 @@ module.exports = run = (options) ->
     for own hook, cmd of (nar |> get-hooks)
       when hooks or (not hooks and hook is 'start')
       then
-        if args and (hook |> has args, _)
-          cmd += " " +
-            if args[hook] |> Array.is-array then args[hook].join ' ' else args[hook]
-        cmd |> exec emitter, _, options.dest |> buf.push
+        if args and (hook |> has args, _) and args[hook]
+          cmd += " " + if args[hook] |> Array.is-array then args[hook].join ' ' else args[hook]
+        cmd |> exec emitter, _, options.dest, hook |> buf.push
     buf
 
   app-runner = (options) ->
@@ -44,13 +43,14 @@ module.exports = run = (options) ->
       unless nar |> is-binary-valid
         return new Error 'Unsupported binary platform or processor' |> on-error
 
-    set-environent!
+    dest |> set-environment
     async.series (nar |> hooks-fn options, _), (err) ->
       return err |> on-error if err
       clean-dir!
-      options |> emitter.emit 'end', _
+      options |> emitter.emit 'end', _, nar
 
   do-extract = -> next ->
+    'extract' |> emitter.emit
     (options |> extract)
       .on 'error', on-error
       .on 'entry', on-entry
@@ -82,18 +82,20 @@ is-binary-valid = (nar) ->
   { platform, arch } = nar.info
   platform is process.platform and arch is process.arch
 
-exec = (emitter, command, cwd) -> (done) ->
+exec = (emitter, command, cwd, hook) -> (done) ->
   { cmd, args } = command |> get-command-script |> parse-command
-  (cmd-str = "#{cmd} #{args.join ' '}") |> emitter.emit 'command', _
+  (cmd-str = "#{cmd} #{args.join ' '}") |> emitter.emit 'command', _, hook
+  cmd-str |> emitter.emit if hook is 'start'
 
-  child = spawn cmd, args, { cwd: cwd, env: process.env }
+  child = spawn cmd, args, { cwd, process.env }
   child.stdout.on 'data', -> it.to-string! |> emitter.emit 'stdout', _
   child.stderr.on 'data', -> it.to-string! |> emitter.emit 'stderr', _
   child.on 'error', (|> done)
   child.on 'exit', (code) ->
     if code isnt 0
-      new Error "Hook command failed with exit code: #{code}\n#{cmd-str}" |> done
+      new Error "Command failed with exit code: #{code}" |> done _, code, cmd-str
     else
+      code |> emitter.emit 'exit', _, hook
       done!
 
 get-command-script = (cmd) ->
@@ -112,7 +114,9 @@ replace-env-vars = (str) ->
 
 clean-spaces = -> it.replace /\s+/g, ' '
 
-set-environent = -> process.env.NODE_NAR = '1'
+set-environment = (dest) ->
+  process.env.NODE_PATH = ('.node' |> join dest, _)
+  process.env.NODE_NAR = '1'
 
 extend-path = (dest) ->
   process.env.PATH = ('.node/bin' |> join dest, _) + "#{delimiter}#{process.env.PATH}"

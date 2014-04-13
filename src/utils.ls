@@ -24,7 +24,7 @@ module.exports = _ = {
 
   is-win: process.platform is 'win32'
 
-  exists: -> it and (it |> fs.exists-sync)
+  exists: -> it and (it |> path.normalize |> fs.exists-sync)
 
   stringify: ->
     it |> JSON.stringify _, null, 2 if it
@@ -37,10 +37,10 @@ module.exports = _ = {
     it
 
   is-dir: ->
-    (it |> _.exists) and (it |> fs.lstat-sync).is-directory!
+    (it |> _.exists) and (it |> path.normalize |> fs.lstat-sync).is-directory!
 
   is-file: ->
-    (it |> _.exists) and (it |> fs.lstat-sync).is-file!
+    (it |> _.exists) and (it |> path.normalize |> fs.lstat-sync).is-file!
 
   random: ->
     _.now! + (Math.floor Math.random! * 10000)
@@ -58,7 +58,7 @@ module.exports = _ = {
 
   read: ->
     if it |> _.exists
-      data = (it |> fs.read-file-sync).to-string!
+      data = (it |> path.normalize |> fs.read-file-sync).to-string!
       if it |> /.json$/.test
         data |> JSON.parse
       else

@@ -11,7 +11,6 @@ program
   .description '\n  List archive files'
   .usage '[archive] [options]'
   .option '-d, --debug', 'Enable debugging mode'
-  .option '-x, --no-gzip', 'Process archive without gzip compression'
   .option '--no-table', 'Disable table format output'
   .on '--help', ->
     echo '''

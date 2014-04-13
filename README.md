@@ -24,7 +24,7 @@ and asynchronous event-based [programmatic API](#programmatic-api)
 - Tarball with gzip compression/decompression
 - Built-in support for archive extraction
 - Built-in support for archive execution
-- Supports application pre/post run hooks (also configurable from package.json)
+- Supports application pre/post run hooks (as [npm scripts][npm-scripts])
 - Allow to bundle dependencies by type
 - Allow to bundle node binary for platform-specific runtime environments
 - Transparent checksum file integrity verification
@@ -87,6 +87,14 @@ in a sandboxed deployment or runtime environment
 **Note**: node binary is OS and platform specific.
 Take that into account if you are going to deploy the archive in multiple platforms
 
+#### patterns
+Type: `array`
+Default: `['**']`
+
+[Glob][glob] patterns for matching files to include or exclude.
+
+nar will ignore matched patterns defined in [ignore-like files](#ignoring-files)
+
 ### Stage hooks
 
 `nar` supports application pre/post execution hooks, that are also supported by `npm`
@@ -105,33 +113,37 @@ Configuration example:
   "name": "app",
   "version": "1.0.0",
   "scripts": {
-    "prestart": "rm -rf dir",
+    "prestart": "mkdir -p temp/logs",
     "start": "node app --env ${ENV}",
     "stop" "rm -rf cache"
   }
 }
 ```
 
-#### Notes about hooks
+#### Useful features
 
 ##### Environment variables in hook commands
 
 You can consum environment variables from hook comands using the `${VARNAME}` notation
 
-##### Passing arguments to hook commands
+##### Check nar execution environment
 
-You can pass arguments to hooks commands from nar CLI
-
-```
-$ nar run app.nar --start-args "--env ${ENV} --debug"
-```
-
-##### Check if it's under nar execution environment
-
-nar will expose the `NODE_NAR` environment variable in the hooks execution contexts
+nar will expose the `NODE_NAR` environment variable in the hooks execution contexts and node application
 
 You can make any environment runtime checks if your application needs a different behavior
-dependending of the environment context
+dependending of the runtime environment
+
+##### Ignoring files
+
+nar will find ignore-like files in order to load
+and match patterns of files to discard
+
+Supported files by priority are:
+
+- `.narignore`
+- `.buildignore`
+- `.npmignore`
+- `.gitignore`
 
 ## Command-line interface
 
@@ -196,6 +208,12 @@ $ nar run app.nar --args-start '--env ${ENV}'
 $ nar run app.nar --args-stop '--path ${PATH}'
 ```
 
+##### Passing arguments to hook commands
+
+```
+$ nar run app.nar --args-start "--env ${ENV} --debug"
+```
+
 ### list
 ```bash
 $ nar list app.nar
@@ -249,7 +267,7 @@ Fired events: `end, error, entry, message`
 - **tmpdir** `string` Temporal directory to use. Default to random temporal directory
 
 ### nar.run(options)
-Fired events: `end, error, entry, command, info`
+Fired events: `end, error, entry, command, info, start, stdout, stderr, exit`
 
 Read, extract and run an application. It will read [command scripts][npm-scripts] hooks in `package.json`
 
@@ -277,14 +295,18 @@ Type: `string`
 
 ### Events
 
-List of available events to subscribe
+List of available events for subscription
 
-- **end** ([result]) When task was completed successfully
-- **error** `(error)` When some error happens, task cannot be completed
-- **entry** `(entry)` When read/write a file, usually handled from a file stream
+- **end** ([result]) Task was completed successfully
+- **error** `(error)` Some error happens and task cannot be completed
+- **entry** `(entry)` On read/write file, usually fired from file streams
 - **message** `(message)` General information status message, useful for debugging purposes
 - **command** `(command)` Hook command to execute when run an application
 - **info** `(config)` Expose the nar archive config
+- **start** `(command)` On application start hook command
+- **stdout** `(string)` Command execution stdout entry. Emits on every chunk of data
+- **stderr** `(string)` Command execution stderr entry. Emits on every chunk of data
+- **exit** `(code, hook)` When a hook command process ends
 
 ## Contributing
 
@@ -338,3 +360,4 @@ Released under the MIT license
 [gemnasium]: https://gemnasium.com/h2non/nar
 [npm]: http://npmjs.org/package/nar
 [npm-scripts]: https://www.npmjs.org/doc/misc/npm-scripts.html
+[glob]: https://github.com/isaacs/node-glob

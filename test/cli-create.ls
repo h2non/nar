@@ -12,7 +12,7 @@ describe 'CLI', (_) ->
 
   describe 'create', (_) ->
 
-    describe 'basic', (_) ->
+    xdescribe 'basic', (_) ->
 
       before ->
         mk "#{__dirname}/fixtures/.tmp"
@@ -22,8 +22,8 @@ describe 'CLI', (_) ->
         rm "#{__dirname}/fixtures/.tmp"
         process.chdir "#{__dirname}/.."
 
-      xit 'should create the archive', (done) ->
-        exec 'close', <[create]>, ->
-          expect exists "#{__dirname}/fixtures/.tmp/nar-#{version}.nar" .to.be.true
+      it 'should create the archive', (done) ->
+        exec 'close', <[create ../fixtures/archives/sample]>, ->
+          expect exists "#{dest}/test-#{version}.nar" .to.be.true
           expect it .to.be.equal 0
           done!

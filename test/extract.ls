@@ -47,6 +47,9 @@ describe 'extract', ->
     it 'should exist some package dependency', ->
       expect exists "#{dest}/node_modules/some/package.json" .to.be.true
 
+    it 'should exist package nested dependency', ->
+      expect exists "#{dest}/node_modules/some/node_modules/another/package.json" .to.be.true
+
     it 'should exist hidden file', ->
       expect exists "#{dest}/.hidden" .to.be.true
 

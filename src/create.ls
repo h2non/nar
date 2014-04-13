@@ -17,6 +17,7 @@ require! {
 
 const nar-file = '.nar.json'
 const ext = 'nar'
+const ignored-files = [ '!node_modules/**', '!.DS_Store', '!Thumbs.db' ]
 const ignore-files = [ '.gitignore' '.npmignore' '.buildignore' '.narignore' ]
 
 const defaults =
@@ -225,7 +226,7 @@ nar-manifest = (name, pkg) ->
   files: []
 
 files-to-include = ->
-  [ '**', '.*', '!node_modules/**' ] ++ ignore-files ++ (it |> get-ignored-files)
+  [ '**', '.*' ] ++ ignored-files ++ ignore-files ++ (it |> get-ignored-files)
 
 is-valid = -> it and it.length
 
