@@ -7,20 +7,17 @@ require! {
 
 program
   .command 'create [path]'
-  .description '\n  Create new aplication archive'
+  .description '\n  Create a nar archive'
   .usage '[path] [options]'
-  .option '-o, --output <path>', 'Output directory'
+  .option '-o, --output <path>', 'Output directory. Default to current directory'
   .option '-f, --force', 'Forces archive creation passing warnings or errors'
   .option '-d, --debug', 'Enable debugging mode for tasks that support it'
-  .option '-v, --verbose', 'Verbose mode. A lot of information will be showed'
-  .option '-x, --no-gzip', 'Process archive without gzip compression'
-  .option '--no-color', 'Disable colored output'
   .on '--help', ->
     echo '''
       Usage examples:
 
         $ nar create
-        $ nar create some/path
+        $ nar create some/dir
         $ nar create path/to/package.json -o some-dir
         $ nar create --debug --verbose --no-color
     \t
@@ -30,27 +27,39 @@ program
 create = (pkgpath, options) ->
   { debug, force, verbose, output } = options
 
-  opts =
-    dest: output
+  opts = dest: output
 
   if pkgpath
     unless pkgpath |> exists
-      "Error: the given path do not exists" |> exit 1
+      "Error: path do not exists" |> exit 1
     if pkgpath |> is-file
       pkgpath = pkgpath |> path.dirname
-    else
-      "Error: path must be a directory" |> exit 1 unless pkgpath |> is-dir
-    opts <<< base: pkgpath
+    unless pkgpath |> is-dir
+      "Error: path must be a directory" |> exit 1
+    opts <<< path: pkgpath
+
+  on-error = (err, code) ->
+    err.message |> echo if err
+    err.stack |> echo if debug and err.stack
+    ((code or 1) |> exit)!
+
+  on-start = (nar) ->
+    "Creating archive: #{nar.name} #{nar.manifest.version or ''}" |> echo
+
+  on-entry = ->
+    "Add [".green + "#{it.size} KB".cyan + "] #{it.name}".green |> echo
+
+  on-end = (output) ->
+    "Archive created in: #{output}" |> echo
+    exit 0
 
   try
-    "Creating archive..." |> echo
     archive = nar.create opts
-      .on 'error', -> throw it
-      .on 'entry', -> it |> echo
-      .on 'end', ->
-        "Archive created in: #{archive.output}" |> echo
-        exit 0
+      .on 'error', on-error
+      .on 'end', on-end
+
+    if debug
+      archive.on 'start', on-start
+      archive.on 'entry', on-entry
   catch
-    "Error: cannot create the archive: #{e.message} \n" |> echo
-    e.stack |> echo if debug
-    exit 1
+    e |> on-error

@@ -29,12 +29,14 @@
   "keywords": [
     "node",
     "archive",
-    "packer",
+    "archiver",
+    "packager",
     "package",
     "compress",
     "zip",
     "tarball",
     "gzip",
+    "pkg",
     "jar",
     "tar"
   ],

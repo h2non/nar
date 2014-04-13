@@ -17,7 +17,7 @@ require! {
 
 const nar-file = '.nar.json'
 const ext = 'nar'
-const ignored-files = [ '!node_modules/**', '!.DS_Store', '!Thumbs.db' ]
+const ignored-files = [ '!node_modules/**', '!.DS_Store', '!**/.DS_Store', '!Thumbs.db' ]
 const ignore-files = [ '.gitignore' '.npmignore' '.buildignore' '.narignore' ]
 
 const defaults =
@@ -31,11 +31,9 @@ const defaults =
 module.exports = create = (options) ->
   errored = no
   emitter = new EventEmitter
-
-  options = options |> apply-options
+  options = options |> apply
   pkg-path = options.path
 
-  # aditional
   pkg = pkg-path |> read if pkg-path
   options = pkg |> apply-pkg-options options, _ if pkg
   name = pkg.name or 'unnamed'
@@ -60,6 +58,9 @@ module.exports = create = (options) ->
   do-create = -> next ->
     return new Error 'Cannot discover the package.json' |> on-error unless pkg-path
     nar-config = name |> nar-manifest _, pkg
+
+    nar-config |> emitter.emit 'start', _
+    nar-config |> emitter.emit 'info', _
 
     deps = (done) ->
       dependencies = options |> match-dependencies _, pkg
@@ -94,7 +95,7 @@ module.exports = create = (options) ->
     on-compress = (err) ->
       return err |> on-error if err
       clean!
-      emitter.emit 'end', output
+      output |> emitter.emit 'end', _
 
     try
       tmp-path |> mk
@@ -144,68 +145,70 @@ module.exports = create = (options) ->
     else
       exec!
 
-  do-create!
-  emitter
+  compress-pkg = (options, cb) ->
+    { dest, base, name, patterns } = options
+    patterns = patterns.concat (base |> files-to-include)
+    options = { name, dest, patterns, src: base }
 
-compress-pkg = (options, cb) ->
-  { dest, base, name, patterns } = options
-  patterns = patterns.concat (base |> files-to-include)
-  options = { name, dest, patterns, src: base }
+    pkg-info =
+      archive: "#{name}.tar"
+      dest: '.'
+      type: 'package'
 
-  pkg-info =
-    archive: "#{name}.tar"
-    dest: '.'
-    type: 'package'
+    pack options
+      .on 'error', -> throw it
+      .on 'entry', on-entry
+      .on 'end', (pkg) ->
+        checksum pkg.path, (err, hash) ->
+          pkg-info <<< checksum: hash
+          cb pkg-info
 
-  pack options
-    .on 'error', -> throw it
-    .on 'end', (pkg) ->
+  compress-dependencies = (options, cb) ->
+    { dest, base, dependencies } = options
+    files = []
+
+    add-bin-directory = ->
+      bin-dir = path.join base, ('.bin' |> get-module-path)
+      {
+        name: '_modules-bin'
+        dest: dest
+        src: bin-dir
+      } |> it.push if bin-dir |> is-dir
+
+    find-pkg = ->
+      it.map ->
+        name: it
+        dest: dest
+        src: findup (it |> get-module-path), cwd: base
+
+    define-pkg-info = (pkg, done) ->
+      pkg-info =
+        archive: pkg.file
+        dest: pkg.name |> get-module-path
+        type: 'dependency'
+
       checksum pkg.path, (err, hash) ->
         pkg-info <<< checksum: hash
-        cb pkg-info
+        pkg-info |> files.push
+        done null, pkg-info
 
-compress-dependencies = (options, cb) ->
-  { dest, base, dependencies } = options
-  files = []
+    do-pack = (options, done) ->
+      (options |> pack)
+        .on 'error', done
+        .on 'entry', on-entry
+        .on 'end', -> done null, it
 
-  add-bin-directory = ->
-    bin-dir = path.join base, ('.bin' |> get-module-path)
-    {
-      name: '_modules-bin'
-      dest: dest
-      src: bin-dir
-    } |> it.push if bin-dir |> is-dir
+    compress-pkg = (pkg, done) ->
+      async.map pkg, do-pack, (err, results) ->
+        return err |> done if err
+        async.map results, define-pkg-info, done
 
-  find-pkg = ->
-    it.map ->
-      name: it
-      dest: dest
-      src: findup (it |> get-module-path), cwd: base
+    list = (dependencies |> vals).map find-pkg .filter is-valid
+    list[0] |> add-bin-directory if list.length
+    list |> async.each _, compress-pkg, -> it |> cb _, files
 
-  define-pkg-info = (pkg, done) ->
-    pkg-info =
-      archive: pkg.file
-      dest: pkg.name |> get-module-path
-      type: 'dependency'
-
-    checksum pkg.path, (err, hash) ->
-      pkg-info <<< checksum: hash
-      pkg-info |> files.push
-      done null, pkg-info
-
-  do-pack = (options, done) ->
-    (options |> pack)
-      .on 'error', done
-      .on 'end', -> done null, it
-
-  compress-pkg = (pkg, done) ->
-    async.map pkg, do-pack, (err, results) ->
-      return err |> done if err
-      async.map results, define-pkg-info, done
-
-  list = (dependencies |> vals).map find-pkg .filter is-valid
-  list[0] |> add-bin-directory if list.length
-  list |> async.each _, compress-pkg, -> it |> cb _, files
+  do-create!
+  emitter
 
 write-config = (config, tmpdir, cb) ->
   file = tmpdir |> path.join _, nar-file
@@ -244,7 +247,7 @@ apply-pkg-options = (options, pkg) ->
 discover-pkg = (dir = process.cwd!) ->
   findup 'package.json', cwd: dir
 
-apply-options = (options) ->
+apply = (options) ->
   options = (defaults |> clone) |> extend _, options
   options.patterns ||= []
 

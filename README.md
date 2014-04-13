@@ -153,13 +153,15 @@ Usage: nar [options] [command]
 
 Commands:
 
+  help
+    Output the usage information
   create [options] [path]
     Create new aplication archive
-  extract [options] [archive]
-    Extract archive files
-  run [options] [archive]
+  extract [options] <archive>
+    Extract archive
+  run [options] <archive>
     Run archive files
-  list [options] [archive]
+  list [options] <archive>
     List archive files
 
 Options:

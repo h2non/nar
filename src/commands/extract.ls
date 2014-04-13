@@ -6,12 +6,11 @@ require! {
 { echo, exit, exists, is-file, add-extension } = require '../utils'
 
 program
-  .command 'extract [archive]'
-  .description '\n  Extract archive files'
+  .command 'extract <archive>'
+  .description '\n  Extract archive'
   .usage '[archive] [options]'
   .option '-o, --output <path>', 'Output directory. Default to current directory'
   .option '-d, --debug', 'Enable debugging mode for tasks that support it'
-  .option '-x, --no-gzip', 'Process archive without gzip compression'
   .on '--help', ->
     echo '''
       Usage examples:
@@ -19,7 +18,7 @@ program
         $ nar extract
         $ nar extract app.nar
         $ nar extract app.nar -o some/dir
-        $ nar extract app.nar --debug --verbose
+        $ nar extract app.nar --debug
     \t
     '''
   .action -> extract ...

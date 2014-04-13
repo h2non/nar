@@ -7,7 +7,7 @@ require! {
 { echo, exit, exists, is-file, add-extension } = require '../utils'
 
 program
-  .command 'list [archive]'
+  .command 'list <archive>'
   .description '\n  List archive files'
   .usage '[archive] [options]'
   .option '-d, --debug', 'Enable debugging mode'

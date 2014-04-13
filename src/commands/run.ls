@@ -6,7 +6,7 @@ require! {
 { echo, exit } = require '../utils'
 
 program
-  .command 'run [archive]'
+  .command 'run <archive>'
   .description '\n  Run archive files'
   .usage '[archive] [options]'
   .option '-o, --output <path>', 'Output directory'

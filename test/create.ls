@@ -34,8 +34,8 @@ describe 'create', ->
         .on 'error', -> throw it
         .on 'entry', -> entries += 1
         .on 'end', ->
-          expect entries .to.be.equal 3
           expect it .to.be.equal "#{dest}/test-1.0.0.nar"
+          expect entries > 1 .to.be.true
           done!
 
   describe 'complex', (_) ->
@@ -43,7 +43,7 @@ describe 'create', ->
     before ->
       rm dest
       mk dest
-      chdir "#{__dirname}/fixtures/complex/test" # discover
+      chdir "#{__dirname}/fixtures/complex/test"
 
     before ->
       @archive = create dest: dest
@@ -53,8 +53,11 @@ describe 'create', ->
       rm dest
 
     it 'should compress files sucessfully', (done) ->
+      entries = null
       @archive
         .on 'error', -> throw it
+        .on 'entry', -> entries += 1
         .on 'end', ->
           expect it .to.be.equal "#{dest}/test-0.1.0.nar"
+          expect entries > 1 .to.be.true
           done!
