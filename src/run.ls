@@ -32,7 +32,7 @@ module.exports = run = (options) ->
     process.env.NODE_NAR = '1'
     if nar.binary
       return new Error 'Unsupported binary platform or processor architecture'
-        |> on-error unless nar |> check-platform
+        |> on-error unless nar |> is-binary-valid
       process.env.PATH = ('.node/bin' |> join options.dest, _) + "#{delimiter}#{process.env.PATH}"
 
     hooks-fn = []
@@ -42,10 +42,9 @@ module.exports = run = (options) ->
         cmd += " #{args[hook]}"
       exec emitter, cmd, options.dest |> hooks-fn.push
 
-    if hooks-fn.length
-      async.series hooks-fn, (err) ->
-        return err |> on-error if err
-        on-end!
+    async.series hooks-fn, (err) ->
+      return err |> on-error if err
+      on-end!
 
   do-extract = -> next ->
     'Extracting archive...' |> on-msg
@@ -64,7 +63,7 @@ get-hooks = (nar) ->
     hooks <<< (it): scripts[it] if it |> has scripts, _
   hooks
 
-check-platform = (nar) ->
+is-binary-valid = (nar) ->
   { platform, arch } = nar.info
   platform is process.platform and arch is process.arch
 

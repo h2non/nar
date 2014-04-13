@@ -3,11 +3,11 @@ require! {
   tar
   zlib.create-gunzip
   events.EventEmitter
-  './utils'.next
 }
+{ next, add-extension } = require './utils'
 
 module.exports = list = (options) ->
-  { file, gzip } = options
+  { file, gzip } = options |> apply
   emitter = new EventEmitter
   ended = no
   error = no
@@ -22,23 +22,46 @@ module.exports = list = (options) ->
     files |> emitter.emit 'end', _
 
   on-entry = (entry) ->
-    if entry
-      entry = { entry.type, entry.path, entry.size, entry.props }
-      entry |> files.push
-      entry |> emitter.emit 'entry', _
+    entry |> files.push
+    entry |> emitter.emit 'entry', _
 
   on-listener = (name, fn) ->
     switch name
-      case 'error' then fn error if error
-      case 'end' then fn files if ended
+      case 'error' then error |> fn if error
+      case 'end' then files |> fn if ended
 
   parse = -> next ->
+    nar = null
+    entries = {}
+
+    entry-reader = (entry) ->
+      data = ''
+      if /\.nar\.json$/.test entry.path
+        entry.on 'data', -> data += it.to-string!
+        entry.on 'end', -> nar := data |> JSON.parse
+      else
+        entries <<< (entry.path): entry
+
+    emit-entries = ->
+      nar |> emitter.emit 'info', _
+      nar.files.for-each (file) ->
+        {
+          file.archive
+          file.type
+          file.dest
+          size: entries[file.archive].size
+          props: entries[file.archive].props
+        } |> on-entry
+
     parse = tar.Parse!
     parse.on 'error', on-error
-    parse.on 'entry', on-entry
-    parse.on 'end', on-end
+    parse.on 'entry', entry-reader
+    parse.on 'end', ->
+      return new Error 'Invalid nar file' |> on-error unless nar
+      emit-entries!
+      on-end!
 
-    stream = file |> fs.create-read-stream
+    stream = file |> add-extension |> fs.create-read-stream
     stream.on 'error', on-error
     stream = stream.pipe create-gunzip! if gzip
     stream.pipe parse
@@ -47,3 +70,7 @@ module.exports = list = (options) ->
 
   parse!
   emitter
+
+apply = (options) ->
+  { gzip: yes, file: options.file or process.cwd! }
+

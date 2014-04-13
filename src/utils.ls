@@ -30,6 +30,10 @@ module.exports = _ = {
   tmpdir: (name = 'pkg') ->
     "nar-#{name}-#{_.random!}" |> path.join os.tmpdir!, _
 
+  add-extension: ->
+    it += '.nar' unless /.nar$/.test it if it
+    it
+
   is-dir: ->
     (it |> _.exists) and (it |> fs.lstat-sync).is-directory!
 

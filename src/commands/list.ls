@@ -25,7 +25,7 @@ program
 
 list = (archive, options) ->
   { debug, gzip, table } = options
-  table-list = new Table head: [ 'Filename', 'Path', 'Size', 'Type' ]
+  table-list = new Table head: [ 'File', 'Destination', 'Size', 'Type' ]
 
   opts =
     file: archive
@@ -35,6 +35,9 @@ list = (archive, options) ->
     new Error "Error while reading the archive: #{it.message}".red |> echo
     it.stack |> echo if debug
     exit 1
+
+  on-info = ->
+    "Package: #{it.name} #{it.manifest.version or ''}" |> echo
 
   on-entry = ->
     if table
@@ -54,10 +57,11 @@ list = (archive, options) ->
   try
     nar.list opts
       .on 'error', on-error
+      .on 'info', on-info
       .on 'entry', on-entry
       .on 'end', on-end
   catch
     e |> on-error
 
 map-entry = ->
-  [ (it.path |> path.basename _, '.tar'), it.path, it.size + ' KB', it.type ] if it
+  [ (it.archive |> path.basename _, '.tar'), it.dest, it.size + ' KB', it.type ] if it

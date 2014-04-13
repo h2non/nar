@@ -4,7 +4,7 @@ require! {
   path.join
   events.EventEmitter
 }
-{ next, copy, is-file, is-dir, tmpdir, rm, mk, read, clone } = require './utils'
+{ next, copy, is-file, is-dir, tmpdir, rm, mk, read, clone, add-extension } = require './utils'
 
 module.exports = extract = (options = {}) ->
   { path, dest, tmpdir } = options = options |> apply
@@ -100,10 +100,6 @@ apply = (options) ->
     options.dest or process.cwd!
     path: options.path |> add-extension
   }
-
-add-extension = ->
-  it += '.nar' unless /.nar$/.test it if it
-  it
 
 mk-dirs = (dest, tmpdir) ->
   mk dest unless dest |> is-dir

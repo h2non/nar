@@ -104,3 +104,48 @@ describe 'nar', ->
 
       it 'should not exists test directory', ->
         expect exists "#{dest}/test" .to.be.false
+
+    describe 'run', (_) ->
+
+      options = path: "#{dest}/test-0.1.0.nar"
+
+      it 'should create the archive', (done) ->
+        nar.extract options
+          .on 'error', -> throw it
+          .on 'end', -> done!
+
+      it 'should exists package.json', ->
+        expect exists "#{dest}/package.json" .to.be.true
+
+      it 'should exists the node binary', ->
+        expect exists "#{dest}/.node/bin/node" .to.be.true
+
+      it 'should exists nar.json', ->
+        expect exists "#{dest}/.nar.json" .to.be.true
+
+      it 'should exists main.js', ->
+        expect exists "#{dest}/main.js" .to.be.true
+
+      it 'should exists .gitignore', ->
+        expect exists "#{dest}/.gitignore" .to.be.true
+
+      it 'should exists .narignore', ->
+        expect exists "#{dest}/.narignore" .to.be.true
+
+      it 'should exists node_modules', ->
+        expect exists "#{dest}/node_modules" .to.be.true
+
+      it 'should exists hu dependency', ->
+        expect exists "#{dest}/node_modules/hu/package.json" .to.be.true
+
+      it 'should exists dev dependency', ->
+        expect exists "#{dest}/node_modules/dev/package.json" .to.be.true
+
+      it 'should exists .bin directory', ->
+        expect exists "#{dest}/node_modules/.bin" .to.be.true
+
+      it 'should exists .bin/hu', ->
+        expect exists "#{dest}/node_modules/.bin/hu" .to.be.true
+
+      it 'should not exists test directory', ->
+        expect exists "#{dest}/test" .to.be.false
