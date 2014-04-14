@@ -11,7 +11,7 @@ program
   .usage '[path] [options]'
   .option '-o, --output <path>', 'Output directory. Default to current directory'
   .option '-f, --force', 'Forces archive creation passing warnings or errors'
-  .option '-d, --debug', 'Enable debugging mode for tasks that support it'
+  .option '-d, --debug', 'Enable debugging. More information will be shown'
   .on '--help', ->
     echo '''
       Usage examples:

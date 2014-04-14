@@ -10,7 +10,7 @@ program
   .command 'list <archive>'
   .description '\n  List archive files'
   .usage '[archive] [options]'
-  .option '-d, --debug', 'Enable debugging mode'
+  .option '-d, --debug', 'Enable debugging. More information will be shown'
   .option '--no-table', 'Disable table format output'
   .on '--help', ->
     echo '''
