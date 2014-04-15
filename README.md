@@ -318,7 +318,7 @@ Type: `string`
 
 List of available events for subscription
 
-- **end** ([result]) Task was completed successfully
+- **end** (`[result]`) Task was completed successfully
 - **error** `(error)` Some error happens and task cannot be completed
 - **entry** `(entry)` On read/write file, usually fired from file streams
 - **message** `(message)` General information status message, useful for debugging purposes
