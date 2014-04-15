@@ -38,12 +38,11 @@ run = (archive, options) ->
     dest: output
     clean: clean
     hooks: hooks
-    args: {
+    args:
       start: args-start
       prestart: args-prestart
       stop: args-stop
       poststop: args-poststop
-    }
 
   on-extract = -> "Extracting files..." |> echo
 
@@ -74,7 +73,7 @@ run = (archive, options) ->
   on-exit = (code, hook) ->
     "End [".green + hook.cyan + "]: exited with code #{code}".green |> echo
 
-  try
+  run = ->
     archive = nar.run opts
       .on 'extract', on-extract
       .on 'info', on-info
@@ -89,6 +88,9 @@ run = (archive, options) ->
       archive.on 'exit', on-exit
       archive.on 'stdout', on-stdout
       archive.on 'stderr', on-stderr
+
+  try
+    run!
   catch
     e |> on-error
 

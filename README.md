@@ -42,6 +42,23 @@ If you need to use the API, you should install it as package dependency
 $ npm install nar --save
 ```
 
+## Basic usage
+
+Create new archive
+```bash
+$ nar create
+```
+
+Extract files
+```bash
+$ nar extract app.nar
+```
+
+Or directly run the application
+```bash
+$ nar run app.nar
+```
+
 ## Configuration
 
 Example `package.json`

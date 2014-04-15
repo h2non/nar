@@ -10,7 +10,6 @@ program
   .description '\n  Create a nar archive'
   .usage '[path] [options]'
   .option '-o, --output <path>', 'Output directory. Default to current directory'
-  .option '-f, --force', 'Forces archive creation passing warnings or errors'
   .option '-d, --debug', 'Enable debugging. More information will be shown'
   .on '--help', ->
     echo '''
@@ -19,13 +18,13 @@ program
         $ nar create
         $ nar create some/dir
         $ nar create path/to/package.json -o some-dir
-        $ nar create --debug --verbose --no-color
+        $ nar create --debug
     \t
     '''
   .action -> create ...
 
 create = (pkgpath, options) ->
-  { debug, force, verbose, output } = options
+  { debug, verbose, output } = options
 
   opts = dest: output
 
@@ -53,13 +52,15 @@ create = (pkgpath, options) ->
     "Archive created in: #{output}" |> echo
     exit 0
 
-  try
+  create = ->
     archive = nar.create opts
       .on 'start', on-start
       .on 'error', on-error
       .on 'end', on-end
 
-    if debug
-      archive.on 'entry', on-entry
+    archive.on 'entry', on-entry if debug
+
+  try
+    create!
   catch
     e |> on-error

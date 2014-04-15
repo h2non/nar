@@ -24,7 +24,7 @@ program
   .action -> extract ...
 
 extract = (archive, options) ->
-  { debug, force, verbose, output } = options
+  { debug, output } = options
 
   opts =
     path: archive |> add-extension
@@ -44,17 +44,18 @@ extract = (archive, options) ->
     "Extracted sucessfully in: #{it.dest}" |> echo
     exit 0
 
-  unless opts.path |> is-file
-    "The given path is not a file" |> exit 1
+  extract = ->
+    "The given path is not a file" |> exit 1 unless opts.path |> is-file
 
-  try
     archive = nar.extract opts
       .on 'error', on-error
       .on 'end', on-end
+
     if debug
       archive.on 'start', on-start
       archive.on 'entry', on-entry
+
+  try
+    extract!
   catch
-    "Error: cannot extract the archive: #{e.message}" |> echo
-    e.stack |> echo if debug
-    exit 1
+    "Cannot extract the archive: #{e.message}" |> on-error

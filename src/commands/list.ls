@@ -23,7 +23,7 @@ program
   .action -> list ...
 
 list = (archive, options) ->
-  { debug, gzip, table } = options
+  { debug, table } = options
   table-list = new Table head: [ 'File', 'Destination', 'Size', 'Type' ]
 
   opts = path: archive |> add-extension
@@ -46,15 +46,17 @@ list = (archive, options) ->
     table-list.to-string! |> echo if table
     exit 0
 
-  unless opts.path |> is-file
-    "The given path is not a file" |> exit 1
+  list = ->
+    "The given path is not a file" |> exit 1 unless opts.path |> is-file
 
-  try
     nar.list opts
       .on 'error', on-error
       .on 'info', on-info
       .on 'entry', on-entry
       .on 'end', on-end
+
+  try
+    list!
   catch
     e |> on-error
 
