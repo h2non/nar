@@ -338,7 +338,7 @@ Type: `string`
 
 ### Events
 
-List of available events for subscription
+Complete list of available events for subscription
 
 - **end** (`[result]`) Task was completed successfully
 - **error** `(error)` Some error happens and task cannot be completed
