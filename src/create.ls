@@ -36,6 +36,8 @@ module.exports = create = (options) ->
 
   pkg = pkg-path |> read if pkg-path
   options = pkg |> apply-pkg-options options, _ if pkg
+  throw new Error 'Cannot find package.json' unless pkg
+
   name = pkg.name or 'unnamed'
   tmp-path = tmpdir name
   base-dir = options <<< base: pkg-path |> path.dirname

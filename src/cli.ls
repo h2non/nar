@@ -18,10 +18,10 @@ program.on '--help', help = ->
   echo '''
     Usage examples:
 
-      $ nar create [path]
-      $ nar run [archive]
-      $ nar extract [archive] -o [directory]
-      $ nar list [archive]
+      $ nar create
+      $ nar run app.nar
+      $ nar extract app.nar -o some/dir
+      $ nar list app.nar
 
     Command specific help:
 

@@ -25,7 +25,7 @@ and asynchronous event-based [programmatic API](#programmatic-api)
 - Tarball with gzip compression/decompression
 - Built-in support for archive extraction
 - Built-in support for application execution
-- Supports application pre/post run hooks (as [npm scripts][npm-scripts])
+- Supports application pre/post run hooks (from [npm scripts][npm-scripts])
 - Allow to bundle dependencies by type
 - Allow to bundle node binary for platform-specific runtime environments
 - Transparent checksum file integrity verification
@@ -165,7 +165,7 @@ Commands:
   help
     Output the usage information
   create [options] [path]
-    Create new aplication archive
+    Create a nar archive
   extract [options] <archive>
     Extract archive
   run [options] <archive>
@@ -180,10 +180,10 @@ Options:
 
 Usage examples:
 
-  $ nar create [path]
-  $ nar run [archive]
-  $ nar extract [archive] -o [directory]
-  $ nar list [archive]
+  $ nar create
+  $ nar run app.nar
+  $ nar extract app.nar -o some/dir
+  $ nar list app.nar
 
 Command specific help:
 
@@ -197,8 +197,8 @@ Create a new archive from an existent application
 ```bash
 $ nar create
 $ nar create some/path --debug
-$ nar create path/to/package.json -o some-dir
-$ nar create --debug --verbose --no-color
+$ nar create path/to/package.json -o some/dir
+$ nar create --debug --verbose
 ```
 
 ### extract
@@ -209,7 +209,7 @@ Extract archive files into directory
 $ nar extract
 $ nar extract app.nar
 $ nar extract app.nar -o some-dir
-$ nar extract app.nar --debug --verbose --no-color
+$ nar extract app.nar --debug
 ```
 
 ### run
