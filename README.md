@@ -163,7 +163,7 @@ Usage: nar [options] [command]
 Commands:
 
   help
-    Output the usage information
+    Output usage information
   create [options] [path]
     Create a nar archive
   extract [options] <archive>
