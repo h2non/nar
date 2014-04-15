@@ -12,7 +12,7 @@ program
   .version nar.VERSION
 
 program.command 'help' .action (-> help |> echo)
-  .description '\n  Output the usage information'
+  .description '\n  Output usage information'
 
 program.on '--help', help = ->
   echo '''
