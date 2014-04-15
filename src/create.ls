@@ -58,7 +58,7 @@ module.exports = create = (options) ->
     it |> emitter.emit 'entry', _ if it
 
   do-create = -> next ->
-    return new Error 'Cannot discover the package.json' |> on-error unless pkg-path
+    return new Error 'Cannot find the package.json' |> on-error unless pkg-path
     nar-config = name |> nar-manifest _, pkg
 
     nar-config |> emitter.emit 'start', _
@@ -282,8 +282,7 @@ get-ignored-files = (dir) ->
   patterns
 
 get-module-path = ->
-  if it is '_modules-bin'
-    it = '.bin'
+  it = '.bin' if it is '_modules-bin'
   it |> path.join 'node_modules', _
 
 match-dependencies = (options, pkg) ->
