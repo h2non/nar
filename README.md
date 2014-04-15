@@ -78,7 +78,7 @@ Example `package.json`
 }
 ```
 
-### Config options
+### Options
 
 The following options can be declared in your application `package.json` as
 properties members of the `archive` object
@@ -261,10 +261,13 @@ The API is fully asynchronous event-based, for a better approach
 var nar = require('nar')
 
 var options = {
-  dest: 'path/to/pkg'
-  binary: true,
-  dependencies: true,
-  devDependencies: true
+  path: 'my/package.json', // defaults to current directory
+  dest: 'build/',
+  archive: {
+    binary: true,
+    dependencies: true,
+    devDependencies: true
+  }
 }
 
 try {
@@ -292,6 +295,8 @@ Create new archive from a given package.json
 
 - **path** `string` Path to package.json or application directory. Required
 - **dest** `string` Extract destination path. Default to random temporal directory
+- **patterns** `array` List of glob patterns for matching included/excluded files
+- **archive** `object` Creation archive options. By default taken from `package.json`
 
 ### nar.extract(options)
 Fired events: `end, error, entry, message, info, start`
