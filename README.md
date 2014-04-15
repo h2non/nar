@@ -147,7 +147,7 @@ Configuration example:
 }
 ```
 
-#### Useful features
+#### Aditional useful features
 
 ##### Environment variables in hook commands
 
