@@ -87,7 +87,7 @@ read-nar-json = (dest) ->
 get-hooks = (nar) ->
   scripts = nar.manifest.scripts
   hooks = {}
-  hooks-keys.for-each -> hooks <<< (it): scripts[it] if it |> has scripts, _
+  hooks-keys.for-each -> hooks <<< (it): scripts[it] if scripts and (it |> has scripts, _)
   hooks
 
 is-binary-valid = (nar) ->

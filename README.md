@@ -70,8 +70,7 @@ Example `package.json`
   "archive": {
     "binary": true,
     "dependencies": true,
-    "devDependencies": false,
-    "peerDependencies": true
+    "devDependencies": false
   },
   "dependencies": {
     "some": "~0.1.0"
@@ -95,12 +94,6 @@ Type: `boolean`
 Default: `false`
 
 Include development dependencies in the nar archive
-
-#### peerDependencies
-Type: `boolean`
-Default: `true`
-
-Include peer dependencies in the nar archive
 
 #### globalDependencies
 Type: `array`

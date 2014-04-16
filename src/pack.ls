@@ -49,8 +49,8 @@ module.exports = pack = (options = {}) ->
 
     cb = file-path |> calculate-checksum _, data
     (file-path
-      |> create-stream _, cb)
-      |> create-tar _, options
+    |> create-stream _, cb)
+    |> create-tar _, options
 
   create-stream = (file, cb) ->
     fs.create-write-stream file

@@ -23,7 +23,6 @@ const defaults =
   binary: no
   dependencies: yes
   dev-dependencies: no
-  peer-dependencies: yes
   patterns: null
 
 module.exports = create = (options) ->
@@ -288,6 +287,5 @@ match-dependencies = (options, pkg) ->
   deps = {}
   deps <<< run: pkg.dependencies |> keys if options.dependencies
   deps <<< dev: pkg.dev-dependencies |> keys if options.dev-dependencies
-  deps <<< peer: pkg.peer-dependencies |> keys if options.peer-dependencies
   deps <<< global: global-dependencies if options.global-dependencies |> is-array
   deps
