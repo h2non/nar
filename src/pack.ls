@@ -10,6 +10,19 @@ require! {
 
 # See: http://zlib.net/manual.html#Constants
 const zlib-options = level: 1
+# From: https://github.com/github/gitignore/tree/master/Global
+const ignored-files = [
+  '!.DS_Store'
+  '!Thumbs.db'
+  '!ehthumbs.db'
+  '!Desktop.ini'
+  '!$RECYCLE.BIN/'
+  '!.AppleDouble'
+  '!.LSOverride'
+  '!.Trashes'
+  '!.apdisk'
+  '!.AppleDB'
+]
 
 module.exports = pack = (options = {}) ->
   { name, src, dest, patterns, ext } = options = options |> apply
@@ -72,7 +85,7 @@ apply = (options) ->
     options.src or process.cwd!
     options.dest or tmpdir!
     options.ext or 'tar'
-    options.patterns or [ '**', '.*' ]
     options.name or 'unnamed'
     options.gzip or no
+    patterns: (options.patterns or [ '**', '.*' ]) ++ ignored-files
   }
