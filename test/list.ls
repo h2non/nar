@@ -1,13 +1,4 @@
-{
-  rm
-  mk
-  fs
-  spy
-  once
-  exists
-  expect
-  uncaught
-} = require './lib/helper'
+{ rm, mk, fs, spy, once, exists, expect, uncaught } = require './lib/helper'
 list = require '../lib/list'
 
 describe 'list', ->

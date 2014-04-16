@@ -1,13 +1,4 @@
-{
-  rm
-  mk
-  nar
-  read
-  chdir
-  exists
-  expect
-  version
-} = require './lib/helper'
+{ rm, mk, nar, read, chdir, exists, expect, version } = require './lib/helper'
 
 describe 'nar', ->
 

@@ -1,9 +1,4 @@
-{
-  rm
-  mk
-  exists
-  expect
-} = require './lib/helper'
+{ rm, mk, exists, expect } = require './lib/helper'
 pack = require '../lib/pack'
 
 describe 'pack', ->

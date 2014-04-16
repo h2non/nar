@@ -1,13 +1,4 @@
-{
-  rm
-  mk
-  nar
-  read
-  chdir
-  exists
-  expect
-  version
-} = require './lib/helper'
+{ rm, mk, nar, read, chdir, exists, expect, version } = require './lib/helper'
 create = require '../lib/create'
 
 describe 'create', ->
@@ -35,7 +26,7 @@ describe 'create', ->
         .on 'entry', -> entries += 1
         .on 'end', ->
           expect it .to.be.equal "#{dest}/test-1.0.0.nar"
-          expect entries > 1 .to.be.true
+          expect entries > 10 .to.be.true
           done!
 
   describe 'complex', (_) ->
@@ -59,5 +50,5 @@ describe 'create', ->
         .on 'entry', -> entries += 1
         .on 'end', ->
           expect it .to.be.equal "#{dest}/test-0.1.0.nar"
-          expect entries > 1 .to.be.true
+          expect entries > 20 .to.be.true
           done!

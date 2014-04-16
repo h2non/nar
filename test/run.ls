@@ -1,11 +1,4 @@
-{
-  fs
-  rm
-  mk
-  chdir
-  exists
-  expect
-} = require './lib/helper'
+{ fs, rm, mk, chdir, exists, expect } = require './lib/helper'
 run = require '../lib/run'
 
 describe 'run', ->

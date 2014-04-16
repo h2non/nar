@@ -231,7 +231,7 @@ nar-manifest = (name, pkg) ->
   files: []
 
 files-to-include = ->
-  ignored-files ++ [ '**', '*' ] ++ ignore-files ++ (it |> get-ignored-files)
+  ignored-files ++ [ '**' ] ++ ignore-files ++ (it |> get-ignored-files)
 
 is-valid = -> it and it.length
 
