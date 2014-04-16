@@ -1,0 +1,9 @@
+{
+  "name": "global",
+  "main": "global.js",
+  "archive": {
+    "globalDependencies": [
+      "npm"
+    ]
+  }
+}
