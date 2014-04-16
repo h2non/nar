@@ -27,7 +27,8 @@ and asynchronous event-based [programmatic API](#programmatic-api)
 - Built-in support for application execution
 - Supports application pre/post run hooks (from [npm scripts][npm-scripts])
 - Allow to bundle dependencies by type
-- Allow to bundle node binary for platform-specific runtime environments
+- Allow to bundle global dependencies
+- Allow to bundle node binary for platform-specific and isolated runtime environments
 - Transparent checksum file integrity verification
 
 ## Installation
@@ -100,6 +101,17 @@ Type: `boolean`
 Default: `true`
 
 Include peer dependencies in the nar archive
+
+#### globalDependencies
+Type: `array`
+Default: `null`
+
+Include global dependencies in the nar archive.
+It should define an array strings with packages names that you want to include
+
+nar will try to resolve globally installed packages (via [requireg][requireg]) and will bundle them into
+the archive. Global dependencies will placed in `.node/lib/node` and will be
+available via `require` and `$PATH` (for binaries specific)
 
 #### binary
 Type: `boolean`
@@ -404,3 +416,4 @@ Released under the MIT license
 [npm]: http://npmjs.org/package/nar
 [npm-scripts]: https://www.npmjs.org/doc/misc/npm-scripts.html
 [glob]: https://github.com/isaacs/node-glob
+[requireg]: https://github.com/h2non/requireg

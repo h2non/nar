@@ -2,17 +2,15 @@ require! {
   fs
   path
   async
-  matchdep
   './pack'
   './extract'
   events.EventEmitter
   findup: 'findup-sync'
 }
-
 {
-  read, rm, tmpdir, clone, extend, copy,
+  read, rm, tmpdir, clone, extend, copy, keys, map,
   is-object, is-file, is-dir, mk, now, stringify,
-  vals, exists, checksum, lines, next
+  vals, exists, checksum, lines, next, is-array
 } = require './utils'
 
 const nar-file = '.nar.json'
@@ -40,7 +38,7 @@ module.exports = create = (options) ->
 
   name = pkg.name or 'unnamed'
   tmp-path = tmpdir name
-  base-dir = options <<< base: pkg-path |> path.dirname
+  options <<< base: base-dir = pkg-path |> path.dirname
 
   file = if options.file then options.file else get-filename pkg
   output = file |> output-file _, options.dest
@@ -65,14 +63,7 @@ module.exports = create = (options) ->
     nar-config |> emitter.emit 'info', _
 
     deps = (done) ->
-      dependencies = options |> match-dependencies _, pkg
-
-      config =
-        dest: tmp-path
-        base: options.base
-        dependencies: dependencies
-
-      compress-dependencies config, (err, files) ->
+      compress-dependencies tmp-path, base-dir, (err, files) ->
         return err |> on-error if err
         nar-config.files = nar-config.files ++ files
         done!
@@ -80,7 +71,7 @@ module.exports = create = (options) ->
     base-pkg = (done) ->
       config =
         dest: tmp-path
-        base: options.base
+        base: base-dir
         name: name
         patterns: options.patterns
 
@@ -149,7 +140,7 @@ module.exports = create = (options) ->
 
   compress-pkg = (options, cb) ->
     { dest, base, name, patterns } = options
-    patterns = patterns.concat (base |> files-to-include)
+    patterns = patterns.concat (base |> include-files-patterns)
     options = { name, dest, patterns, src: base }
 
     pkg-info =
@@ -157,22 +148,23 @@ module.exports = create = (options) ->
       dest: '.'
       type: 'package'
 
+    on-pack-end = (pkg) ->
+      checksum pkg.path, (err, hash) ->
+        pkg-info <<< checksum: hash
+        cb pkg-info
+
     pack options
       .on 'error', -> throw it
       .on 'entry', on-entry
-      .on 'end', (pkg) ->
-        checksum pkg.path, (err, hash) ->
-          pkg-info <<< checksum: hash
-          cb pkg-info
+      .on 'end', on-pack-end
 
-  compress-dependencies = (options, cb) ->
-    { dest, base, dependencies } = options
+  compress-dependencies = (dest, base, cb) ->
     files = []
 
     add-bin-directory = ->
       bin-dir = path.join base, ('.bin' |> get-module-path)
       {
-        name: '_modules-bin'
+        name: 'modules-bin-dir'
         dest: dest
         src: bin-dir
       } |> it.push if bin-dir |> is-dir
@@ -205,9 +197,16 @@ module.exports = create = (options) ->
         return err |> done if err
         async.map results, define-pkg-info, done
 
-    list = (dependencies |> vals).map find-pkg .filter is-valid
+    dependencies-list = ->
+      (options
+      |> match-dependencies _, pkg
+      |> vals)
+        .map find-pkg
+        .filter is-valid
+
+    list = dependencies-list!
     list[0] |> add-bin-directory if list.length
-    list |> async.each _, compress-pkg, -> it |> cb _, files
+    list |> async.each _, compress-pkg, (|> cb _, files)
 
   do-create!
   emitter
@@ -230,7 +229,7 @@ nar-manifest = (name, pkg) ->
   manifest: pkg
   files: []
 
-files-to-include = ->
+include-files-patterns = ->
   ignored-files ++ [ '**' ] ++ ignore-files ++ (it |> get-ignored-files)
 
 is-valid = -> it and it.length
@@ -282,13 +281,13 @@ get-ignored-files = (dir) ->
   patterns
 
 get-module-path = ->
-  it = '.bin' if it is '_modules-bin'
+  it = '.bin' if it is 'modules-bin-dir'
   it |> path.join 'node_modules', _
 
 match-dependencies = (options, pkg) ->
-  { dependencies, dev-dependencies, peer-dependencies } = options
   deps = {}
-  deps <<< run: matchdep.filter '*', pkg if dependencies
-  deps <<< dev: matchdep.filter-dev '*', pkg if dev-dependencies
-  deps <<< peer: matchdep.filter-peer '*', pkg if peer-dependencies
+  deps <<< run: pkg.dependencies |> keys if options.dependencies
+  deps <<< dev: pkg.dev-dependencies |> keys if options.dev-dependencies
+  deps <<< peer: pkg.peer-dependencies |> keys if options.peer-dependencies
+  deps <<< global: global-dependencies if options.global-dependencies |> is-array
   deps

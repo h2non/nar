@@ -6,7 +6,7 @@ require! {
 }
 { echo } = require './utils'
 
-module.exports <<< parse: -> it |> program.parse
+module.exports <<< parse: (|> program.parse)
 
 program
   .version nar.VERSION

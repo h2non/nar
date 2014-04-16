@@ -5,7 +5,7 @@ require! {
   child_process.spawn
   events.EventEmitter
 }
-{ next, tmpdir, read, has, rm, delimiter, is-win } = require './utils'
+{ next, tmpdir, read, has, rm, delimiter, is-win, is-array } = require './utils'
 
 const hooks-keys = [ 'prestart' 'start' 'stop' 'poststop' ]
 
@@ -26,18 +26,28 @@ module.exports = run = (options) ->
     clean-dir!
     options |> emitter.emit 'end', _, nar
 
-  hooks-fn = (options, nar) ->
+  hooks-fn = (nar) ->
     buf = []
+
+    add-hook-fn = (cmd, hook) ->
+      if args and (hook |> has args, _) and args[hook]
+        cmd += " " + if args[hook] |> is-array then args[hook].join ' ' else args[hook]
+      cmd |> exec emitter, _, dest, hook |> buf.push
+
+    add-start-main-script = ->
+      if nar.manifest.main
+        "node #{nar.manifest.main}"
+        |> exec emitter, _, dest, 'start'
+        |> buf.push
+
     for own hook, cmd of (nar |> get-hooks)
       when hooks or (not hooks and hook is 'start')
-      then
-        if args and (hook |> has args, _) and args[hook]
-          cmd += " " + if args[hook] |> Array.is-array then args[hook].join ' ' else args[hook]
-        cmd |> exec emitter, _, options.dest, hook |> buf.push
+      then hook |> add-hook-fn cmd, _
+
+    add-start-main-script! unless buf.length
     buf
 
   app-runner = (options) ->
-    { dest } = options
     nar = dest |> read-nar-json
     nar |> emitter.emit 'info', _
     dest |> set-environment
@@ -47,7 +57,7 @@ module.exports = run = (options) ->
       unless nar |> is-binary-valid
         return new Error 'Unsupported binary platform or processor' |> on-error
 
-    async.series (nar |> hooks-fn options, _), (err) ->
+    async.series (nar |> hooks-fn), (err) ->
       return err |> on-error if err
       options |> on-end _, nar
 
@@ -87,12 +97,13 @@ is-binary-valid = (nar) ->
 exec = (emitter, command, cwd, hook) -> (done) ->
   { cmd, args } = command |> get-command-script |> parse-command
   (cmd-str = "#{cmd} #{args.join ' '}") |> emitter.emit 'command', _, hook
-  cmd-str |> emitter.emit if hook is 'start'
+  cmd-str |> emitter.emit 'start', _ if hook is 'start'
 
-  child = spawn cmd, args, { cwd, process.env }
+  child = cmd |> spawn _, args, { cwd, process.env }
   child.stdout.on 'data', -> it.to-string! |> emitter.emit 'stdout', _
   child.stderr.on 'data', -> it.to-string! |> emitter.emit 'stderr', _
   child.on 'error', (|> done)
+
   child.on 'exit', (code) ->
     if code isnt 0
       new Error "Command failed with exit code: #{code}" |> done _, code, cmd-str

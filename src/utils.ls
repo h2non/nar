@@ -11,8 +11,8 @@ require! {
 
 module.exports = _ = {
 
-  path, platform, hu.extend, hu.vals, hu.has,
-  hu.clone, hu.is-object, mk, rm, os.EOL, path.delimiter
+  path, platform, hu.extend, hu.vals, hu.has, os.EOL,
+  hu.clone, hu.is-object, hu.is-array, mk, rm, path.delimiter
 
   echo: -> console.log ...
 
@@ -28,6 +28,9 @@ module.exports = _ = {
 
   stringify: ->
     it |> JSON.stringify _, null, 2 if it
+
+  keys: ->
+    if it |> hu.is-object then it |> Object.keys else []
 
   tmpdir: (name = 'pkg') ->
     "nar-#{name}-#{_.random!}" |> path.join os.tmpdir!, _
