@@ -1,17 +1,15 @@
 #!/bin/sh
 
-cwd=$(pwd)
-basedir=`dirname "$0"`
+export PATH="$(pwd)/node_modules/.bin:${PATH}"
 
-export PATH="${cwd}/node_modules/.bin:${PATH}"
+if [ -d "$(pwd)/.node/lib/node" ]; then
+  export NODE_PATH="$(pwd)/.node/lib/node"
+fi
 
-case `uname` in
-    *CYGWIN*) basedir=`cygpath -w "$basedir"`;;
-esac
-
-if [ -f "${cwd}/.node/bin/node" ]; then
-  chmod +x "${cwd}/.node/bin/node"
-  "${cwd}/.node/bin/node" "$@"
+if [ -f "$(pwd)/.node/bin/node" ]; then
+  export PATH="$(pwd)/.node/bin:${PATH}"
+  chmod +x "$(pwd)/.node/bin/node"
+  "$(pwd)/.node/bin/node" "$@"
 else
   node "$@"
 fi
