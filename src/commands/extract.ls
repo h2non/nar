@@ -49,12 +49,11 @@ extract = (archive, options) ->
     "The given path is not a file" |> exit 1 unless opts.path |> is-file
 
     archive = nar.extract opts
+      .on 'start', on-start
       .on 'error', on-error
       .on 'end', on-end
 
-    if debug or verbose
-      archive.on 'start', on-start
-      archive.on 'entry', on-entry
+    archive.on 'entry', on-entry if debug or verbose
 
   try
     extract!
