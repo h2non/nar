@@ -95,6 +95,12 @@ Default: `false`
 
 Include development dependencies in the nar archive
 
+#### peerDependencies
+Type: `boolean`
+Default: `true`
+
+Include peer dependencies in the nar archive
+
 #### globalDependencies
 Type: `array`
 Default: `null`
@@ -241,7 +247,8 @@ Run nar archive application
 ```bash
 $ nar run app.nar
 $ nar run app.nar --no-hooks
-$ nar run app.nar --no-clean --verbose
+$ nar run app.nar --no-clean --debug
+$ nar run app.nar --verbose
 $ nar run app.nar --args-start '--env ${ENV}'
 $ nar run app.nar --args-stop '--path ${PATH}'
 ```

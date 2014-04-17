@@ -2,6 +2,7 @@
   "name": "global",
   "main": "global.js",
   "archive": {
+    "binary": true,
     "globalDependencies": [
       "npm"
     ]

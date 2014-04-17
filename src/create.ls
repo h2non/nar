@@ -24,6 +24,7 @@ const defaults =
   binary: no
   dependencies: yes
   dev-dependencies: no
+  peer-dependencies: yes
   patterns: null
 
 module.exports = create = (options) ->
@@ -233,8 +234,8 @@ module.exports = create = (options) ->
         .filter is-valid
 
     dependencies-list = ->
-      { run, dev, global } = (options |> match-dependencies _, pkg)
-      list = { run, dev } |> process-deps
+      { run, dev, peer, global } = (options |> match-dependencies _, pkg)
+      list = { run, dev, peer } |> process-deps
       list = list ++ [ (global |> process-global) ] if global
       list
 
@@ -319,9 +320,10 @@ get-module-path = ->
   it |> path.join 'node_modules', _
 
 match-dependencies = (options, pkg) ->
-  { dependencies, dev-dependencies, global-dependencies } = options
+  { dependencies, dev-dependencies, peer-dependencies, global-dependencies } = options
   deps = {}
   deps <<< run: pkg.dependencies |> keys if dependencies
   deps <<< dev: pkg.dev-dependencies |> keys if dev-dependencies
+  deps <<< peer: pkg.peer-dependencies |> keys if peer-dependencies
   deps <<< global: global-dependencies if global-dependencies |> is-array
   deps
