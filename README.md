@@ -30,6 +30,7 @@ and asynchronous event-based [programmatic API](#programmatic-api)
 - Allow to bundle global dependencies
 - Allow to bundle node binary for platform-specific isolated runtime environments
 - Transparent checksum file integrity verification
+- Multiplatform (full OS agnostic)
 
 ## Installation
 
@@ -73,6 +74,9 @@ Example `package.json` with full configuration
     "devDependencies": false,
     "globalDependencies": ["npm", "grunt"],
     "patterns": ["**", "!temp/**"]
+  },
+  "scripts": {
+    "start": "node app --env ${ENV}"
   },
   "dependencies": {
     "some": "~0.1.0"
