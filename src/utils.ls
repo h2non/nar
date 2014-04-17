@@ -11,8 +11,9 @@ require! {
 
 module.exports = _ = {
 
-  path, platform, hu.extend, hu.vals, hu.has, os.EOL,
-  hu.clone, hu.is-object, hu.is-array, mk, rm, path.delimiter
+  path, platform, hu.extend, hu.vals, hu.has,
+  os.EOL, hu.clone, hu.is-object, hu.is-array,
+  hu.is-string, mk, rm, path.delimiter
 
   echo: -> console.log ...
 

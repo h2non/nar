@@ -8,7 +8,6 @@
     "stop": "rm -rf .tmp"
   },
   "archive": {
-    "binary": false,
     "devDependencies": true,
     "peerDependencies": false
   },

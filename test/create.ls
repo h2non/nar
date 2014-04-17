@@ -73,6 +73,7 @@ describe 'create', ->
         .on 'error', -> throw it
         .on 'entry', -> entries += 1
         .on 'end', ->
+          #process.exit!
           expect it .to.be.equal "#{dest}/global.nar"
           expect entries > 100 .to.be.true
           done!

@@ -3,15 +3,14 @@ require! {
   path
   async
   './pack'
-  './extract'
   requireg.resolve
   events.EventEmitter
   findup: 'findup-sync'
 }
 {
   read, rm, tmpdir, clone, extend, copy, keys, map,
-  is-object, is-file, is-dir, mk, now, stringify,
-  vals, exists, checksum, lines, next, is-array
+  is-object, is-file, is-dir, is-string, mk, stringify,
+  vals, exists, checksum, lines, next, is-array, now
 } = require './utils'
 
 const nar-file = '.nar.json'
@@ -25,6 +24,7 @@ const defaults =
   dependencies: yes
   dev-dependencies: no
   peer-dependencies: yes
+  global-dependencies: null
   patterns: null
 
 module.exports = create = (options) ->
@@ -57,9 +57,7 @@ module.exports = create = (options) ->
     it |> emitter.emit 'entry', _ if it
 
   do-create = -> next ->
-    return new Error 'Cannot find the package.json' |> on-error unless pkg-path
     nar-config = name |> nar-manifest _, pkg
-
     nar-config |> emitter.emit 'start', _
     nar-config |> emitter.emit 'info', _
 
@@ -127,6 +125,7 @@ module.exports = create = (options) ->
       copy process.exec-path, tmp-path, (err, file) ->
         return new Error "Error while copying the node binary: #{err}" |> on-error if err
         file |> path.basename |> config.patterns.push
+        { name: info.archive, info.type, size: '10485760' } |> on-entry
 
         checksum file, (err, hash) ->
           info <<< checksum: hash
@@ -185,8 +184,7 @@ module.exports = create = (options) ->
         done null, pkg-info
 
     define-pkg-info = (pkg, done) ->
-      pkg-info =
-        archive: pkg.file
+      pkg-info = archive: pkg.file
 
       if (pkg.name |> globals.index-of) isnt -1
         pkg-info <<< dest: ".node/lib/node/#{pkg.name}"
@@ -215,12 +213,10 @@ module.exports = create = (options) ->
       json-path = discover-pkg (module |> path.dirname)
       if json-path
         pkg = json-path |> read
-        pkg.name |> globals.push
-        {
-          name: pkg.name
-          dest: dest
-          src: json-path |> path.dirname
-        }
+        if pkg
+          pkg.name |> globals.push
+          src = json-path |> path.dirname
+          return { pkg.name, dest, src }
 
     process-global = (globals) ->
       (globals |> vals)
@@ -228,10 +224,12 @@ module.exports = create = (options) ->
         .map find-global
 
     process-deps = (deps) ->
-      (deps |> vals)
+      deps = (deps |> vals)
         .filter is-valid
         .map find-pkg
         .filter is-valid
+      deps[0] |> add-bin-directory if deps.length
+      deps
 
     dependencies-list = ->
       { run, dev, peer, global } = (options |> match-dependencies _, pkg)
@@ -240,7 +238,6 @@ module.exports = create = (options) ->
       list
 
     list = dependencies-list!
-    list[0] |> add-bin-directory if list.length
     list |> async.each _, compress-pkg, (|> cb _, files)
 
   do-create!

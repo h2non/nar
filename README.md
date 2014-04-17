@@ -83,6 +83,8 @@ Example `package.json`
 The following options can be declared in your application `package.json` as
 properties members of the `archive` object
 
+Dependencies will be matched from `package.json`
+
 #### dependencies
 Type: `boolean`
 Default: `true`

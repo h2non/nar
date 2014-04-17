@@ -24,7 +24,7 @@ program
 
 list = (archive, options) ->
   { debug, table } = options
-  table-list = new Table head: [ 'File', 'Destination', 'Size', 'Type' ]
+  table-list = new Table head: [ 'Name', 'Destination', 'Size', 'Type' ]
 
   opts = path: archive |> add-extension
 
@@ -40,7 +40,7 @@ list = (archive, options) ->
     if table
       it |> map-entry |> table-list.push
     else
-      (it.archive |> path.join it.dest, _) + " (#{it.size} KB)".cyan |> echo
+      (it.archive |> path.join it.dest, _) + " (#{(it.size |> to-kb)} KB)".cyan |> echo
 
   on-end = ->
     table-list.to-string! |> echo if table
@@ -61,4 +61,6 @@ list = (archive, options) ->
     e |> on-error
 
 map-entry = ->
-  [ (it.archive |> path.basename _, '.tar'), it.dest, it.size + ' KB', it.type ] if it
+  [ (it.archive |> path.basename _, '.tar'), it.dest, (it.size |> to-kb) + ' KB', it.type ] if it
+
+to-kb = -> Math.round(it / 1024)
