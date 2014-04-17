@@ -112,7 +112,7 @@ It should define an array strings with packages names that you want to include
 
 nar will try to resolve globally installed packages (via [requireg][requireg]) and will bundle them into
 the archive. Global dependencies will placed in `.node/lib/node` and will be
-available via `require` and `$PATH` (for binaries specific)
+available via `require` and `PATH` environment variable for binary files
 
 #### binary
 Type: `boolean`
@@ -120,7 +120,7 @@ Default: `false`
 
 Include the node binary in the nar archive.
 This is useful when you want to deploy a fully self-contained application
-in a sandboxed deployment or runtime environment
+in a sandboxed runtime environment
 
 **Note**: as you already know, the node binary is OS and platform dependent.
 Take that into account if you are going to deploy the archive in multiple platforms
@@ -228,6 +228,7 @@ Create a new archive from an existent application
 $ nar create
 $ nar create some/path --debug
 $ nar create path/to/package.json -o some/dir
+$ nar create --dev-dependencies --global-dependencies 'npm,grunt'
 $ nar create --debug --verbose
 ```
 

@@ -8,7 +8,7 @@ require! {
   findup: 'findup-sync'
 }
 {
-  read, rm, tmpdir, clone, extend, copy, keys, map,
+  read, rm, tmpdir, clone, extend, copy, keys,
   is-object, is-file, is-dir, is-string, mk, stringify,
   vals, exists, checksum, lines, next, is-array, now
 } = require './utils'
@@ -301,15 +301,11 @@ resolve-pkg-path = ->
 
 get-ignored-files = (dir) ->
   patterns = []
-  files = ignore-files
-    .map -> it |> path.join "#{dir}", _
-    .filter -> it |> exists
+  files = ignore-files.map (|> path.join "#{dir}", _) .filter (|> exists)
   files = files.slice -1 if files.length > 1
   if files.length
-    patterns =
-      ((files[0] |> read) |> lines)
-        .filter -> it
-        .map -> "!#{it.trim!}"
+    ignored = ((files[0] |> read) |> lines)
+    patterns = ignored.filter (-> it) .map (-> "!#{it.trim!}") if ignored
   patterns
 
 get-module-path = ->

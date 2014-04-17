@@ -44,7 +44,7 @@ describe 'create', ->
       rm dest
 
     it 'should compress files sucessfully', (done) ->
-      entries = null
+      entries = 0
       @archive
         .on 'error', -> throw it
         .on 'entry', -> entries += 1
@@ -68,12 +68,11 @@ describe 'create', ->
       rm dest
 
     it 'should compress files sucessfully', (done) ->
-      entries = null
+      entries = 0
       @archive
         .on 'error', -> throw it
         .on 'entry', -> entries += 1
         .on 'end', ->
-          #process.exit!
           expect it .to.be.equal "#{dest}/global.nar"
           expect entries > 100 .to.be.true
           done!

@@ -24,108 +24,181 @@ describe 'nar', ->
 
   describe 'E2E', ->
 
-    dest = "#{__dirname}/fixtures/.tmp"
-    orig = "#{__dirname}/fixtures/complex"
+    describe 'complex', ->
 
-    before ->
-      rm dest
-      mk dest
-      chdir dest
+      dest = "#{__dirname}/fixtures/.tmp"
+      orig = "#{__dirname}/fixtures/complex"
 
-    after ->
-      chdir "#{__dirname}/.."
-      rm "#{dest}/test-0.1.0.nar"
-      rm dest
+      before ->
+        rm dest
+        mk dest
+        chdir dest
 
-    describe 'create', (_) ->
+      after ->
+        chdir "#{__dirname}/.."
+        rm "#{dest}/test-0.1.0.nar"
+        rm dest
 
-      options = path: "#{orig}"
+      describe 'create', (_) ->
 
-      it 'should create the archive', (done) ->
-        nar.create options
-          .on 'error', -> throw it
-          .on 'end', ->
-            expect it .to.be.equal "#{dest}/test-0.1.0.nar"
-            done!
+        options = path: "#{orig}"
 
-      it 'should exists the archive', ->
-        expect exists "#{dest}/test-0.1.0.nar" .to.be.true
+        it 'should create the archive', (done) ->
+          nar.create options
+            .on 'error', -> throw it
+            .on 'end', ->
+              expect it .to.be.equal "#{dest}/test-0.1.0.nar"
+              done!
 
-    describe 'extract', (_) ->
+        it 'should exists the archive', ->
+          expect exists "#{dest}/test-0.1.0.nar" .to.be.true
 
-      options = path: "#{dest}/test-0.1.0.nar"
+      describe 'extract', (_) ->
 
-      it 'should create the archive', (done) ->
-        nar.extract options
-          .on 'error', -> throw it
-          .on 'end', -> done!
+        options = path: "#{dest}/test-0.1.0.nar"
 
-      it 'should exists package.json', ->
-        expect exists "#{dest}/package.json" .to.be.true
+        it 'should create the archive', (done) ->
+          nar.extract options
+            .on 'error', -> throw it
+            .on 'end', -> done!
 
-      it 'should exists the node binary', ->
-        expect exists "#{dest}/.node/bin/node" .to.be.true
+        it 'should exists package.json', ->
+          expect exists "#{dest}/package.json" .to.be.true
 
-      it 'should exists nar.json', ->
-        expect exists "#{dest}/.nar.json" .to.be.true
+        it 'should exists the node binary', ->
+          expect exists "#{dest}/.node/bin/node" .to.be.true
 
-      it 'should exists main.js', ->
-        expect exists "#{dest}/main.js" .to.be.true
+        it 'should exists nar.json', ->
+          expect exists "#{dest}/.nar.json" .to.be.true
 
-      it 'should exists .gitignore', ->
-        expect exists "#{dest}/.gitignore" .to.be.true
+        it 'should exists main.js', ->
+          expect exists "#{dest}/main.js" .to.be.true
 
-      it 'should exists .narignore', ->
-        expect exists "#{dest}/.narignore" .to.be.true
+        it 'should exists .gitignore', ->
+          expect exists "#{dest}/.gitignore" .to.be.true
 
-      it 'should exists node_modules', ->
-        expect exists "#{dest}/node_modules" .to.be.true
+        it 'should exists .narignore', ->
+          expect exists "#{dest}/.narignore" .to.be.true
 
-      it 'should exists hu dependency', ->
-        expect exists "#{dest}/node_modules/hu/package.json" .to.be.true
+        it 'should exists node_modules', ->
+          expect exists "#{dest}/node_modules" .to.be.true
 
-      it 'should exists dev dependency', ->
-        expect exists "#{dest}/node_modules/dev/package.json" .to.be.true
+        it 'should exists hu dependency', ->
+          expect exists "#{dest}/node_modules/hu/package.json" .to.be.true
 
-      it 'should exists .bin directory', ->
-        expect exists "#{dest}/node_modules/.bin" .to.be.true
+        it 'should exists dev dependency', ->
+          expect exists "#{dest}/node_modules/dev/package.json" .to.be.true
 
-      it 'should exists .bin/hu', ->
-        expect exists "#{dest}/node_modules/.bin/hu" .to.be.true
+        it 'should exists .bin directory', ->
+          expect exists "#{dest}/node_modules/.bin" .to.be.true
 
-      it 'should not exists test directory', ->
-        expect exists "#{dest}/test" .to.be.false
+        it 'should exists .bin/hu', ->
+          expect exists "#{dest}/node_modules/.bin/hu" .to.be.true
 
-    describe 'run', (_) ->
+        it 'should not exists test directory', ->
+          expect exists "#{dest}/test" .to.be.false
 
-      stdout = stderr = messages = commands = ''
-      options = path: "#{dest}/test-0.1.0.nar"
+      describe 'run', (_) ->
 
-      it 'should create the archive', (done) ->
-        nar.run options
-          .on 'error', -> throw it
-          .on 'message', -> messages += "#{it}\n"
-          .on 'command', -> commands += "#{it}\n"
-          .on 'stdout', -> stdout += it
-          .on 'stderr', -> stderr += it
-          .on 'end', -> done!
+        stdout = stderr = messages = commands = ''
+        options = path: "#{dest}/test-0.1.0.nar"
 
-      it 'should exists package.json', ->
-        expect exists "#{dest}/package.json" .to.be.true
+        it 'should create the archive', (done) ->
+          nar.run options
+            .on 'error', -> throw it
+            .on 'message', -> messages += "#{it}\n"
+            .on 'command', -> commands += "#{it}\n"
+            .on 'stdout', -> stdout += it
+            .on 'stderr', -> stderr += it
+            .on 'end', -> done!
 
-      it 'should exists the node binary', ->
-        expect exists "#{dest}/.node/bin/node" .to.be.true
+        it 'should exists package.json', ->
+          expect exists "#{dest}/package.json" .to.be.true
 
-      it 'should exists nar.json', ->
-        expect exists "#{dest}/.nar.json" .to.be.true
+        it 'should exists the node binary', ->
+          expect exists "#{dest}/.node/bin/node" .to.be.true
 
-      it 'should have a valid command entries', ->
-        expect commands .to.match /echo \'prestart 1\'/
-        expect commands .to.match /node\.sh main/
-        expect commands .to.match /rm \-rf/
+        it 'should exists nar.json', ->
+          expect exists "#{dest}/.nar.json" .to.be.true
 
-      it 'should have a valid stdout', ->
-        expect stdout .to.match /prestart 1/
+        it 'should have a valid command entries', ->
+          expect commands .to.match /echo \'prestart 1\'/
+          expect commands .to.match /node\.sh main/
+          expect commands .to.match /rm \-rf/
 
-      it 'should have a valid stderr', ->
-        expect stderr.length .to.be.equal 0
+        it 'should have a valid stdout', ->
+          expect stdout .to.match /prestart 1/
+
+        it 'should have a valid stderr', ->
+          expect stderr.length .to.be.equal 0
+
+    describe 'global', ->
+
+      dest = "#{__dirname}/fixtures/.tmp"
+      orig = "#{__dirname}/fixtures/global"
+
+      before ->
+        rm dest
+        mk dest
+        chdir dest
+
+      after ->
+        chdir "#{__dirname}/.."
+        rm "#{dest}/global.nar"
+        rm dest
+
+      describe 'create', (_) ->
+
+        options = path: "#{orig}"
+
+        it 'should create the archive', (done) ->
+          nar.create options
+            .on 'error', -> throw it
+            .on 'end', ->
+              expect it .to.be.equal "#{dest}/global.nar"
+              done!
+
+        it 'should exists the archive', ->
+          expect exists "#{dest}/global.nar" .to.be.true
+
+      describe 'extract', (_) ->
+
+        options = path: "#{dest}/global.nar"
+
+        it 'should create the archive', (done) ->
+          nar.extract options
+            .on 'error', -> throw it
+            .on 'end', -> done!
+
+        it 'should exists package.json', ->
+          expect exists "#{dest}/package.json" .to.be.true
+
+        it 'should exists the node binary', ->
+          expect exists "#{dest}/.node/bin/node" .to.be.true
+
+        it 'should exists npm as global dependency', ->
+          expect exists "#{dest}/.node/lib/node/npm/package.json" .to.be.true
+
+        it 'should exists npm binary in .node', ->
+          expect exists "#{dest}/.node/bin/npm" .to.be.true
+
+        it 'should exists nar.json', ->
+          expect exists "#{dest}/.nar.json" .to.be.true
+
+        it 'should exists global.js', ->
+          expect exists "#{dest}/global.js" .to.be.true
+
+        it 'should exists .narignore', ->
+          expect exists "#{dest}/.narignore" .to.be.true
+
+        it 'should exists node_modules', ->
+          expect exists "#{dest}/node_modules" .to.be.true
+
+        it 'should exists node_modules/some', ->
+          expect exists "#{dest}/node_modules/some" .to.be.true
+
+        it 'should exists node_modules/some/index', ->
+          expect exists "#{dest}/node_modules/some/index.js" .to.be.true
+
+        it 'should exists node_modules/some/node_modules/peer', ->
+          expect exists "#{dest}/node_modules/some/node_modules/peer" .to.be.true

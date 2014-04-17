@@ -15,7 +15,7 @@ describe 'unpack', ->
     before -> mk dest
     after -> rm dest
 
-    it 'should unpackº files', (done) ->
+    it 'should unpack files', (done) ->
       files = 0
       unpack options
         .on 'error', -> throw it

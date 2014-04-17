@@ -70,6 +70,9 @@ module.exports = _ = {
     else
       null
 
+  write: (path, data) ->
+    data |> fs.write-file-sync path, _ if path
+
   once: (cb) ->
     error = no
     ->
