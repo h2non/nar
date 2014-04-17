@@ -143,12 +143,13 @@ mk-dirs = (dest, tmpdir) ->
   mk dest unless dest |> is-dir
   mk tmpdir unless tmpdir |> is-dir
 
-win-bin-script = (script) ->
+win-bin-script = (path) ->
+  path = path |> normalize
   """
   @ECHO OFF
   @IF EXIST "%~dp0\\node.exe" (
-    "%~dp0\\node.exe" "#{script |> normalize}" %*
+    "%~dp0\\node.exe" "#{path}" %*
   ) ELSE (
-    node "#{script |> normalize}" %*
+    node "#{path}" %*
   )
   """
