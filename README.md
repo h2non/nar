@@ -62,7 +62,7 @@ $ nar run app.nar
 
 ## Configuration
 
-Example `package.json`
+Example `package.json` with full configuration
 ```json
 {
   "name": "my-package",
@@ -71,7 +71,8 @@ Example `package.json`
     "binary": true,
     "dependencies": true,
     "devDependencies": false,
-    "globalDependencies": ["npm", "grunt"]
+    "globalDependencies": ["npm", "grunt"],
+    "patterns": ["**", "!temp/**"]
   },
   "dependencies": {
     "some": "~0.1.0"
@@ -130,9 +131,10 @@ Take that into account if you are going to deploy the archive in multiple platfo
 Type: `array`
 Default: `['**']`
 
-[Glob][glob] patterns for matching files to include or exclude.
+[Glob][glob] patterns for matching files to include or exclude in the archive
+OS level specific hidden files such as `.DS_Store` or `Thumbs.db` will be ignored by default
 
-nar will ignore matched patterns defined in [ignore-like files](#ignoring-files)
+Aditionally, nar will ignore matched patterns defined in [ignore-like files](#ignoring-files)
 
 ### Stage hooks
 
