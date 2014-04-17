@@ -10,7 +10,8 @@ program
   .description '\n  Extract archive'
   .usage '[archive] [options]'
   .option '-o, --output <path>', 'Output directory. Default to current directory'
-  .option '-d, --debug', 'Enable debugging mode for tasks that support it'
+  .option '-d, --debug', 'Enable debug mode. More information will be shown'
+  .option '-v, --verbose', 'Enable verbose mode. A lot of information will be shown'
   .on '--help', ->
     echo '''
       Usage examples:
@@ -24,7 +25,7 @@ program
   .action -> extract ...
 
 extract = (archive, options) ->
-  { debug, output } = options
+  { debug, verbose, output } = options
 
   opts =
     path: archive |> add-extension
@@ -51,7 +52,7 @@ extract = (archive, options) ->
       .on 'error', on-error
       .on 'end', on-end
 
-    if debug
+    if debug or verbose
       archive.on 'start', on-start
       archive.on 'entry', on-entry
 

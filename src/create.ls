@@ -2,8 +2,10 @@ require! {
   fs
   path
   async
+  which
   './pack'
   './extract'
+  requireg.resolve
   events.EventEmitter
   findup: 'findup-sync'
 }
@@ -117,14 +119,14 @@ module.exports = create = (options) ->
       async.series [ save-config, pack-all ], cb
 
     add-binary = ->
+      info =
+        archive: 'node'
+        dest: '.node/bin'
+        type: 'binary'
+
       copy process.exec-path, tmp-path, (err, file) ->
         return new Error "Error while copying the node binary: #{err}" |> on-error if err
-
         file |> path.basename |> config.patterns.push
-        info =
-          archive: 'node'
-          dest: '.node/bin'
-          type: 'binary'
 
         checksum file, (err, hash) ->
           info <<< checksum: hash
@@ -138,9 +140,9 @@ module.exports = create = (options) ->
       exec!
 
   compress-pkg = (options, cb) ->
-    { dest, base, name, patterns } = options
-    patterns = patterns.concat (base |> include-files-patterns)
-    options = { name, dest, patterns, src: base }
+    { dest, base, name, patterns } = options = options |> clone
+    options.patterns = patterns.concat (base |> include-files-patterns)
+    options <<< src: base
 
     pkg-info =
       archive: "#{name}.tar"
@@ -159,6 +161,7 @@ module.exports = create = (options) ->
 
   compress-dependencies = (dest, base, cb) ->
     files = []
+    globals = []
 
     add-bin-directory = ->
       bin-dir = path.join base, ('.bin' |> get-module-path)
@@ -174,16 +177,25 @@ module.exports = create = (options) ->
         dest: dest
         src: findup (it |> get-module-path), cwd: base
 
-    define-pkg-info = (pkg, done) ->
-      pkg-info =
-        archive: pkg.file
-        dest: pkg.name |> get-module-path
-        type: 'dependency'
-
-      checksum pkg.path, (err, hash) ->
+    calculate-checksum = (pkg-path, pkg-info, done) ->
+      checksum pkg-path, (err, hash) ->
+        throw new Error "Error while calculating checksum for package #{pkg-info.name}" if err
         pkg-info <<< checksum: hash
         pkg-info |> files.push
         done null, pkg-info
+
+    define-pkg-info = (pkg, done) ->
+      pkg-info =
+        archive: pkg.file
+
+      if (pkg.name |> globals.index-of) isnt -1
+        pkg-info <<< dest: ".node/lib/node/#{pkg.name}"
+        pkg-info <<< type: 'global-dependency'
+      else
+        pkg-info <<< dest: pkg.name |> get-module-path
+        pkg-info <<< type: 'dependency'
+
+      pkg.path |> calculate-checksum _, pkg-info, done
 
     do-pack = (options, done) ->
       (options |> pack)
@@ -196,12 +208,36 @@ module.exports = create = (options) ->
         return err |> done if err
         async.map results, define-pkg-info, done
 
-    dependencies-list = ->
-      (options
-      |> match-dependencies _, pkg
-      |> vals)
+    find-global = (name) ->
+      module = name |> resolve
+      throw new Error "Cannot find global dependency: #{name}" unless module
+
+      json-path = discover-pkg (module |> path.dirname)
+      if json-path
+        pkg = json-path |> read
+        pkg.name |> globals.push
+        {
+          name: pkg.name
+          dest: dest
+          src: json-path |> path.dirname
+        }
+
+    process-global = (globals) ->
+      (globals |> vals)
+        .filter is-valid
+        .map find-global
+
+    process-deps = (deps) ->
+      (deps |> vals)
+        .filter is-valid
         .map find-pkg
         .filter is-valid
+
+    dependencies-list = ->
+      { run, dev, global } = (options |> match-dependencies _, pkg)
+      list = { run, dev } |> process-deps
+      list = list ++ [ (global |> process-global) ] if global
+      list
 
     list = dependencies-list!
     list[0] |> add-bin-directory if list.length
@@ -284,8 +320,9 @@ get-module-path = ->
   it |> path.join 'node_modules', _
 
 match-dependencies = (options, pkg) ->
+  { dependencies, dev-dependencies, global-dependencies } = options
   deps = {}
-  deps <<< run: pkg.dependencies |> keys if options.dependencies
-  deps <<< dev: pkg.dev-dependencies |> keys if options.dev-dependencies
-  deps <<< global: global-dependencies if options.global-dependencies |> is-array
+  deps <<< run: pkg.dependencies |> keys if dependencies
+  deps <<< dev: pkg.dev-dependencies |> keys if dev-dependencies
+  deps <<< global: global-dependencies if global-dependencies |> is-array
   deps

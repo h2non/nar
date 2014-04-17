@@ -10,7 +10,8 @@ program
   .description '\n  Create a nar archive'
   .usage '[path] [options]'
   .option '-o, --output <path>', 'Output directory. Default to current directory'
-  .option '-d, --debug', 'Enable debugging. More information will be shown'
+  .option '-d, --debug', 'Enable debug mode. More information will be shown'
+  .option '-v, --verbose', 'Enable verbose mode. A lot of information will be shown'
   .on '--help', ->
     echo '''
       Usage examples:

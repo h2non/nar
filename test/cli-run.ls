@@ -69,10 +69,13 @@ describe 'CLI', (_) ->
         expect exists "#{dest}/package.json" .to.be.true
 
       it 'should have a valid stdout', ->
-        expect stdout .to.match /extract/i
-        expect stdout .to.match /some.tar/i
         expect stdout .to.match /run/i
         expect stdout .to.match /finished/i
+
+      it 'should have a valid debug stdout', ->
+        expect stdout .to.match /\> node/i
+        expect stdout .to.match /sample\.js/i
+        expect stdout .to.match /end/i
 
     describe '--verbose', (_) ->
 

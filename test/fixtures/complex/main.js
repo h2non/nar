@@ -1,7 +1,7 @@
 var args = process.argv
 
-console.log('Node binary:', process.execPath)
-console.log('Node path:', process.env['NODE_PATH'])
+console.log('node binary:', process.execPath)
+console.log('node path:', process.env['NODE_PATH'])
 console.log(args.slice(1).join('\n'))
 
 if (args[2] === '--loop') {

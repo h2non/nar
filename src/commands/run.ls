@@ -10,7 +10,7 @@ program
   .description '\n  Run archive files'
   .usage '[archive] [options]'
   .option '-o, --output <path>', 'Output directory'
-  .option '-d, --debug', 'Enable debugging. More information will be shown'
+  .option '-d, --debug', 'Enable debud mode. More information will be shown'
   .option '-v, --verbose', 'Enable verbose  mode. Will output stdout and stderr'
   .option '-as, --args-start <args>', 'Aditional arguments to pass to start command'
   .option '-ap, --args-prestart <args>', 'Aditional arguments to pass to prestart command'
@@ -82,12 +82,12 @@ run = (archive, options) ->
       .on 'end', on-end
 
     if debug or verbose
-      archive.on 'entry', on-entry
       archive.on 'command', on-command
-    if verbose
       archive.on 'exit', on-exit
       archive.on 'stdout', on-stdout
       archive.on 'stderr', on-stderr
+    if verbose
+      archive.on 'entry', on-entry
 
   try
     run!

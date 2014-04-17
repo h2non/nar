@@ -52,3 +52,27 @@ describe 'create', ->
           expect it .to.be.equal "#{dest}/test-0.1.0.nar"
           expect entries > 20 .to.be.true
           done!
+
+  describe 'global', (_) ->
+
+    before ->
+      rm dest
+      mk dest
+      chdir "#{__dirname}/fixtures/global"
+
+    before ->
+      @archive = create dest: dest
+
+    after ->
+      chdir "#{__dirname}/.."
+      rm dest
+
+    it 'should compress files sucessfully', (done) ->
+      entries = null
+      @archive
+        .on 'error', -> throw it
+        .on 'entry', -> entries += 1
+        .on 'end', ->
+          expect it .to.be.equal "#{dest}/global.nar"
+          expect entries > 100 .to.be.true
+          done!
