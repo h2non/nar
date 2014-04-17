@@ -28,7 +28,7 @@ and asynchronous event-based [programmatic API](#programmatic-api)
 - Supports application pre/post run hooks (from [npm scripts][npm-scripts])
 - Allow to bundle dependencies by type
 - Allow to bundle global dependencies
-- Allow to bundle node binary for platform-specific and isolated runtime environments
+- Allow to bundle node binary for platform-specific isolated runtime environments
 - Transparent checksum file integrity verification
 
 ## Installation
@@ -123,6 +123,9 @@ Default: `false`
 Include the node binary in the nar archive.
 This is useful when you want to deploy a fully self-contained application
 in a sandboxed runtime environment
+
+The included node binary will be the same as the used when your
+create the archive (taken from `process.execPath`)
 
 **Note**: as you already know, the node binary is OS and platform dependent.
 Take that into account if you are going to deploy the archive in multiple platforms
