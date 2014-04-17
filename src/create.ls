@@ -2,7 +2,6 @@ require! {
   fs
   path
   async
-  which
   './pack'
   './extract'
   requireg.resolve
