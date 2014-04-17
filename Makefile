@@ -44,10 +44,10 @@ mocha:
 	$(MOCHA) --timeout 10000 --reporter spec --ui tdd --compilers ls:$(LS_MODULE)
 
 release:
-	@$(call release, patch)
+	@$(call release,patch)
 
 release-minor:
-	@$(call release, minor)
+	@$(call release,minor)
 
 publish: release
 	git push --tags origin HEAD:master

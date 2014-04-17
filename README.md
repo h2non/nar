@@ -2,7 +2,7 @@
 
 <table>
 <tr>
-<td><b>Version</b></td><td>beta</td>
+<td><b>Stage</b></td><td>beta</td>
 </tr>
 </table>
 
