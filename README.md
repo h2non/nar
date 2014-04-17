@@ -117,8 +117,10 @@ Include global dependencies in the nar archive.
 It should define an array strings with packages names that you want to include
 
 nar will try to resolve globally installed packages (via [requireg][requireg]) and will bundle them into
-the archive. Global dependencies will placed in `.node/lib/node` and will be
-available via `require` and `PATH` environment variable for binary files
+the archive.
+
+Global dependencies will be placed in `.node/lib/node` and will be
+available via `require` and `PATH` environment variable (for binary files)
 
 #### binary
 Type: `boolean`
