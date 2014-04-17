@@ -3,7 +3,7 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit, exists, is-dir, is-file, is-string } = require '../utils'
+{ echo, exit, exists, is-dir, is-file, is-string, to-kb, archive-name } = require '../utils'
 
 program
   .command 'create [path]'
@@ -51,11 +51,11 @@ create = (pkgpath, options) ->
     err.stack |> echo if debug and err.stack
     ((code or 1) |> exit)!
 
-  on-start = (nar) ->
-    "Creating archive: #{nar.name} #{nar.manifest.version or ''}" |> echo
+  on-start = ->
+    "Creating archive: #{it |> archive-name}" |> echo
 
   on-entry = ->
-    "Add [".green + "#{it.size} KB".cyan + "] #{it.name}".green |> echo
+    "Add [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.name}".green |> echo
 
   on-end = (output) ->
     "Archive created in: #{output}" |> echo

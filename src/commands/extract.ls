@@ -3,7 +3,7 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit, exists, is-file, add-extension } = require '../utils'
+{ echo, exit, exists, is-file, add-extension, to-kb } = require '../utils'
 
 program
   .command 'extract <archive>'
@@ -39,7 +39,7 @@ extract = (archive, options) ->
     ((code or 1) |> exit)!
 
   on-entry = ->
-    "Extract [".green + "#{it.size} KB".cyan + "] #{it.path}".green |> echo
+    "Extract [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.path}".green |> echo
 
   on-end = ->
     "Extracted sucessfully in: #{it.dest}" |> echo

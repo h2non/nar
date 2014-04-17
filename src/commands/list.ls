@@ -4,7 +4,7 @@ require! {
   Table: 'cli-table'
   program: commander
 }
-{ echo, exit, exists, is-file, add-extension } = require '../utils'
+{ echo, exit, exists, is-file, add-extension, to-kb, archive-name } = require '../utils'
 
 program
   .command 'list <archive>'
@@ -34,7 +34,7 @@ list = (archive, options) ->
     exit 1
 
   on-info = ->
-    "Package: #{it.name} #{it.manifest.version or ''}" |> echo
+    "Package: #{it |> archive-name}" |> echo
 
   on-entry = ->
     if table
@@ -62,5 +62,3 @@ list = (archive, options) ->
 
 map-entry = ->
   [ (it.archive |> path.basename _, '.tar'), it.dest, (it.size |> to-kb) + ' KB', it.type ] if it
-
-to-kb = -> Math.round(it / 1024)

@@ -3,7 +3,7 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit } = require '../utils'
+{ echo, exit, archive-name } = require '../utils'
 
 program
   .command 'run <archive>'
@@ -62,7 +62,7 @@ run = (archive, options) ->
     "Extract [".green + "#{it.size} KB".cyan + "] #{it.path}".green |> echo
 
   on-info = ->
-    "Running #{it.name} #{it.manifest.version or ''}..." |> echo
+    "Running #{it |> archive-name}" |> echo
 
   on-stdout = (out) ->
     "> #{out |> format-eol}".green |> echo

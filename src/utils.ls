@@ -25,6 +25,8 @@ module.exports = _ = {
 
   is-win: process.platform is 'win32'
 
+  to-kb: -> if it then Math.round it / 1024 else 0
+
   exists: -> it and (it |> path.normalize |> fs.exists-sync)
 
   stringify: ->
@@ -78,6 +80,13 @@ module.exports = _ = {
     ->
       cb ... unless error
       error := yes if it
+
+  archive-name: (nar) ->
+    name = ''
+    if nar
+      name += nar.name
+      name += "-#{version}" if version = nar.manifest.version
+    "#{name}.nar"
 
   checksum: (file, cb) ->
     hash = crypto.create-hash 'sha1'

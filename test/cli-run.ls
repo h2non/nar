@@ -44,7 +44,7 @@ describe 'CLI', (_) ->
         expect exists "#{output}/package.json" .to.be.true
 
       it 'should have a valid stdout', ->
-        expect stdout .to.match /test 1\.0\.0/
+        expect stdout .to.match /test\-1\.0\.0\.nar/
         expect stdout .to.match /finished/i
 
     describe '--debug', (_) ->
