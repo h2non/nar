@@ -1,6 +1,5 @@
 require! {
   fs
-  path
   async
   './pack'
   requireg.resolve
@@ -12,6 +11,7 @@ require! {
   is-object, is-file, is-dir, is-string, mk, stringify,
   vals, exists, checksum, lines, next, is-array, now
 } = require './utils'
+{ dirname, basename, join } = require 'path'
 
 const nar-file = '.nar.json'
 const ext = 'nar'
@@ -39,7 +39,7 @@ module.exports = create = (options) ->
 
   name = pkg.name or 'unnamed'
   tmp-path = tmpdir name
-  options <<< base: base-dir = pkg-path |> path.dirname
+  options <<< base: base-dir = pkg-path |> dirname
 
   file = if options.file then options.file else get-filename pkg
   output = file |> output-file _, options.dest
@@ -124,7 +124,7 @@ module.exports = create = (options) ->
 
       copy process.exec-path, tmp-path, (err, file) ->
         return new Error "Error while copying the node binary: #{err}" |> on-error if err
-        file |> path.basename |> config.patterns.push
+        file |> basename |> config.patterns.push
         { name: info.archive, info.type, size: '10485760' } |> on-entry
 
         checksum file, (err, hash) ->
@@ -163,7 +163,7 @@ module.exports = create = (options) ->
     globals = []
 
     add-bin-directory = ->
-      bin-dir = path.join base, ('.bin' |> get-module-path)
+      bin-dir = join base, ('.bin' |> get-module-path)
       {
         name: 'modules-bin-dir'
         dest: dest
@@ -210,12 +210,10 @@ module.exports = create = (options) ->
       module = name |> resolve
       throw new Error "Cannot find global dependency: #{name}" unless module
 
-      json-path = discover-pkg (module |> path.dirname)
-      if json-path
-        pkg = json-path |> read
-        if pkg
+      if json-path = discover-pkg (module |> dirname)
+        if pkg = json-path |> read
           pkg.name |> globals.push
-          src = json-path |> path.dirname
+          src = json-path |> dirname
           return { pkg.name, dest, src }
 
     process-global = (globals) ->
@@ -244,7 +242,7 @@ module.exports = create = (options) ->
   emitter
 
 write-config = (config, tmpdir, cb) ->
-  file = tmpdir |> path.join _, nar-file
+  file = tmpdir |> join _, nar-file
   data = config |> stringify
   fs.write-file file, data, cb
 
@@ -267,7 +265,7 @@ include-files-patterns = ->
 is-valid = -> it and it.length
 
 output-file = (file, dir) ->
-  "#{file}.nar" |> path.join dir, _
+  "#{file}.nar" |> join dir, _
 
 get-filename = (pkg = {}) ->
   name = pkg.name or 'unnamed'
@@ -295,13 +293,13 @@ apply = (options) ->
 
 resolve-pkg-path = ->
   if it |> is-file
-    it |> path.dirname |> resolve-pkg-path
+    it |> dirname |> resolve-pkg-path
   else
     it
 
 get-ignored-files = (dir) ->
   patterns = []
-  files = ignore-files.map (|> path.join "#{dir}", _) .filter (|> exists)
+  files = ignore-files.map (|> join "#{dir}", _) .filter (|> exists)
   files = files.slice -1 if files.length > 1
   if files.length
     ignored = ((files[0] |> read) |> lines)
@@ -310,7 +308,7 @@ get-ignored-files = (dir) ->
 
 get-module-path = ->
   it = '.bin' if it is 'modules-bin-dir'
-  it |> path.join 'node_modules', _
+  it |> join 'node_modules', _
 
 match-dependencies = (options, pkg) ->
   { dependencies, dev-dependencies, peer-dependencies, global-dependencies } = options
