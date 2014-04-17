@@ -70,7 +70,8 @@ Example `package.json`
   "archive": {
     "binary": true,
     "dependencies": true,
-    "devDependencies": false
+    "devDependencies": false,
+    "globalDependencies": ["npm", "grunt"]
   },
   "dependencies": {
     "some": "~0.1.0"
