@@ -66,7 +66,7 @@ create = (pkgpath, options) ->
       .on 'start', on-start
       .on 'error', on-error
       .on 'end', on-end
-    archive.on 'entry', on-entry if debug
+    archive.on 'entry', on-entry if debug or verbose
 
   try
     create!
