@@ -8,9 +8,11 @@
 
 ## About
 
+<img align="right" height="165" src="http://nodejs.org/images/platform-icon-generic.png" />
+
 **nar** is a simple application packager utility for [node.js](http://nodejs.org)
 
-Using nar you can easily create self-contained node.js applications
+With nar you can easily create self-contained node.js applications
 that are ready-to-ship-and-run
 
 It provides built-in support for creating, extracting and running applications
@@ -30,7 +32,7 @@ and asynchronous event-based [programmatic API](#programmatic-api)
 - Allow to bundle global dependencies
 - Allow to bundle node binary for platform-specific isolated runtime environments
 - Transparent checksum file integrity verification
-- Multiplatform (full OS agnostic)
+- Platform-agnostic
 
 ## Installation
 
@@ -114,12 +116,12 @@ Type: `array`
 Default: `null`
 
 Include global dependencies in the nar archive.
-It should define an array strings with packages names that you want to include
+It should define an array strings with packages names
 
-nar will try to resolve globally installed packages (via [requireg][requireg]) and will bundle them into
-the archive.
+nar will resolve globally installed packages (via [requireg][requireg])
+and will bundle them into the archive
 
-Global dependencies will be placed in `.node/lib/node` and will be
+Global dependencies will be placed in `.node/lib/node` on archive extraction and them will be
 available via `require` and `PATH` environment variable (for binary files)
 
 #### binary
@@ -128,12 +130,12 @@ Default: `false`
 
 Include the node binary in the nar archive.
 This is useful when you want to deploy a fully self-contained application
-in a sandboxed runtime environment
+like a sandboxed runtime environment
 
 The included node binary will be the same as the used when your
 create the archive (taken from `process.execPath`)
 
-**Note**: as you already know, the node binary is OS and platform dependent.
+**Note**: as you already know, the node binary is OS and platform specific.
 Take that into account if you are going to deploy the archive in multiple platforms
 
 #### patterns
