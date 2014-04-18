@@ -31,6 +31,7 @@ and asynchronous event-based [programmatic API](#programmatic-api)
 - Allow to bundle dependencies by type
 - Allow to bundle global dependencies
 - Allow to bundle node binary for platform-specific isolated runtime environments
+- Integrable in your development workflow through [Grunt][grunt-plugin] or [Gulp][gulp-plugin]
 - Transparent checksum file integrity verification
 - Platform agnostic
 
@@ -435,3 +436,5 @@ Released under the MIT license
 [npm-scripts]: https://www.npmjs.org/doc/misc/npm-scripts.html
 [glob]: https://github.com/isaacs/node-glob
 [requireg]: https://github.com/h2non/requireg
+[grunt-plugin]: https://github.com/h2non/grunt-nar
+[gulp-plugin]: https://github.com/h2non/gulp-nar
