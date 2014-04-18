@@ -16,6 +16,10 @@ module.exports = extract = (options = {}) ->
 
   clean = -> try rm tmpdir
 
+  clean-error = ->
+    clean!
+    try rm dest
+
   on-end = ->
     clean!
     options |> emitter.emit 'end', _ unless errored
@@ -27,7 +31,7 @@ module.exports = extract = (options = {}) ->
     msg |> emitter.emit 'message', _ if msg
 
   on-error = (err) ->
-    clean!
+    clean-error!
     err |> emitter.emit 'error', _ unless errored
     errored := yes
 
