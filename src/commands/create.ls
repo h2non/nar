@@ -47,7 +47,7 @@ create = (pkgpath, options) ->
     opts <<< path: pkgpath
 
   on-error = (err, code) ->
-    err.message |> echo if err
+    "Error: #{err.message or err}".red |> echo if err
     err.stack |> echo if debug and err.stack
     ((code or 1) |> exit)!
 
