@@ -42,7 +42,7 @@ extract = (archive, options) ->
     "Extract [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.path}".green |> echo
 
   on-end = ->
-    "Extracted sucessfully in: #{it.dest}" |> echo
+    "Extracted in: #{it.dest}" |> echo
     exit 0
 
   extract = ->

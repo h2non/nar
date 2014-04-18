@@ -6,5 +6,8 @@
     "globalDependencies": [
       "npm"
     ]
+  },
+  "dependencies": {
+    "some": "~0.1.0"
   }
 }

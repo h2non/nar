@@ -74,12 +74,6 @@ describe 'nar', ->
         it 'should exists main.js', ->
           expect exists "#{dest}/main.js" .to.be.true
 
-        it 'should exists .gitignore', ->
-          expect exists "#{dest}/.gitignore" .to.be.true
-
-        it 'should exists .narignore', ->
-          expect exists "#{dest}/.narignore" .to.be.true
-
         it 'should exists node_modules', ->
           expect exists "#{dest}/node_modules" .to.be.true
 
@@ -97,6 +91,14 @@ describe 'nar', ->
 
         it 'should not exists test directory', ->
           expect exists "#{dest}/test" .to.be.false
+
+        describe 'ignored', (_) ->
+
+          it 'should not exists .gitignore', ->
+            expect exists "#{dest}/.gitignore" .to.be.false
+
+          it 'should not exists .narignore', ->
+            expect exists "#{dest}/.narignore" .to.be.false
 
       describe 'run', (_) ->
 
@@ -188,9 +190,6 @@ describe 'nar', ->
         it 'should exists global.js', ->
           expect exists "#{dest}/global.js" .to.be.true
 
-        it 'should exists .narignore', ->
-          expect exists "#{dest}/.narignore" .to.be.true
-
         it 'should exists node_modules', ->
           expect exists "#{dest}/node_modules" .to.be.true
 
@@ -202,3 +201,8 @@ describe 'nar', ->
 
         it 'should exists node_modules/some/node_modules/peer', ->
           expect exists "#{dest}/node_modules/some/node_modules/peer" .to.be.true
+
+        describe 'ignored', (_) ->
+
+          it 'should exists .narignore', ->
+            expect exists "#{dest}/.narignore" .to.be.false

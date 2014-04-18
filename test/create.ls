@@ -26,7 +26,7 @@ describe 'create', ->
         .on 'entry', -> entries += 1
         .on 'end', ->
           expect it .to.be.equal "#{dest}/test-1.0.0.nar"
-          expect entries > 10 .to.be.true
+          expect entries > 7 .to.be.true
           done!
 
   describe 'complex', (_) ->
@@ -50,7 +50,7 @@ describe 'create', ->
         .on 'entry', -> entries += 1
         .on 'end', ->
           expect it .to.be.equal "#{dest}/test-0.1.0.nar"
-          expect entries > 20 .to.be.true
+          expect entries .to.be.equal 12
           done!
 
   describe 'global', (_) ->
