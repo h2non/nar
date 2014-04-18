@@ -324,6 +324,7 @@ Create new archive from a given package.json
 
 - **path** `string` Path to package.json or application directory. Required
 - **dest** `string` Extract destination path. Default to random temporal directory
+- **file** `string` Archive file name. Default to package name + version, taken from `package.json`
 - **patterns** `array` List of glob patterns for matching included/excluded files
 - **archive** `object` Creation archive options. By default taken from `package.json`
 
