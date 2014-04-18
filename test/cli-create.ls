@@ -27,7 +27,7 @@ describe 'CLI', ->
         expect exists "#{dest}/test-1.0.0.nar" .to.be.true
 
       it 'should have a valid stdout', ->
-        expect stdout .to.match /created in/
+        expect stdout .to.match /created in/i
         expect stdout .to.match /test-1\.0\.0.nar/
 
     describe '--debug', (_) ->
@@ -50,7 +50,7 @@ describe 'CLI', ->
         expect exists "#{dest}/test-1.0.0.nar" .to.be.true
 
       it 'should have a valid stdout', ->
-        expect stdout .to.match /created in/
+        expect stdout .to.match /created in/i
         expect stdout .to.match /test-1\.0\.0.nar/
 
       it 'should have a valid debug output', ->
@@ -80,7 +80,7 @@ describe 'CLI', ->
         expect exists "#{dest}/test-1.0.0.nar" .to.be.true
 
       it 'should have a valid stdout', ->
-        expect stdout .to.match /created in/
+        expect stdout .to.match /created in/i
         expect stdout .to.match /\.nar\.json/
         expect stdout .to.match /node_modules\/another/
         expect stdout .to.match /test-1\.0\.0.nar/
@@ -108,7 +108,7 @@ describe 'CLI', ->
         expect exists "#{dest}/test-1.0.0.nar" .to.be.true
 
       it 'should have a valid stdout', ->
-        expect stdout .to.match /created in/
+        expect stdout .to.match /created in/i
         expect stdout .to.match /\.nar\.json/
         expect stdout .to.match /node_modules\/another/
         expect stdout .to.match /test-1\.0\.0.nar/
@@ -136,7 +136,7 @@ describe 'CLI', ->
         expect exists "#{dest}/test-1.0.0.nar" .to.be.true
 
       it 'should have a valid stdout', ->
-        expect stdout .to.match /created in/
+        expect stdout .to.match /created in/i
         expect stdout .to.match /\.nar\.json/
         expect stdout .to.match /node_modules\/another/
         expect stdout .to.match /test-1\.0\.0.nar/

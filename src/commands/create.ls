@@ -58,7 +58,7 @@ create = (pkgpath, options) ->
     "Add [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.name}".green |> echo
 
   on-end = (output) ->
-    "Archive created in: #{output}" |> echo
+    "Created in: #{output}" |> echo
     exit 0
 
   create = ->
