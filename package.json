@@ -1,6 +1,6 @@
 {
   "name": "nar",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "node.js application archive",
   "preferGlobal": true,
   "homepage": "http://github.com/h2non/nar",
