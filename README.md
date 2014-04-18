@@ -8,8 +8,6 @@
 
 ## About
 
-<img align="right" height="165" src="http://nodejs.org/images/platform-icon-generic.png" />
-
 **nar** is a simple application packager utility for [node.js](http://nodejs.org)
 
 With nar you can easily create self-contained node.js applications
@@ -20,6 +18,8 @@ easily through a featured [command-line interface](#command-line-interface)
 and asynchronous event-based [programmatic API](#programmatic-api)
 
 ## Features
+
+<img align="right" height="165" src="http://nodejs.org/images/platform-icon-generic.png" />
 
 - Simple command-line interface
 - Easy-to-use asynchronous programmatic API
