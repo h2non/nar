@@ -9,6 +9,7 @@ describe 'CLI', (_) ->
     describe 'default', (_) ->
 
       before ->
+        rm dest
         mk dest
         chdir dest
 
