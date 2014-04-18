@@ -27,8 +27,8 @@ module.exports = list = (options) ->
 
   on-listener = (name, fn) ->
     switch name
-      case 'error' then error |> fn if error
-      case 'end' then files |> fn if ended
+    | 'error'=> error |> fn if error
+    | 'end' => files |> fn if ended
 
   parse = -> next ->
     nar = null
