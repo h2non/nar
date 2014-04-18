@@ -34,7 +34,7 @@ extract = (archive, options) ->
   on-start = -> "Extracting files..." |> echo
 
   on-error = (err, code) ->
-    err.message |> echo if err
+    "Error: #{err.message or err}".red |> echo if err
     err.stack |> echo if debug and err.stack
     ((code or 1) |> exit)!
 

@@ -29,8 +29,8 @@ list = (archive, options) ->
   opts = path: archive |> add-extension
 
   on-error = ->
-    it.message.red |> echo if it.message
-    it.stack |> echo if debug
+    "Error: #{it.message or it}".red |> echo if it
+    it.stack |> echo if debug and it.stack
     exit 1
 
   on-info = ->
