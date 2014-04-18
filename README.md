@@ -116,7 +116,7 @@ Type: `array`
 Default: `null`
 
 Include global dependencies in the nar archive.
-It should define an array strings with packages names
+It should define an array of strings with packages names
 
 nar will resolve globally installed packages (via [requireg][requireg])
 and will bundle them into the archive
