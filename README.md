@@ -32,7 +32,7 @@ and asynchronous event-based [programmatic API](#programmatic-api)
 - Allow to bundle global dependencies
 - Allow to bundle node binary for platform-specific isolated runtime environments
 - Transparent checksum file integrity verification
-- Platform-agnostic
+- Platform agnostic
 
 ## Installation
 
