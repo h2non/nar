@@ -48,8 +48,12 @@ module.exports = create = (options) ->
     emitter.emit 'message', 'Cleaning temporary directories'
     try rm tmp-path
 
-  on-error = (err) ->
+  clean-error = ->
     clean!
+    try rm output
+
+  on-error = (err) ->
+    clean-error!
     err |> emitter.emit 'error', _ unless errored
     errored := yes
 
