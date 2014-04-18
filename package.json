@@ -4,13 +4,9 @@
   "description": "node.js application archive",
   "preferGlobal": true,
   "homepage": "http://github.com/h2non/nar",
-  "bugs": "https://github.com/h2non/nar/issues",
+  "repository": "h2non/nar",
   "author": {
     "name": "Tomas Aparicio"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/h2non/nar.git"
   },
   "licenses": "MIT",
   "main": "lib/nar",
