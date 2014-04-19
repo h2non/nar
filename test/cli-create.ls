@@ -10,6 +10,7 @@ describe 'CLI', ->
     describe 'basic', (_) ->
 
       before ->
+        rm dest
         mk dest
         chdir dest
 
