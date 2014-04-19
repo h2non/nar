@@ -33,7 +33,6 @@ and asynchronous event-based [programmatic API](#programmatic-api)
 - Allow to bundle node binary for platform-specific isolated runtime environments
 - Integrable in your development workflow through [Grunt][grunt-plugin] or [Gulp][gulp-plugin]
 - Transparent checksum file integrity verification
-- Platform agnostic
 
 ## Installation
 
