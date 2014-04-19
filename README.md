@@ -75,7 +75,7 @@ Example `package.json` with full configuration
     "dependencies": true,
     "devDependencies": false,
     "globalDependencies": ["npm", "grunt"],
-    "patterns": ["**", "!temp/**"]
+    "patterns": ["**", "!test/**"]
   },
   "scripts": {
     "start": "node app --env ${ENV}"
