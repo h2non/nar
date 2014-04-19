@@ -1,7 +1,6 @@
 require! {
   fs
   fw
-  async
   './pack'
   requireg.resolve
   events.EventEmitter
