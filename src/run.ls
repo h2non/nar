@@ -1,5 +1,5 @@
 require! {
-  async
+  fw
   './extract'
   path.join
   child_process.spawn
@@ -57,7 +57,7 @@ module.exports = run = (options) ->
       unless nar |> is-binary-valid
         return new Error 'Unsupported binary platform or processor' |> on-error
 
-    async.series (nar |> hooks-fn), (err) ->
+    fw.series (nar |> hooks-fn), (err) ->
       return err |> on-error if err
       options |> on-end _, nar
 

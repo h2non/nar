@@ -1,7 +1,7 @@
 require! {
-  async
-  './unpack'
+  fw
   path
+  './unpack'
   fs.symlink-sync
   events.EventEmitter
   findup: 'findup-sync'
@@ -18,7 +18,7 @@ module.exports = extract = (options = {}) ->
 
   clean-error = ->
     clean!
-    try rm dest
+    try rm dest if dest isnt process.cwd!
 
   on-end = ->
     clean!
@@ -105,7 +105,7 @@ module.exports = extract = (options = {}) ->
   extract-archives = (done) ->
     nar = '.nar.json' |> join tmpdir, _ |> read
     nar |> emitter.emit 'info', _
-    async.series (nar |> get-extract-files), done
+    fw.series (nar |> get-extract-files), done
 
   copy-nar-json = (done) ->
     origin = '.nar.json' |> join tmpdir, _
@@ -119,7 +119,7 @@ module.exports = extract = (options = {}) ->
     config |> extractor
 
   extract-tasks = ->
-    async.series [ extract-nar, extract-archives, copy-nar-json ], (err) ->
+    fw.series [ extract-nar, extract-archives, copy-nar-json ], (err) ->
       return err |> on-error if err
       on-end!
 

@@ -1,5 +1,6 @@
 require! {
   fs
+  fw
   async
   './pack'
   requireg.resolve
@@ -90,7 +91,7 @@ module.exports = create = (options) ->
       nar-config |> compress-all _, done
 
     do-compression = (done) ->
-      async.series [ deps, base-pkg, all ], done
+      fw.series [ deps, base-pkg, all ], done
 
     on-compress = (err) ->
       return err |> on-error if err
@@ -121,7 +122,7 @@ module.exports = create = (options) ->
       nar-config |> write-config _, tmp-path, done
 
     exec = ->
-      async.series [ save-config, pack-all ], cb
+      fw.series [ save-config, pack-all ], cb
 
     add-binary = ->
       { exec-path } = process
@@ -216,9 +217,9 @@ module.exports = create = (options) ->
         .on 'end', -> done null, it
 
     compress-pkg = (pkg, done) ->
-      async.map pkg, do-pack, (err, results) ->
+      fw.map pkg, do-pack, (err, results) ->
         return err |> done if err
-        async.map results, define-pkg-info, done
+        fw.map results, define-pkg-info, done
 
     find-global = (name) ->
       module = name |> resolve
@@ -250,7 +251,7 @@ module.exports = create = (options) ->
       list
 
     list = dependencies-list!
-    list |> async.each _, compress-pkg, (|> cb _, files)
+    list |> fw.each _, compress-pkg, (|> cb _, files)
 
   do-create!
   emitter
