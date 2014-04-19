@@ -307,8 +307,11 @@ try {
     .on('info', function (nar) {
       console.log(nar.name)
     })
+    .on('entry', function (file) {
+      console.log('Adding file:', file.name)
+    })
     .on('end', function (path) {
-      console.log('Archive created in: ' + path)
+      console.log('Archive created in:', path)
     })
 } catch (e) {
   console.error('Cannot create the archive:', e.message)
