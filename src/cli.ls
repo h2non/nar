@@ -9,7 +9,7 @@ require! {
 const cmd-map =
   e: 'extract'
   c: 'create'
-  x: 'list'
+  x: 'run'
   l: 'list'
 
 module.exports <<< parse: -> (it |> map |> program.parse)
