@@ -28,9 +28,9 @@ and asynchronous event-based [programmatic API](#programmatic-api)
 - Built-in support for archive extraction
 - Built-in support for application execution
 - Supports application pre/post run hooks (from [npm scripts][npm-scripts])
-- Allow to bundle dependencies by type
-- Allow to bundle global dependencies
-- Allow to bundle node binary for isolated runtime environments
+- Allow to embed dependencies by type
+- Allow to embed global dependencies
+- Allow to embed node binary for isolated runtime environments
 - Integrable in your development workflow through [Grunt][grunt-plugin] or [Gulp][gulp-plugin]
 - Transparent checksum file integrity verification
 
