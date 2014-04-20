@@ -235,6 +235,7 @@ Command specific help:
 ```
 
 ### create
+Alias: `c`
 
 Create a new archive from an existent application
 
@@ -247,6 +248,7 @@ $ nar create --debug --verbose
 ```
 
 ### extract
+Alias: `e`
 
 Extract archive files into directory
 
@@ -258,6 +260,7 @@ $ nar extract app.nar --debug
 ```
 
 ### run
+Alias: `x`
 
 Run nar archive application
 
@@ -271,6 +274,7 @@ $ nar run app.nar --args-stop '--path ${PATH}'
 ```
 
 ### list
+Alias: `l`
 
 List files from a nar archive
 

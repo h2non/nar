@@ -6,7 +6,13 @@ require! {
 }
 { echo } = require './utils'
 
-module.exports <<< parse: (|> program.parse)
+const cmd-map =
+  e: 'extract'
+  c: 'create'
+  x: 'list'
+  l: 'list'
+
+module.exports <<< parse: -> (it |> map |> program.parse)
 
 program
   .version nar.VERSION
@@ -30,3 +36,9 @@ program.on '--help', help = ->
   '''
 
 <[ create extract run list ]>for-each -> "./commands/#{it}" |> require
+
+map = (args) ->
+  cmd = args[2]
+  for own c of cmd-map when c is cmd then args[2] = cmd-map[c]
+  args
+
