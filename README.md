@@ -400,7 +400,7 @@ Complete list of available events for subscription
 
 ##### Which kind of archive is nar?
 
-nar archives are just a tarball files with gzip compression.
+nar archives are just a tarball containers with gzip compression.
 It's equivalent a file with `tar.gz` extension, so you can extract it with `tar`, `7zip` or others
 
 ## Contributing
