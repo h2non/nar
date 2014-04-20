@@ -39,6 +39,6 @@ program.on '--help', help = ->
 
 map = (args) ->
   cmd = args[2]
-  for own c of cmd-map when c is cmd then args[2] = cmd-map[c]
+  for own alias, value of cmd-map when alias is cmd then args[2] = value
   args
 
