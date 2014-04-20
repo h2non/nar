@@ -10,6 +10,7 @@ program
   .description '\n  Create a nar archive'
   .usage '[path] [options]'
   .option '-o, --output <path>', 'Output directory. Default to current directory'
+  .option '-f, --file <name>', 'Define the archive file name'
   .option '-r, --dependencies', 'Include dependencies'
   .option '-x, --dev-dependencies', 'Include development dependencies'
   .option '-p, --peer-dependencies', 'Include peer dependencies'
@@ -32,9 +33,9 @@ program
   .action -> create ...
 
 create = (pkgpath, options) ->
-  { debug, verbose, output } = options
+  { debug, verbose, output, file } = options
 
-  opts = dest: output
+  opts = { dest: output, file }
   options |> apply _, opts
 
   if pkgpath

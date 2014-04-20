@@ -145,6 +145,29 @@ describe 'CLI', ->
       it 'should not have the hidden file ignored by pattern', ->
         expect stdout .to.not.match /\.hidden/
 
+    describe '--file', (_) ->
+
+      before ->
+        mk dest
+        chdir dest
+
+      after ->
+        rm dest
+        chdir "#{__dirname}/.."
+
+      it 'should create the archive with custom file name', (done) ->
+        exec 'data', <[create ../basic --file custom]>, (data, code) ->
+          stdout := data
+          expect code .to.be.equal 0
+          done!
+
+      it 'should exists the archive', ->
+        expect exists "#{dest}/custom.nar" .to.be.true
+
+      it 'should have a valid stdout', ->
+        expect stdout .to.match /created in/i
+        expect stdout .to.match /custom\.nar/
+
     describe 'error', (_) ->
 
       before ->
