@@ -5,6 +5,16 @@ require! {
 }
 { echo, exit, exists, is-dir, is-file, is-string, to-kb, archive-name } = require '../utils'
 
+const options = [
+  'dependencies'
+  'devDependencies'
+  'peerDependencies'
+  'globalDependencies'
+  'patterns'
+  'binary'
+  'binaryPath'
+]
+
 program
   .command 'create [path]'
   .description '\n  Create a nar archive'
@@ -17,6 +27,7 @@ program
   .option '-g, --global-dependencies <names>', 'Include global dependencies, comma separated'
   .option '-i, --patterns <patterns>', 'Glob patterns to use for files include/exclude, comma separated'
   .option '-b, --binary', 'Include node binary'
+  .option '-n, --binary-path <path>', 'Custom node binary path to add'
   .option '-d, --debug', 'Enable debug mode. More information will be shown'
   .option '-v, --verbose', 'Enable verbose mode. A lot of information will be shown'
   .on '--help', ->
@@ -37,6 +48,7 @@ create = (pkgpath, options) ->
 
   opts = { dest: output, file }
   options |> apply _, opts
+  opts.binary = yes if opts.binary-path
 
   if pkgpath
     unless pkgpath |> exists
@@ -81,7 +93,6 @@ normalize = (type, value) ->
     value
 
 apply = (args, opts) ->
-  <[dependencies devDependencies peerDependencies globalDependencies patterns binary]>
+  options
     .filter -> args[it] is yes or (args[it] |> is-string)
     .for-each -> opts <<< (it): args[it] |> normalize it, _
-  opts

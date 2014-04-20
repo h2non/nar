@@ -30,7 +30,7 @@ and asynchronous event-based [programmatic API](#programmatic-api)
 - Supports application pre/post run hooks (from [npm scripts][npm-scripts])
 - Allow to bundle dependencies by type
 - Allow to bundle global dependencies
-- Allow to bundle node binary for platform-specific isolated runtime environments
+- Allow to bundle node binary for isolated runtime environments
 - Integrable in your development workflow through [Grunt][grunt-plugin] or [Gulp][gulp-plugin]
 - Transparent checksum file integrity verification
 
@@ -137,6 +137,14 @@ create the archive (taken from `process.execPath`)
 
 **Note**: as you already know, the node binary is OS and platform specific.
 Take that into account if you are going to deploy the archive in multiple platforms
+
+#### binaryPath
+Type: `string`
+Default: `process.execPath`
+
+Custom `node` binary path to add into the archive
+
+You must define the `binary` option to `true` in order to apply it
 
 #### patterns
 Type: `array`
@@ -296,11 +304,10 @@ var nar = require('nar')
 var options = {
   path: 'my/package.json', // defaults to current directory
   dest: 'build/',
-  archive: {
-    binary: true,
-    dependencies: true,
-    devDependencies: true
-  }
+  binary: true,
+  dependencies: true,
+  devDependencies: true,
+  globalDependencies: ['npm', 'grunt']
 }
 
 try {
@@ -329,11 +336,12 @@ Create new archive from a given package.json
 
 ##### Options
 
+You can pass any configuration [options](#options) and the following:
+
 - **path** `string` Path to package.json or application directory. Required
 - **dest** `string` Extract destination path. Default to random temporal directory
 - **file** `string` Archive file name. Default to package name + version, taken from `package.json`
 - **patterns** `array` List of glob patterns for matching files to include or exclude
-- **archive** `object` Creation archive options. By default taken from `package.json`
 
 ### nar.extract(options)
 Fired events: `end, error, entry, message, info, start`
@@ -387,6 +395,13 @@ Complete list of available events for subscription
 - **stdout** `(string)` Command execution stdout entry. Emits on every chunk of data
 - **stderr** `(string)` Command execution stderr entry. Emits on every chunk of data
 - **exit** `(code, hook)` When a hook command process ends
+
+## FAQ
+
+##### Which kind of archive is nar?
+
+nar archives are just a tarball files with gzip compression.
+It's equivalent a file with `tar.gz` extension, so you can extract it with `tar`, `7zip` or others
 
 ## Contributing
 

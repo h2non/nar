@@ -11,7 +11,7 @@ require! {
   is-object, is-file, is-dir, is-string, mk, stringify,
   vals, exists, checksum, lines, next, is-array, now
 } = require './utils'
-{ dirname, basename, join } = require 'path'
+{ dirname, basename, join, normalize } = require 'path'
 
 const nar-file = '.nar.json'
 const ext = 'nar'
@@ -21,6 +21,7 @@ const ignore-files = [ '.gitignore' '.npmignore' '.buildignore' '.narignore' ]
 const defaults =
   path: null
   binary: no
+  binary-path: process.exec-path
   dependencies: yes
   dev-dependencies: no
   peer-dependencies: yes
@@ -124,16 +125,17 @@ module.exports = create = (options) ->
       fw.series [ save-config, pack-all ], cb
 
     add-binary = ->
-      { exec-path } = process
+      { binary-path } = options
+      return  new Error "Binary path do not exists: #{binary-path}" |> on-error unless binary-path |> is-file
       info =
         archive: 'node'
         dest: '.node/bin'
         type: 'binary'
 
-      copy exec-path, tmp-path, (err, file) ->
+      copy binary-path, tmp-path, (err, file) ->
         return new Error "Error while copying the node binary: #{err}" |> on-error if err
         file |> basename |> config.patterns.push
-        { name: info.archive, info.type, size: '10485760', source-path: exec-path } |> on-entry
+        { name: info.archive, info.type, size: '10485760', source-path: binary-path } |> on-entry
 
         checksum file, (err, hash) ->
           info <<< checksum: hash
@@ -313,6 +315,7 @@ apply = (options) ->
 
   options <<< path: pkg-path |> discover-pkg
   options <<< dest: process.cwd! unless options.dest
+  options <<< binary-path: options.binary-path |> normalize
   options
 
 resolve-pkg-path = ->

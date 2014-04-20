@@ -89,6 +89,34 @@ describe 'CLI', ->
       it 'should have the npm dependency', ->
         expect stdout .to.match /\] node/
 
+    describe '--binary-path', (_) ->
+
+      before ->
+        mk dest
+        chdir dest
+
+      after ->
+        chdir "#{__dirname}/.."
+        rm dest
+
+      it 'should create the archive', (done) ->
+        exec 'data', <[create ../basic --debug --binary-path]> ++ [process.exec-path], (data, code) ->
+          stdout := data
+          expect code .to.be.equal 0
+          done!
+
+      it 'should exists the archive', ->
+        expect exists "#{dest}/test-1.0.0.nar" .to.be.true
+
+      it 'should have a valid stdout', ->
+        expect stdout .to.match /created in/i
+        expect stdout .to.match /\.nar\.json/
+        expect stdout .to.match /node_modules\/another/
+        expect stdout .to.match /test-1\.0\.0.nar/
+
+      it 'should have the npm dependency', ->
+        expect stdout .to.match /\] node/
+
     describe '--global-dependencies', (_) ->
 
       before ->
