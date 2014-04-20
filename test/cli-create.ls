@@ -15,8 +15,8 @@ describe 'CLI', ->
         chdir dest
 
       after ->
-        rm dest
         chdir "#{__dirname}/.."
+        rm dest
 
       it 'should create the archive', (done) ->
         exec 'data', <[create ../basic]>, (data, code) ->
@@ -38,8 +38,8 @@ describe 'CLI', ->
         chdir dest
 
       after ->
-        rm dest
         chdir "#{__dirname}/.."
+        rm dest
 
       it 'should create the archive', (done) ->
         exec 'data', <[create ../basic --debug]>, (data, code) ->
@@ -68,8 +68,8 @@ describe 'CLI', ->
         chdir dest
 
       after ->
-        rm dest
         chdir "#{__dirname}/.."
+        rm dest
 
       it 'should create the archive', (done) ->
         exec 'data', <[create ../basic --debug --binary]>, (data, code) ->
@@ -96,8 +96,8 @@ describe 'CLI', ->
         chdir dest
 
       after ->
-        rm dest
         chdir "#{__dirname}/.."
+        rm dest
 
       it 'should create the archive', (done) ->
         exec 'data', <[create ../basic --debug --global-dependencies npm]>, (data, code) ->
@@ -124,8 +124,8 @@ describe 'CLI', ->
         chdir dest
 
       after ->
-        rm dest
         chdir "#{__dirname}/.."
+        rm dest
 
       it 'should create the archive', (done) ->
         exec 'data', <[create ../basic --debug --patterns !.hidden]>, (data, code) ->
@@ -152,8 +152,8 @@ describe 'CLI', ->
         chdir dest
 
       after ->
-        rm dest
         chdir "#{__dirname}/.."
+        rm dest
 
       it 'should create the archive with custom file name', (done) ->
         exec 'data', <[create ../basic --file custom]>, (data, code) ->
@@ -175,8 +175,8 @@ describe 'CLI', ->
         chdir dest
 
       after ->
-        rm dest
         chdir "#{__dirname}/.."
+        rm dest
 
       it 'should create the archive', (done) ->
         exec 'data', <[create ../invalid ]>, (data, code) ->
