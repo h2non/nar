@@ -144,7 +144,7 @@ Default: `process.execPath`
 
 Custom `node` binary path to add into the archive
 
-You must define the `binary` option to `true` in order to apply it
+You must define the `binary` option as `true` in order to apply it
 
 #### patterns
 Type: `array`
