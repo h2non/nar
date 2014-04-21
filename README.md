@@ -58,7 +58,7 @@ Extract files
 $ nar extract app.nar
 ```
 
-Or directly run the application
+Or directly run it
 ```bash
 $ nar run app.nar
 ```
@@ -88,10 +88,10 @@ Example `package.json` with full configuration
 
 ### Options
 
-The following options can be declared in your application `package.json` as
+Following options can be declared in your application `package.json` as
 properties members of the `archive` object
 
-By default, dependencies will be matched from `package.json`
+Packages dependencies names will be matched from `package.json`
 
 #### dependencies
 Type: `boolean`
@@ -119,7 +119,7 @@ Include global dependencies in the nar archive.
 It should define an array of strings with packages names
 
 nar will resolve globally installed packages (via [requireg][requireg])
-and will bundle them into the archive
+and will add them to the archive
 
 Global dependencies will be placed in `.node/lib/node` on archive extraction and them will be
 available via `require` and `PATH` environment variable (for binary files)
@@ -132,8 +132,11 @@ Include the node binary in the nar archive.
 This is useful when you want to deploy a fully self-contained application
 which works in a sandboxed runtime environment
 
-The included node binary will be the same as the used when your
+The included node binary will be, by defeault, the same as the used when your
 create the archive (taken from `process.execPath`)
+
+Hooks scripts that requires node will use the self-contained binary inside the archive.
+It will be also accesible via `PATH` environement variable
 
 **Note**: as you already know, the node binary is OS and platform specific.
 Take that into account if you are going to deploy the archive in multiple platforms
@@ -415,7 +418,8 @@ Complete list of available events for subscription
 ##### Which kind of archive is nar?
 
 nar archives are just a tarball containers with gzip compression.
-It's equivalent a file with `tar.gz` extension, so you can extract it with `tar`, `7zip` or others
+It's equivalent a file with `tar.gz` extension, so you can extract
+it with `tar`, `7zip` or file compression tools
 
 Just try it by yourself
 ```bash
@@ -426,14 +430,16 @@ $ tar xvfz app-0.1.0.nar
 
 Yes, at least by the moment is still required
 
-In a future version `0.2` (probably) there is a planned provide
+In a future version `0.2` there is a planned provide
 support for creating a pure binary-like executable archive
 without depending of `nar` package to extract or run the application,
-so you will run it like:
+so you will beable to run it like:
 
 ```bash
 $ ./app-0.1.0.nar.run
 ```
+
+Ideas about this are welcome!
 
 ## Contributing
 
