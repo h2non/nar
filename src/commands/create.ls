@@ -28,7 +28,7 @@ program
   .option '-n, --omit-dependencies', 'Create archive without embed any type of dependencies'
   .option '-i, --patterns <patterns>', 'Glob patterns to use for files include/exclude, comma separated'
   .option '-b, --binary', 'Include node binary'
-  .option '-l, --binary-path <path>', 'Custom node binary path to add'
+  .option '-l, --binary-path <path>', 'Custom node binary to embed into the archive'
   .option '-d, --debug', 'Enable debug mode. More information will be shown'
   .option '-v, --verbose', 'Enable verbose mode. A lot of information will be shown'
   .on '--help', ->
