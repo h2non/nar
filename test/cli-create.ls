@@ -207,7 +207,7 @@ describe 'CLI', ->
         rm dest
 
       it 'should create the archive with custom file name', (done) ->
-        exec 'data', <[create ../basic --omit-dependencies]>, (data, code) ->
+        exec 'data', <[create ../basic --debug --omit-dependencies]>, (data, code) ->
           stdout := data
           expect code .to.be.equal 0
           done!
@@ -218,6 +218,9 @@ describe 'CLI', ->
       it 'should have a valid stdout', ->
         expect stdout .to.match /created in/i
         expect stdout .to.match /test-1.0.0\.nar/
+
+      it 'should not match node_modules in stdout', ->
+        expect stdout .to.not.match /node_modules/
 
     describe 'error', (_) ->
 

@@ -73,7 +73,7 @@ module.exports = create = (options) ->
     deps = (done) ->
       compress-dependencies tmp-path, base-dir, (err, files) ->
         return err |> on-error if err
-        nar-config.files = nar-config.files ++ files
+        nar-config.files = nar-config.files ++ files if files
         done!
 
     base-pkg = (done) ->
@@ -252,7 +252,10 @@ module.exports = create = (options) ->
       list
 
     list = dependencies-list!
-    list |> fw.each _, compress-pkg, (|> cb _, files)
+    if list.length
+      list |> fw.each _, compress-pkg, (|> cb _, files)
+    else
+      cb!
 
   do-create!
   emitter

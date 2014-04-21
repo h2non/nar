@@ -51,11 +51,10 @@ create = (pkgpath, options) ->
   options |> apply _, opts
   opts.binary = yes if opts.binary-path
 
-  /*if options.omit-dependencies
+  if options.omit-dependencies
     opts <<< dependencies: no
     opts <<< dev-dependencies: no
     opts <<< peer-dependencies: no
-  */
 
   if pkgpath
     unless pkgpath |> exists
