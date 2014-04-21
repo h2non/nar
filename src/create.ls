@@ -63,7 +63,7 @@ module.exports = create = (options) ->
 
   on-end = ->
     clean!
-    output |> emitter.emit 'end', _
+    output |> emitter.emit 'end', _ unless errored
 
   do-create = -> next ->
     nar-config = name |> nar-manifest _, pkg

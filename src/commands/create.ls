@@ -25,9 +25,10 @@ program
   .option '-x, --dev-dependencies', 'Include development dependencies'
   .option '-p, --peer-dependencies', 'Include peer dependencies'
   .option '-g, --global-dependencies <names>', 'Include global dependencies, comma separated'
+  .option '-n, --no-dependencies', 'Create archive without embed any type of dependencies'
   .option '-i, --patterns <patterns>', 'Glob patterns to use for files include/exclude, comma separated'
   .option '-b, --binary', 'Include node binary'
-  .option '-n, --binary-path <path>', 'Custom node binary path to add'
+  .option '-l, --binary-path <path>', 'Custom node binary path to add'
   .option '-d, --debug', 'Enable debug mode. More information will be shown'
   .option '-v, --verbose', 'Enable verbose mode. A lot of information will be shown'
   .on '--help', ->

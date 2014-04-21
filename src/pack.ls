@@ -39,19 +39,6 @@ module.exports = pack = (options = {}) ->
     err |> emitter.emit 'error', _ unless errored
     errored := yes
 
-  do-pack = -> next ->
-    return new Error 'source path do not exists' |> on-error unless src |> exists
-    return new Error 'destination path is not a directory' |> on-error unless dest |> is-dir
-
-    file = "#{name}.#{ext}"
-    file-path = file |> path.join dest, _
-    data = { name, file, path: file-path }
-
-    cb = file-path |> calculate-checksum _, data
-    (file-path
-    |> create-stream _, cb)
-    |> create-tar _, options
-
   create-stream = (file, cb) ->
     fs.create-write-stream file
       .on 'error', on-error
@@ -76,6 +63,19 @@ module.exports = pack = (options = {}) ->
       return (err |> on-error) if err
       data <<< checksum: hash
       data |> on-end
+
+  do-pack = -> next ->
+    return new Error 'source path do not exists' |> on-error unless src |> exists
+    return new Error 'destination path is not a directory' |> on-error unless dest |> is-dir
+
+    file = "#{name}.#{ext}"
+    file-path = file |> path.join dest, _
+    data = { name, file, path: file-path }
+
+    cb = file-path |> calculate-checksum _, data
+    (file-path
+    |> create-stream _, cb)
+    |> create-tar _, options
 
   do-pack!
   emitter

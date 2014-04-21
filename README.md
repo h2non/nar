@@ -32,7 +32,7 @@ and asynchronous event-based [programmatic API](#programmatic-api)
 - Allow to embed global dependencies
 - Allow to embed node binary for isolated runtime environments
 - Integrable in your development workflow through [Grunt][grunt-plugin] or [Gulp][gulp-plugin]
-- Transparent checksum file integrity verification
+- Transparent file checksum integrity verification
 
 ## Installation
 
@@ -130,7 +130,7 @@ Default: `false`
 
 Include the node binary in the nar archive.
 This is useful when you want to deploy a fully self-contained application
-like a sandboxed runtime environment
+which works in a sandboxed runtime environment
 
 The included node binary will be the same as the used when your
 create the archive (taken from `process.execPath`)
@@ -144,7 +144,19 @@ Default: `process.execPath`
 
 Custom `node` binary path to add into the archive
 
-You must define the `binary` option as `true` in order to apply it
+You must define the `binary` option as `true` in order to apply this
+
+<!--
+#### executable
+Type: `boolean`
+Default: `false`
+
+Create a self-contained executable binary-like archive.
+This archive mode is only supported in UNIX-like operative systems
+
+You can run the `nar` archive like
+
+-->
 
 #### patterns
 Type: `array`
@@ -302,8 +314,8 @@ The API is fully asynchronous event-based, for a better approach
 var nar = require('nar')
 
 var options = {
-  path: 'my/package.json', // defaults to current directory
-  dest: 'build/',
+  path: 'my/package.json', // defaults to ./package.json
+  dest: 'build/', // defaults to current directory
   binary: true,
   dependencies: true,
   devDependencies: true,

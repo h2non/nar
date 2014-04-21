@@ -66,7 +66,7 @@ module.exports = extract = (options = {}) ->
         pkg |> process-global-binaries if pkg
       done!
 
-    do-extract = ->
+    do-extractor = ->
       mk dest unless dest |> is-dir
       (options |> unpack)
         .on 'error', on-error
@@ -74,7 +74,7 @@ module.exports = extract = (options = {}) ->
         .on 'end', extract-end
 
     try
-      do-extract!
+      do-extractor!
     catch
       e |> on-error
 
