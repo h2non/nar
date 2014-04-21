@@ -23,6 +23,7 @@ describe 'nar', ->
       expect nar.VERSION .to.be.equal version
 
   describe 'E2E', ->
+    platform = "#{process.platform}-#{process.arch}"
 
     describe 'complex', ->
 
@@ -36,7 +37,6 @@ describe 'nar', ->
 
       after ->
         chdir "#{__dirname}/.."
-        rm "#{dest}/test-0.1.0.nar"
         rm dest
 
       describe 'create', (_) ->
@@ -47,15 +47,15 @@ describe 'nar', ->
           nar.create options
             .on 'error', -> throw it
             .on 'end', ->
-              expect it .to.be.equal "#{dest}/test-0.1.0.nar"
+              expect it .to.be.equal "#{dest}/test-0.1.0-#{platform}.nar"
               done!
 
         it 'should exists the archive', ->
-          expect exists "#{dest}/test-0.1.0.nar" .to.be.true
+          expect exists "#{dest}/test-0.1.0-#{platform}.nar" .to.be.true
 
       describe 'extract', (_) ->
 
-        options = path: "#{dest}/test-0.1.0.nar"
+        options = path: "#{dest}/test-0.1.0-#{platform}.nar"
 
         it 'should create the archive', (done) ->
           nar.extract options
@@ -103,7 +103,7 @@ describe 'nar', ->
       describe 'run', (_) ->
 
         stdout = stderr = messages = commands = ''
-        options = path: "#{dest}/test-0.1.0.nar"
+        options = path: "#{dest}/test-0.1.0-#{platform}.nar"
 
         it 'should create the archive', (done) ->
           nar.run options
@@ -146,7 +146,6 @@ describe 'nar', ->
 
       after ->
         chdir "#{__dirname}/.."
-        rm "#{dest}/global.nar"
         rm dest
 
       describe 'create', (_) ->
@@ -157,15 +156,15 @@ describe 'nar', ->
           nar.create options
             .on 'error', -> throw it
             .on 'end', ->
-              expect it .to.be.equal "#{dest}/global.nar"
+              expect it .to.be.equal "#{dest}/global-#{platform}.nar"
               done!
 
         it 'should exists the archive', ->
-          expect exists "#{dest}/global.nar" .to.be.true
+          expect exists "#{dest}/global-#{platform}.nar" .to.be.true
 
       describe 'extract', (_) ->
 
-        options = path: "#{dest}/global.nar"
+        options = path: "#{dest}/global-#{platform}.nar"
 
         it 'should create the archive', (done) ->
           nar.extract options

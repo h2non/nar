@@ -84,8 +84,9 @@ module.exports = _ = {
   archive-name: (nar) ->
     name = ''
     if nar
-      name += nar.name
+      name += nar.name or 'unnamed'
       name += "-#{version}" if version = nar.manifest.version
+      name += "-#{process.platform}-#{platform.arch}" if nar.binary
     "#{name}.nar"
 
   checksum: (file, cb) ->

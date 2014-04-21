@@ -7,7 +7,7 @@ require! {
   findup: 'findup-sync'
 }
 {
-  read, rm, tmpdir, clone, extend, copy, keys,
+  read, rm, tmpdir, clone, extend, copy, keys, archive-name,
   is-object, is-file, is-dir, is-string, mk, stringify,
   vals, exists, checksum, lines, next, is-array, now
 } = require './utils'
@@ -42,7 +42,7 @@ module.exports = create = (options) ->
   tmp-path = tmpdir name
   options <<< base: base-dir = pkg-path |> dirname
 
-  file = if options.file then options.file else get-filename pkg
+  file = options |> get-filename _, pkg
   output = file |> output-file _, options.dest
 
   clean = ->
@@ -293,9 +293,14 @@ is-valid = -> it and it.length
 output-file = (file, dir) ->
   "#{file}.nar" |> join dir, _
 
-get-filename = (pkg = {}) ->
-  name = pkg.name or 'unnamed'
-  name += "-#{pkg.version}" if pkg.version
+get-filename = (options, pkg = {}) ->
+  if options.file
+    name = options.file.replace /\.[a-z0-9]$/i, ''
+  else
+    name = pkg.name or 'unnamed'
+    name += "-#{pkg.version}" if pkg.version
+
+  name += "-#{process.platform}-#{process.arch}" if options.binary
   name
 
 apply-pkg-options = (options, pkg) ->

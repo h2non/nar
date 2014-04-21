@@ -49,7 +49,7 @@ describe 'create', ->
         .on 'error', -> throw it
         .on 'entry', -> entries += 1
         .on 'end', ->
-          expect it .to.be.equal "#{dest}/test-0.1.0.nar"
+          expect it .to.be.equal "#{dest}/test-0.1.0-#{process.platform}-#{process.arch}.nar"
           expect entries > 10 .to.be.true
           done!
 
@@ -73,6 +73,6 @@ describe 'create', ->
         .on 'error', -> throw it
         .on 'entry', -> entries += 1
         .on 'end', ->
-          expect it .to.be.equal "#{dest}/global.nar"
+          expect it .to.be.equal "#{dest}/global-#{process.platform}-#{process.arch}.nar"
           expect entries > 100 .to.be.true
           done!

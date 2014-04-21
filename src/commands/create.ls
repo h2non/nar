@@ -3,7 +3,7 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit, exists, is-dir, is-file, is-string, to-kb, archive-name } = require '../utils'
+{ echo, exit, exists, is-dir, is-file, is-string, to-kb } = require '../utils'
 
 const options = [
   'dependencies'
@@ -25,7 +25,7 @@ program
   .option '-x, --dev-dependencies', 'Include development dependencies'
   .option '-p, --peer-dependencies', 'Include peer dependencies'
   .option '-g, --global-dependencies <names>', 'Include global dependencies, comma separated'
-  .option '-n, --no-dependencies', 'Create archive without embed any type of dependencies'
+  .option '-n, --omit-dependencies', 'Create archive without embed any type of dependencies'
   .option '-i, --patterns <patterns>', 'Glob patterns to use for files include/exclude, comma separated'
   .option '-b, --binary', 'Include node binary'
   .option '-l, --binary-path <path>', 'Custom node binary path to add'
@@ -51,6 +51,12 @@ create = (pkgpath, options) ->
   options |> apply _, opts
   opts.binary = yes if opts.binary-path
 
+  /*if options.omit-dependencies
+    opts <<< dependencies: no
+    opts <<< dev-dependencies: no
+    opts <<< peer-dependencies: no
+  */
+
   if pkgpath
     unless pkgpath |> exists
       "Error: path do not exists" |> exit 1
@@ -66,7 +72,7 @@ create = (pkgpath, options) ->
     ((code or 1) |> exit)!
 
   on-start = ->
-    "Creating archive: #{it |> archive-name}" |> echo
+    "Creating archive..." |> echo
 
   on-entry = ->
     "Add [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.name}".green |> echo

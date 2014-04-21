@@ -154,8 +154,10 @@ Default: `false`
 Create a self-contained executable binary-like archive.
 This archive mode is only supported in UNIX-like operative systems
 
-You can run the `nar` archive like
-
+You can run the `nar` archive like a binary
+```bash
+$ ./app-0.1.0.nar
+```
 -->
 
 #### patterns
@@ -397,7 +399,7 @@ Type: `string`
 
 Complete list of available events for subscription
 
-- **end** (`[result]`) Task was completed successfully
+- **end** `([result])` Task was completed successfully
 - **error** `(error)` Some error happens and task cannot be completed
 - **entry** `(entry)` On read/write file, usually fired from file streams
 - **message** `(message)` General information status message, useful for debugging purposes
@@ -414,6 +416,24 @@ Complete list of available events for subscription
 
 nar archives are just a tarball containers with gzip compression.
 It's equivalent a file with `tar.gz` extension, so you can extract it with `tar`, `7zip` or others
+
+Just try it by yourself
+```bash
+$ tar xvfz app-0.1.0.nar
+```
+
+##### Is required to use nar for extracting or runnin an archive?
+
+Yes, at least by the moment is still required
+
+In a future version `0.2` (probably) there is a planned provide
+support for creating a pure binary-like executable archive
+without depending of `nar` package to extract or run the application,
+so you will run it like:
+
+```bash
+$ ./app-0.1.0.nar.run
+```
 
 ## Contributing
 

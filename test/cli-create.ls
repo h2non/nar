@@ -78,13 +78,13 @@ describe 'CLI', ->
           done!
 
       it 'should exists the archive', ->
-        expect exists "#{dest}/test-1.0.0.nar" .to.be.true
+        expect exists "#{dest}/test-1.0.0-#{process.platform}-#{process.arch}.nar" .to.be.true
 
       it 'should have a valid stdout', ->
         expect stdout .to.match /created in/i
         expect stdout .to.match /\.nar\.json/
         expect stdout .to.match /node_modules\/another/
-        expect stdout .to.match /test-1\.0\.0.nar/
+        expect stdout .to.match /test-1\.0\.0/
 
       it 'should have the npm dependency', ->
         expect stdout .to.match /\] node/
@@ -106,13 +106,13 @@ describe 'CLI', ->
           done!
 
       it 'should exists the archive', ->
-        expect exists "#{dest}/test-1.0.0.nar" .to.be.true
+        expect exists "#{dest}/test-1.0.0-#{process.platform}-#{process.arch}.nar" .to.be.true
 
       it 'should have a valid stdout', ->
         expect stdout .to.match /created in/i
         expect stdout .to.match /\.nar\.json/
         expect stdout .to.match /node_modules\/another/
-        expect stdout .to.match /test-1\.0\.0.nar/
+        expect stdout .to.match /test-1\.0\.0/
 
       it 'should have the npm dependency', ->
         expect stdout .to.match /\] node/
@@ -195,6 +195,29 @@ describe 'CLI', ->
       it 'should have a valid stdout', ->
         expect stdout .to.match /created in/i
         expect stdout .to.match /custom\.nar/
+
+    describe '--omit-dependencies', (_) ->
+
+      before ->
+        mk dest
+        chdir dest
+
+      after ->
+        chdir "#{__dirname}/.."
+        rm dest
+
+      it 'should create the archive with custom file name', (done) ->
+        exec 'data', <[create ../basic --omit-dependencies]>, (data, code) ->
+          stdout := data
+          expect code .to.be.equal 0
+          done!
+
+      it 'should exists the archive', ->
+        expect exists "#{dest}/test-1.0.0.nar" .to.be.true
+
+      it 'should have a valid stdout', ->
+        expect stdout .to.match /created in/i
+        expect stdout .to.match /test-1.0.0\.nar/
 
     describe 'error', (_) ->
 
