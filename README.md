@@ -91,7 +91,7 @@ Example `package.json` with full configuration
 Following options can be declared in your application `package.json` as
 properties members of the `archive` object
 
-Packages dependencies names will be matched from `package.json`
+Packages dependencies names will be taken from `package.json`
 
 #### dependencies
 Type: `boolean`
