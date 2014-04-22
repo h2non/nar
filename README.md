@@ -269,7 +269,8 @@ $ nar create
 $ nar create some/path --debug
 $ nar create path/to/package.json -o some/dir
 $ nar create --dev-dependencies --global-dependencies 'npm,grunt'
-$ nar create --debug --verbose
+$ nar create --omit-dependencies
+$ nar create --verbose
 ```
 
 ### extract
@@ -353,7 +354,7 @@ Create new archive from a given package.json
 
 ##### Options
 
-You can pass any configuration [options](#options) and the following:
+You can pass any configuration [options](#options) and the following options:
 
 - **path** `string` Path to package.json or application directory. Required
 - **dest** `string` Extract destination path. Default to random temporal directory
