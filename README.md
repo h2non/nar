@@ -136,7 +136,7 @@ The included node binary will be, by defeault, the same as the used when your
 create the archive (taken from `process.execPath`)
 
 Hooks scripts that requires node will use the self-contained binary inside the archive.
-It will be also accesible via `PATH` environement variable
+It will be also accessible via `PATH` environement variable
 
 **Note**: as you already know, the node binary is OS and platform specific.
 Take that into account if you are going to deploy the archive in multiple platforms
