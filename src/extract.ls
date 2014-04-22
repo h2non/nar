@@ -96,6 +96,7 @@ module.exports = extract = (options = {}) ->
   get-extract-files = (nar) ->
     tasks = []
     nar.files.for-each ->
+      emitter.emit 'archive', it
       if it.type is 'binary'
         it |> copy-bin-fn |> tasks.push
       else

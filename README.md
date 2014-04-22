@@ -362,7 +362,7 @@ You can pass any configuration [options](#options) and the following options:
 - **patterns** `array` List of glob patterns for matching files to include or exclude
 
 ### nar.extract(options)
-Fired events: `end, error, entry, message, info, start`
+Fired events: `end, error, entry, archive, message, info, start`
 
 Extract archive files into a output directory
 
@@ -406,6 +406,7 @@ Complete list of available events for subscription
 - **end** `([result])` Task was completed successfully
 - **error** `(error)` Some error happens and task cannot be completed
 - **entry** `(entry)` On read/write file, usually fired from file streams
+- **archive** `(archive)` Emit the archive that is being processed
 - **message** `(message)` General information status message, useful for debugging purposes
 - **command** `(command)` Hook command to execute when run an application
 - **info** `(config)` Expose the nar archive config

@@ -128,6 +128,7 @@ module.exports = create = (options) ->
       { binary-path } = options
       return  new Error "Binary path do not exists: #{binary-path}" |> on-error unless binary-path |> is-file
       info =
+        name: 'node'
         archive: 'node'
         dest: '.node/bin'
         type: 'binary'
@@ -154,6 +155,7 @@ module.exports = create = (options) ->
     options <<< src: base
 
     pkg-info =
+      name: name
       archive: "#{name}.tar"
       dest: '.'
       type: 'package'
@@ -200,7 +202,9 @@ module.exports = create = (options) ->
         done null, pkg-info
 
     define-pkg-info = (pkg, done) ->
-      pkg-info = archive: pkg.file
+      pkg-info =
+        name: pkg.name
+        archive: pkg.file
 
       if (pkg.name |> globals.index-of) isnt -1
         pkg-info <<< dest: ".node/lib/node/#{pkg.name}"

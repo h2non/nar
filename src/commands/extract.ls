@@ -31,7 +31,7 @@ extract = (archive, options) ->
     path: archive |> add-extension
     dest: output
 
-  on-start = -> "Extracting files..." |> echo
+  on-start = -> "Reading archive..." |> echo
 
   on-error = (err, code) ->
     "Error: #{err.message or err}".red |> echo if err
@@ -40,6 +40,9 @@ extract = (archive, options) ->
 
   on-entry = ->
     "Extract [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.path}".green |> echo
+
+  on-archive = ->
+    "Extracting [#{it.type.cyan}] #{it.name}" |> echo
 
   on-end = ->
     "Extracted in: #{it.dest}" |> echo
@@ -50,6 +53,7 @@ extract = (archive, options) ->
 
     archive = nar.extract opts
       .on 'start', on-start
+      .on 'archive', on-archive
       .on 'error', on-error
       .on 'end', on-end
 
