@@ -8,7 +8,7 @@ require! {
   mk: mkdirp.sync
 }
 { normalize, join, basename, delimiter } = path
-{ env, platform, exit, next-tick } = process
+{ env, platform, exit, next-tick, arch } = process
 
 module.exports = _ = {
 
@@ -87,7 +87,7 @@ module.exports = _ = {
     if nar
       name += nar.name or 'unnamed'
       name += "-#{version}" if version = nar.manifest.version
-      name += "-#{process.platform}-#{platform.arch}" if nar.binary
+      name += "-#{platform}-#{arch}" if nar.binary
     "#{name}.nar"
 
   checksum: (file, cb) ->
