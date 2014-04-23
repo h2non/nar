@@ -420,17 +420,17 @@ Complete list of available events for subscription
 ##### Which kind of archive is nar?
 
 nar archives are just a tarball containers with gzip compression.
-It's equivalent a file with `tar.gz` extension, so you can extract
-it with `tar`, `7zip` or file compression tools
+It's equivalent to a file with `tar.gz` extension, so you can extract
+it with `tar`, `7zip` or file compression tools ans inspect the archive contents
 
-Just try it by yourself
+Example using `tar`
 ```bash
 $ tar xvfz app-0.1.0.nar
 ```
 
-##### Is required to use nar for extracting or runnin an archive?
+##### Is required to use nar for extracting or running an archive?
 
-Yes, at least by the moment is still required
+Yes. At least by the moment is still required
 
 In a future version `0.2` there is a planned provide
 support for creating a pure binary-like executable archive
@@ -440,6 +440,12 @@ so you will beable to run it like:
 ```bash
 $ ./app-0.1.0.nar.run
 ```
+
+##### When will be used embedbed node binary in the archive?
+
+Yes.
+If you use the `run` command, if the archive has node binary embedded,
+nar will use it
 
 Ideas about this are welcome!
 
