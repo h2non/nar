@@ -127,20 +127,23 @@ module.exports = create = (options) ->
     add-binary = ->
       { binary-path } = options
       return  new Error "Binary path do not exists: #{binary-path}" |> on-error unless binary-path |> is-file
-      info =
+
+      pkg-info =
         name: 'node'
         archive: 'node'
         dest: '.node/bin'
         type: 'binary'
 
+      pkg-info |> emitter.emit 'archive', _
+
       copy binary-path, tmp-path, (err, file) ->
         return new Error "Error while copying the node binary: #{err}" |> on-error if err
         file |> basename |> config.patterns.push
-        { name: info.archive, info.type, size: '10485760', source-path: binary-path } |> on-entry
+        { name: pkg-info.archive, pkg-info.type, size: '10485760', source-path: binary-path } |> on-entry
 
         checksum file, (err, hash) ->
-          info <<< checksum: hash
-          info |> nar-config.files.push
+          pkg-info <<< checksum: hash
+          pkg-info |> nar-config.files.push
           exec!
 
     if options.binary
@@ -159,6 +162,8 @@ module.exports = create = (options) ->
       archive: "#{name}.tar"
       dest: '.'
       type: 'package'
+
+    pkg-info |> emitter.emit 'archive', _
 
     on-pack-end = (pkg) ->
       checksum pkg.path, (err, hash) ->
@@ -212,6 +217,8 @@ module.exports = create = (options) ->
       else
         pkg-info <<< dest: pkg.name |> get-module-path
         pkg-info <<< type: 'dependency'
+
+      pkg-info |> emitter.emit 'archive', _
 
       pkg.path |> calculate-checksum _, pkg-info, done
 

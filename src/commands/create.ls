@@ -73,6 +73,9 @@ create = (pkgpath, options) ->
   on-start = ->
     "Creating archive..." |> echo
 
+  on-archive = ->
+    "Adding [#{it.type.cyan}] #{it.name}" |> echo unless debug and verbose
+
   on-entry = ->
     "Add [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.name}".green |> echo
 
@@ -83,6 +86,7 @@ create = (pkgpath, options) ->
   create = ->
     archive = nar.create opts
       .on 'start', on-start
+      .on 'archive', on-archive
       .on 'error', on-error
       .on 'end', on-end
     archive.on 'entry', on-entry if debug or verbose

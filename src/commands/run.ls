@@ -50,6 +50,9 @@ run = (archive, options) ->
 
   on-end = -> "Finished" |> echo
 
+  on-archive = ->
+    "Extracting [#{it.type.cyan}] #{it.name}" |> echo unless debug and verbose
+
   on-error = (err, code) ->
     "Error: #{err.message or err}".red |> echo if err
     err.stack |> echo if debug and err.stack
@@ -77,6 +80,7 @@ run = (archive, options) ->
     archive = nar.run opts
       .on 'extract', on-extract
       .on 'info', on-info
+      .on 'archive', on-archive
       .on 'start', on-start
       .on 'error', on-error
       .on 'end', on-end

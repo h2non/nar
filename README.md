@@ -348,7 +348,7 @@ try {
 ```
 
 ### nar.create(options)
-Fired events: `end, error, entry, message, info, start`
+Fired events: `end, error, entry, archive, message, info, start`
 
 Create new archive from a given package.json
 
@@ -373,7 +373,7 @@ Extract archive files into a output directory
 - **tmpdir** `string` Temporal directory to use. Default to random temporal directory
 
 ### nar.run(options)
-Fired events: `end, error, entry, command, info, start, stdout, stderr, exit`
+Fired events: `end, error, entry, archive, command, info, start, stdout, stderr, exit`
 
 Read, extract and run an application. It will read [command scripts][npm-scripts] hooks in `package.json`
 

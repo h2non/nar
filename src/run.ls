@@ -22,6 +22,9 @@ module.exports = run = (options) ->
   on-entry = (entry) ->
     entry |> emitter.emit 'entry', _ if entry
 
+  on-archive = (archive) ->
+    archive |> emitter.emit 'archive', _ if archive
+
   on-end = (options, nar) ->
     clean-dir!
     options |> emitter.emit 'end', _, nar
@@ -66,6 +69,7 @@ module.exports = run = (options) ->
     (options |> extract)
       .on 'error', on-error
       .on 'entry', on-entry
+      .on 'archive', on-archive
       .on 'end', app-runner
 
   do-extract!
