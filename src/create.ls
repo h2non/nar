@@ -1,17 +1,18 @@
 require! {
   fs
   fw
+  path
   './pack'
   requireg.resolve
   events.EventEmitter
   findup: 'findup-sync'
 }
+{ dirname, basename, join, normalize } = path
 {
   read, rm, tmpdir, clone, extend, copy, keys, archive-name,
   is-object, is-file, is-dir, is-string, mk, stringify,
-  vals, exists, checksum, lines, next, is-array, now
+  vals, exists, checksum, lines, next, is-array, now, replace-env-vars
 } = require './utils'
-{ dirname, basename, join, normalize } = require 'path'
 
 const nar-file = '.nar.json'
 const ext = 'nar'
@@ -332,9 +333,9 @@ apply = (options) ->
   else
     pkg-path = process.cwd!
 
+  options <<< binary-path: options |> get-binary-path
   options <<< path: pkg-path |> discover-pkg
   options <<< dest: process.cwd! unless options.dest
-  options <<< binary-path: options.binary-path |> normalize
   options
 
 resolve-pkg-path = ->
@@ -342,6 +343,11 @@ resolve-pkg-path = ->
     it |> dirname |> resolve-pkg-path
   else
     it
+
+get-binary-path = (options) ->
+  binary = options.binary-path
+  binary = process.env.NAR_BINARY if process.env.NAR_BINARY
+  binary |> normalize |> replace-env-vars
 
 get-module-path = ->
   it = '.bin' if it is 'modules-bin-dir'

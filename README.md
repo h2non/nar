@@ -147,7 +147,12 @@ Default: `process.execPath`
 
 Custom `node` binary path to add into the archive
 
-You must define the `binary` option as `true` in order to apply this
+You must define the `binary` option as `true` in order to apply this.
+You can use interpolated environment variables expressions in
+this option, like `${HOME}/binaries/node`
+
+Aditionally, you can also define the `binaryPath` value from the `NAR_BINARY`
+environment variable
 
 <!--
 #### executable

@@ -76,3 +76,31 @@ describe 'create', ->
           expect it .to.be.equal "#{dest}/global-#{process.platform}-#{process.arch}.nar"
           expect entries > 100 .to.be.true
           done!
+
+  describe 'binaryPath', (_) ->
+
+    before ->
+      rm dest
+      mk dest
+      chdir "#{__dirname}/fixtures/complex"
+
+    before ->
+      @archive = create {
+        dest: dest
+        binary: yes
+        binaryPath: process.execPath
+      }
+
+    after ->
+      chdir "#{__dirname}/.."
+      rm dest
+
+    it 'should compress files sucessfully', (done) ->
+      entries = 0
+      @archive
+        .on 'error', -> throw it
+        .on 'entry', -> entries += 1
+        .on 'end', ->
+          expect it .to.be.equal "#{dest}/test-0.1.0-#{process.platform}-#{process.arch}.nar"
+          expect entries > 10 .to.be.true
+          done!

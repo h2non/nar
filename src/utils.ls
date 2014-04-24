@@ -55,6 +55,9 @@ module.exports = _ = {
   lines: ->
     it.split os.EOL if it
 
+  replace-env-vars: (str) ->
+    str.replace /\$\{(\w+)\}/ig, (_, name) -> process.env[name] or ''
+
   exit: (code) ->
     code |> exit if code is 0 or not code
     (message) ->

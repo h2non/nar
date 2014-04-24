@@ -5,7 +5,7 @@ require! {
   child_process.spawn
   events.EventEmitter
 }
-{ next, tmpdir, read, has, rm, delimiter, is-win, is-array } = require './utils'
+{ next, tmpdir, read, has, rm, delimiter, is-win, is-array, replace-env-vars } = require './utils'
 
 const hooks-keys = [ 'prestart' 'start' 'stop' 'poststop' ]
 
@@ -125,9 +125,6 @@ get-command-script = (cmd) ->
 parse-command = (cmd) ->
   [ cmd, ...args ] = (cmd |> replace-env-vars |> clean-spaces).split ' '
   { cmd, args }
-
-replace-env-vars = (str) ->
-  str.replace /\$\{(\w+)\}/ig, (_, name) -> process.env[name] or ''
 
 clean-spaces = -> it.replace /\s+/g, ' '
 
