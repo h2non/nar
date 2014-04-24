@@ -5,9 +5,7 @@
   "preferGlobal": true,
   "homepage": "http://github.com/h2non/nar",
   "repository": "h2non/nar",
-  "author": {
-    "name": "Tomas Aparicio"
-  },
+  "author": "Tomas Aparicio",
   "licenses": "MIT",
   "main": "lib/nar",
   "directories": {

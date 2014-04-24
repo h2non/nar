@@ -93,7 +93,7 @@ module.exports = create = (options) ->
       nar-config |> compress-all _, done
 
     do-compression = (done) ->
-      fw.series [ deps, base-pkg, all ], done
+       [ deps, base-pkg, all ] |> fw.series _, done
 
     on-compress = (err) ->
       return err |> on-error if err
@@ -124,7 +124,7 @@ module.exports = create = (options) ->
       nar-config |> write-config _, tmp-path, done
 
     exec = ->
-      fw.series [ save-config, pack-all ], cb
+      [ save-config, pack-all ] |> fw.series _, cb
 
     add-binary = ->
       { binary-path } = options
