@@ -28,6 +28,7 @@ const defaults =
   peer-dependencies: yes
   global-dependencies: null
   patterns: null
+  ignore-files: yes
 
 module.exports = create = (options) ->
   errored = no
@@ -153,10 +154,10 @@ module.exports = create = (options) ->
     else
       exec!
 
-  compress-pkg = (options, cb) ->
-    { dest, base, name, patterns } = options = options |> clone
-    options.patterns = patterns.concat (base |> include-files-patterns)
-    options <<< src: base
+  compress-pkg = (config, cb) ->
+    { dest, base, name, patterns } = config = config |> clone
+    config.patterns = patterns.concat (base |> include-files-patterns _, options.ignore-files)
+    config <<< src: base
 
     pkg-info =
       name: name
@@ -171,7 +172,7 @@ module.exports = create = (options) ->
         pkg-info <<< checksum: hash
         cb pkg-info
 
-    pack options
+    pack config
       .on 'error', -> throw it
       .on 'entry', on-entry
       .on 'end', on-pack-end
@@ -290,8 +291,10 @@ nar-manifest = (name, pkg) ->
   manifest: pkg
   files: []
 
-include-files-patterns = ->
-  [ '**' ] ++ ignored-files ++ (it |> get-ignored-files)
+include-files-patterns = (dir, ignore) ->
+  patterns = [ '**' ] ++ ignored-files
+  patterns = patterns ++ (dir |> get-ignored-files) if ignore
+  patterns
 
 get-ignored-files = (dir) ->
   patterns = []
