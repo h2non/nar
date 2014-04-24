@@ -132,11 +132,11 @@ Include the node binary in the nar archive.
 This is useful when you want to deploy a fully self-contained application
 which works in a sandboxed runtime environment
 
-The included node binary will be, by defeault, the same as the used when your
+The included node binary will be, by default, the same as the used when your
 create the archive (taken from `process.execPath`)
 
 Hooks scripts that requires node will use the self-contained binary inside the archive.
-It will be also accessible via `PATH` environement variable
+It will be also accessible via `PATH` environment variable
 
 **Note**: as you already know, the node binary is OS and platform specific.
 Take that into account if you are going to deploy the archive in multiple platforms
