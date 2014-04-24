@@ -154,6 +154,13 @@ this option, like `${HOME}/binaries/node`
 Aditionally, you can also define the `binaryPath` value from the `NAR_BINARY`
 environment variable
 
+#### ignoreFiles
+Type: `boolean`
+Default: `true`
+
+Enable/disable [ignore-like files](#ignoring-files) processing in order to load
+files patterns to discard from the archive
+
 <!--
 #### executable
 Type: `boolean`
