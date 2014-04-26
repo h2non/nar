@@ -3,11 +3,15 @@ list = require '../lib/list'
 
 describe 'list', ->
 
+  dest = "#{__dirname}/fixtures/.tmp"
   archives = "#{__dirname}/fixtures/archives"
 
   describe 'sample', (_) ->
 
     options = path: "#{archives}/sample.nar"
+
+    before ->
+      rm dest
 
     before ->
       @bus = list options
