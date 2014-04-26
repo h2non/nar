@@ -34,6 +34,8 @@ compile: clean mkdir
 	cat src/utils.ls | $(LS) -c -s -b > ./lib/utils.js
 	cat src/create.ls | $(LS) -c -s -b > ./lib/create.js
 	cat src/run.ls | $(LS) -c -s -b > ./lib/run.js
+	cat src/download.ls | $(LS) -c -s -b > ./lib/download.js
+	cat src/install.ls | $(LS) -c -s -b > ./lib/install.js
 	cat src/commands/create.ls | $(LS) -c -s -b > ./lib/commands/create.js
 	cat src/commands/extract.ls | $(LS) -c -s -b > ./lib/commands/extract.js
 	cat src/commands/run.ls | $(LS) -c -s -b > ./lib/commands/run.js

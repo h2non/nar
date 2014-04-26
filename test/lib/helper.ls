@@ -4,15 +4,16 @@ require! {
   chai
   rimraf
   mkdirp
+  stubby
+  request
   child_process.spawn
   '../../lib/nar'
   '../../package.json'.version
 }
 
 node = process.execPath
-croak = path.join __dirname, '/../../', 'bin/nar'
+nar-bin = path.join __dirname, '/../../', 'bin/nar'
 cwd = process.cwd!
-home-var = if process.platform is 'win32' then 'USERPROFILE' else 'HOME'
 
 module.exports =
 
@@ -21,16 +22,12 @@ module.exports =
   cwd: cwd
   node: node
   version: version
-  croak: croak
+  request: request
   expect: chai.expect
-  should: chai.should
-  assert: chai.assert
   rm: rimraf.sync
   mk: mkdirp.sync
   chdir: process.chdir
   env: process.env
-  home-var: home-var
-  home: process.env[home-var]
   join: path.join
 
   createWriteStream: fs.createWriteStream
@@ -65,7 +62,7 @@ module.exports =
     process.add-listener 'uncaughtException', ->
 
   exec: (type, args, callback) ->
-    command = spawn node, [ croak ] ++ args, { process.env }
+    command = spawn node, [ nar-bin ] ++ args, { process.env }
     if type is 'close'
       command.on type, callback
     else
@@ -74,4 +71,10 @@ module.exports =
       command.on 'close', (code) -> data |> callback _, code
 
   suppose: (args) ->
-    suppose node, [ croak ] ++ args
+    suppose node, [ nar-bin ] ++ args
+
+  server: (done) ->
+    server = new stubby.Stubby
+    server.start {
+      data: require "./mock.json"
+    }, done
