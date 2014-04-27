@@ -1,6 +1,5 @@
 require! {
   fs
-  url
   path
   request
   events.EventEmitter
@@ -75,9 +74,3 @@ apply = (options) ->
     options.strict-SSL or no
     headers: 'User-Agent': "node nar #{version} (#{platform}-#{arch})"
   }
-
-has-protocol = ->
-  it |> /^http[s]?\:/.test
-
-parse = ->
-  it |> url.parse if it |> has-protocol
