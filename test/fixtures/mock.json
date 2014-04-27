@@ -4,7 +4,7 @@
       "method": "GET",
       "url": "^/download/auth/archive.nar$",
       "headers": {
-         "authorization": "Basic bmFyOnBhc3N3MHJk"
+        "authorization": "Basic bmFyOnBhc3N3MHJk"
       }
     },
     "response": {
@@ -37,6 +37,16 @@
     },
     "response": {
       "status": 404
+    }
+  },
+  {
+    "request": {
+      "url": "^/timeout$",
+      "method": "GET"
+    },
+    "response": {
+      "latency": 2000,
+      "status": 200
     }
   }
 ]

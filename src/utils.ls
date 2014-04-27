@@ -6,15 +6,16 @@ require! {
   os: 'os-shim'
   rm: rimraf.sync
   mk: mkdirp.sync
+  findup: 'findup-sync'
 }
 { normalize, join, basename, delimiter } = path
 { env, platform, exit, next-tick, arch } = process
 
 module.exports = _ = {
 
-  path, platform, hu.extend, hu.vals, hu.has,
+  path, platform, arch, hu.extend, hu.vals,
   os.EOL, hu.clone, hu.is-object, hu.is-array,
-  hu.is-string, mk, rm, delimiter
+  hu.is-string, mk, rm, delimiter, hu.has
 
   echo: -> console.log ...
 
@@ -84,6 +85,9 @@ module.exports = _ = {
     ->
       cb ... unless error
       error := yes if it
+
+  discover-pkg: (dir = process.cwd!) ->
+    'package.json' |> findup _, cwd: dir
 
   archive-name: (nar) ->
     name = ''

@@ -5,13 +5,13 @@ require! {
   './pack'
   requireg.resolve
   events.EventEmitter
-  findup: 'findup-sync'
 }
 { dirname, basename, join, normalize } = path
 {
   read, rm, tmpdir, clone, extend, copy, keys, archive-name,
   is-object, is-file, is-dir, is-string, mk, stringify,
-  vals, exists, checksum, lines, next, is-array, now, replace-env-vars
+  vals, exists, checksum, lines, next, is-array, now,
+  replace-env-vars, discover-pkg
 } = require './utils'
 
 const nar-file = '.nar.json'
@@ -323,9 +323,6 @@ get-filename = (options, pkg = {}) ->
 
 apply-pkg-options = (options, pkg) ->
   pkg.archive |> extend options, _
-
-discover-pkg = (dir = process.cwd!) ->
-  findup 'package.json', cwd: dir
 
 apply = (options) ->
   options = (defaults |> clone) |> extend _, options
