@@ -48,7 +48,7 @@
     "fw": "~0.1.0",
     "request": "~2.34.0",
     "request-progress": "~0.3.1",
-    "read": "^1.0.5"
+    "read": "~1.0.5"
   },
   "devDependencies": {
     "chai": "~1.9.1",
@@ -56,6 +56,6 @@
     "mocha": "~1.18.2",
     "LiveScript": "~1.2.0",
     "stubby": "~0.2.3",
-    "node-static": "^0.7.3"
+    "node-static": "~0.7.3"
   }
 }
