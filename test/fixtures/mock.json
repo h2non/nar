@@ -45,7 +45,7 @@
       "method": "GET"
     },
     "response": {
-      "latency": 2000,
+      "latency": 5000,
       "status": 200
     }
   }

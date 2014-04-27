@@ -47,7 +47,6 @@ module.exports = download = (options) ->
     stream = output |> fs.create-write-stream
     http = request options, handler
     http.on 'error', on-error
-    console.log output
 
     progress http, { delay: 500 }
       .on 'progress', on-progress

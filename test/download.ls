@@ -47,30 +47,45 @@ describe 'download', ->
             done!
 
       it 'should emit an error if cannot connect', (done) ->
-        download { url: 'http://127.0.0.1:54321', timeout: 1000 }
+        download { url: 'http://127.0.0.1:54321', timeout: 2000 }
           .on 'error', ->
             expect it .to.match /ECONNREFUSED/
             done!
 
       it 'should emit an error if timeout exceeds', (done) ->
-        download { url: 'http://127.0.0.1:8882/timeout', timeout: 1000 }
+        download { url: 'http://127.0.0.1:8882/timeout', timeout: 2000 }
           .on 'error', ->
-            expect it .to.match /ETIMEDOUT/
+            expect it .to.match /ETIMEDOUT|ESOCKETTIMEDOUT/
             done!
 
   describe 'authentication', (_) ->
 
-    options =
-      url: 'http://127.0.0.1:8882/download/auth/archive.nar'
-      filename: 'archive-auth.nar'
-      dest: '.'
-      auth: user: 'nar', pass: 'passw0rd'
+    describe 'options', (_) ->
 
-    it 'should download archive using authentication', (done) ->
-      download options
-        .on 'end', ->
-          expect exists "#{dest}/archive-auth.nar" .to.be.true
-          done!
+      options =
+        url: 'http://127.0.0.1:8882/download/auth/archive.nar'
+        filename: 'archive-auth.nar'
+        dest: '.'
+        auth: user: 'nar', pass: 'passw0rd'
+
+      it 'should download archive using authentication', (done) ->
+        download options
+          .on 'end', ->
+            expect exists "#{dest}/archive-auth.nar" .to.be.true
+            done!
+
+    describe 'URI', (_) ->
+
+      options =
+        url: 'http://nar:passw0rd@127.0.0.1:8882/download/auth/archive.nar'
+        filename: 'archive-auth.nar'
+        dest: '.'
+
+      it 'should download archive using URI-level authentication', (done) ->
+        download options
+          .on 'end', ->
+            expect exists "#{dest}/archive-auth.nar" .to.be.true
+            done!
 
     describe 'invalid', (_) ->
 
