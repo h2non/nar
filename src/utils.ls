@@ -56,7 +56,7 @@ module.exports = _ = {
   lines: ->
     it.split os.EOL if it
 
-  has-protocol: ->
+  is-url: ->
     it |> /^http[s]?\:/.test
 
   replace-env-vars: (str) ->

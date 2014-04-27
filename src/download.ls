@@ -7,7 +7,7 @@ require! {
   progress: 'request-progress'
 }
 { join, dirname } = path
-{ next, is-win, is-array, once, platform, arch, mk, rm, exists, clone, extend, discover-pkg } = require './utils'
+{ next, env, is-win, is-array, once, platform, arch, mk, rm, exists, clone, extend, discover-pkg } = require './utils'
 
 module.exports = download = (options) ->
   { url, dest, filename, auth } = options = options |> apply
@@ -15,7 +15,6 @@ module.exports = download = (options) ->
   errored = no
   output = dest |> join _, filename
 
-  # to do: support proxy, discover from env variable or file
   create-dest = ->
     mk dest unless dest |> exists
 
@@ -24,6 +23,7 @@ module.exports = download = (options) ->
 
   on-error = once (err, code) ->
     errored := yes
+    clean!
     err |> emitter.emit 'error', _, code if err
 
   on-end = once ->
@@ -44,15 +44,15 @@ module.exports = download = (options) ->
   do-download = -> next ->
     create-dest!
     stream = output |> fs.create-write-stream
+    stream.on 'error', on-error
+
     http = request options, handler
     http.on 'error', on-error
 
     progress http, { delay: 500 }
       .on 'progress', on-progress
       .pipe stream
-
-    stream.on 'close', on-end
-    stream.on 'error', on-error
+      .on 'close', on-end
 
   do-download!
   emitter
@@ -72,5 +72,9 @@ apply = (options) ->
     options.dest or default-dest!
     options.timeout or 10000
     options.strict-SSL or no
+    options.proxy or get-proxy!
     headers: 'User-Agent': "node nar #{version} (#{platform}-#{arch})"
   }
+
+get-proxy = ->
+  'http_proxy' |> env

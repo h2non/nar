@@ -34,7 +34,7 @@ apply = (options) ->
   {
     gzip: yes
     options.path
-    dest: options.dest or tmpdir!
+    dest: options.dest or 'node_modules'
     clean: if options.clean? then options.clean else yes
     hooks: if options.hooks? then options.hooks else yes
     args: options.args or {}

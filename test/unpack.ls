@@ -182,7 +182,10 @@ describe 'unpack', ->
         path: "#{orig}/nonexistent.tar"
         dest: dest
 
-      before -> mk dest
+      before ->
+        rm dest
+        mk dest
+
       after -> rm dest
 
       it 'should return a ENOENT read error', (done) ->
@@ -196,4 +199,3 @@ describe 'unpack', ->
 
       it 'should not exist files', ->
         expect exists "#{dest}/package.json" .to.be.false
-

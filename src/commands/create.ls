@@ -74,10 +74,10 @@ create = (pkgpath, options) ->
     "Creating archive..." |> echo
 
   on-archive = ->
-    "Adding [#{it.type.cyan}] #{it.name}" |> echo unless debug and verbose
+    "Adding [#{it.type.cyan}] #{it.name or ''}" |> echo unless debug and verbose
 
   on-entry = ->
-    "Add [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.name}".green |> echo
+    "Add [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.name or ''}".green |> echo
 
   on-end = (output) ->
     "Created in: #{output}" |> echo

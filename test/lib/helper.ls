@@ -1,13 +1,15 @@
 require! {
   fs
   path
+  http
   chai
   rimraf
   mkdirp
   stubby
   request
-  child_process.spawn
+  'node-static'
   '../../lib/nar'
+  child_process.spawn
   '../../package.json'.version
 }
 
@@ -75,6 +77,11 @@ module.exports =
 
   server: (done) ->
     server = new stubby.Stubby
-    server.start {
-      data: require "../fixtures/mock.json"
-    }, done
+    server.start { data: require "../fixtures/mock.json" }, done
+    server
+
+  static-server: (dir) ->
+    file = new node-static.Server dir
+    http.createServer (request, response) ->
+      request.addListener 'end', (-> file.serve request, response) .resume!
+    .listen 8883

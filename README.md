@@ -453,6 +453,15 @@ Yes.
 If you use the `run` command, if the archive has node binary embedded,
 nar will use it
 
+##### Which MIME type is recommened to serve nar files?
+
+One of the following types will be valid:
+
+- `application/x-gzip`
+- `aplication/x-compress`
+- `application/x-compressed`
+- `application/octet-stream`
+
 Ideas about this are welcome!
 
 ## Contributing

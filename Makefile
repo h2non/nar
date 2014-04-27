@@ -40,6 +40,7 @@ compile: clean mkdir
 	cat src/commands/extract.ls | $(LS) -c -s -b > ./lib/commands/extract.js
 	cat src/commands/run.ls | $(LS) -c -s -b > ./lib/commands/run.js
 	cat src/commands/list.ls | $(LS) -c -s -b > ./lib/commands/list.js
+	cat src/commands/install.ls | $(LS) -c -s -b > ./lib/commands/install.js
 
 mocha:
 	cat test/lib/helper.ls | $(LS) -c -s -b > ./test/lib/helper.js

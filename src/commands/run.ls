@@ -16,6 +16,9 @@ program
   .option '-ap, --args-prestart <args>', 'Aditional arguments to pass to prestart command'
   .option '-as, --args-stop <args>', 'Aditional arguments to pass to stop command'
   .option '-ax, --args-poststop <args>', 'Aditional arguments to pass to poststop command'
+  .option '--user <user>', 'HTTP autenticantion user'
+  .option '--password <password>', 'HTTP user password'
+  .option '--proxy <url>', 'URL proxy to use'
   .option '--no-clean', 'Disable app directory clean after exit'
   .option '--no-hooks', 'Disable command hooks'
   .on '--help', ->
@@ -26,23 +29,32 @@ program
         $ nar run app.nar -o some/dir
         $ nar run app.nar --args-start '--node ${PATH}'
         $ nar run app.nar --debug --no-hooks
+        $ nar run http://my.server.net/my-app-0.1.0.nar
     \t
     '''
   .action -> run ...
 
 run = (archive, options) ->
-  { debug, verbose, output, clean, hooks, args-start, args-prestart, args-stop, args-poststop } = options
+  { debug, verbose, output, clean, hooks, proxy, args-start, args-prestart, args-stop, args-poststop } = options
 
   opts =
     path: archive
     dest: output
     clean: clean
     hooks: hooks
+    proxy: proxy
     args:
       start: args-start
       prestart: args-prestart
       stop: args-stop
       poststop: args-poststop
+
+  if options.user
+    unless options.pass
+      # to do: ask it by prompt
+      return
+    else
+      opts <<< auth: { options.user, options.pass }
 
   on-extract = -> "Extracting files..." |> echo
 

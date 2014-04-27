@@ -3,11 +3,12 @@ download = require '../lib/download'
 
 describe 'download', ->
 
+  mock = null
   dest = "#{__dirname}/fixtures/.tmp"
   orig = "#{__dirname}/fixtures/archives"
 
   before (done) ->
-    server -> done!
+    mock := server -> done!
 
   before-each ->
     rm dest
@@ -17,6 +18,9 @@ describe 'download', ->
   after-each ->
     chdir "#{__dirname}/.."
     rm dest
+
+  after ->
+    mock.stop!
 
   describe 'normal', (_) ->
 
@@ -33,7 +37,7 @@ describe 'download', ->
     describe 'invalid', (_) ->
 
       it 'should emit an error if 404 status is returned', (done) ->
-        download { url: 'http://127.0.0.1:8882/invalid' }
+        download { url: 'http://127.0.0.1:8882/invalid', dest: '.' }
           .on 'error', (err, code) ->
             expect err .to.be.an 'object'
             expect code .to.be.equal 404
@@ -41,19 +45,19 @@ describe 'download', ->
             done!
 
       it 'should emit an error if cannot resolve the host', (done) ->
-        download { url: 'http://nonexistenthost/download', timeout: 1000 }
+        download { url: 'http://nonexistenthost/download', dest: '.', timeout: 1000 }
           .on 'error', ->
-            expect it .to.match /ENOTFOUND/
+            expect it .to.match /ENOTFOUND|ESOCKETTIMEDOUT/
             done!
 
       it 'should emit an error if cannot connect', (done) ->
-        download { url: 'http://127.0.0.1:54321', timeout: 2000 }
+        download { url: 'http://127.0.0.1:54321', dest: '.', timeout: 2000 }
           .on 'error', ->
             expect it .to.match /ECONNREFUSED/
             done!
 
       it 'should emit an error if timeout exceeds', (done) ->
-        download { url: 'http://127.0.0.1:8882/timeout', timeout: 2000 }
+        download { url: 'http://127.0.0.1:8882/timeout', dest: '.', timeout: 2000 }
           .on 'error', ->
             expect it .to.match /ETIMEDOUT|ESOCKETTIMEDOUT/
             done!
@@ -92,6 +96,7 @@ describe 'download', ->
       options =
         url: 'http://127.0.0.1:8882/download/auth/archive.nar'
         filename: 'archive-auth.nar'
+        dest: '.'
         auth: user: 'nil', pass: 'inval!d'
 
       it 'should not download the archive', (done) ->

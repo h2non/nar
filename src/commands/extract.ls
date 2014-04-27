@@ -39,10 +39,10 @@ extract = (archive, options) ->
     ((code or 1) |> exit)!
 
   on-entry = ->
-    "Extract [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.path}".green |> echo
+    "Extract [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.path or ''}".green |> echo
 
   on-archive = ->
-    "Extracting [#{it.type.cyan}] #{it.name}" |> echo unless debug and verbose
+    "Extracting [#{it.type.cyan}] #{it.name or ''}" |> echo unless debug and verbose
 
   on-end = ->
     "Extracted in: #{it.dest}" |> echo

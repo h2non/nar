@@ -1,11 +1,12 @@
 require! {
   fw
-  './extract'
   path.join
+  './extract'
+  './download'
   child_process.spawn
   events.EventEmitter
 }
-{ next, tmpdir, read, has, rm, delimiter, is-win, is-array, replace-env-vars } = require './utils'
+{ next, tmpdir, read, has, rm, delimiter, is-win, is-array, replace-env-vars, is-url } = require './utils'
 
 const hooks-keys = [ 'prestart' 'start' 'stop' 'poststop' ]
 
@@ -24,6 +25,9 @@ module.exports = run = (options) ->
 
   on-archive = (archive) ->
     archive |> emitter.emit 'archive', _ if archive
+
+  on-progress = (status) ->
+    status |> emitter.emit 'progress', _
 
   on-end = (options, nar) ->
     clean-dir!
@@ -64,13 +68,30 @@ module.exports = run = (options) ->
       return err |> on-error if err
       options |> on-end _, nar
 
-  do-extract = -> next ->
-    'extract' |> emitter.emit
+  extract-archive = ->
     (options |> extract)
       .on 'error', on-error
       .on 'entry', on-entry
       .on 'archive', on-archive
       .on 'end', app-runner
+
+  download-archive = ->
+    options <<< url: path
+    (options |> download)
+      .on 'error', on-error
+      .on 'progress', on-progress
+      .on 'end', ->
+        options <<< path: it
+        extract-archive!
+
+  do-extract = -> next ->
+    return new Error 'Required archive path option' |> on-error unless path
+    'extract' |> emitter.emit
+
+    if path |> is-url
+      download-archive!
+    else
+      extract-archive!
 
   do-extract!
   emitter
@@ -79,10 +100,13 @@ apply = (options) ->
   {
     gzip: yes
     options.path
-    dest: options.dest or tmpdir!
+    options.args or {}
+    options.auth
+    options.proxy
+    options.strict-SSL
+    options.dest or tmpdir!
     clean: if options.clean? then options.clean else yes
     hooks: if options.hooks? then options.hooks else yes
-    args: options.args or {}
   }
 
 read-nar-json = (dest) ->
@@ -96,7 +120,9 @@ get-hooks = (nar) ->
 
 is-binary-valid = (nar) ->
   { platform, arch } = nar.info
-  platform is process.platform and arch is process.arch
+  platform is process.platform
+    and (arch is process.arch
+      or (arch is 'ia32' and process.arch is 'x64'))
 
 exec = (emitter, command, cwd, hook) -> (done) ->
   { cmd, args } = command |> get-command-script |> parse-command

@@ -35,7 +35,7 @@ program.on '--help', help = ->
   \t
   '''
 
-<[ create extract run list ]>for-each -> "./commands/#{it}" |> require
+<[ create extract run list install]>for-each -> "./commands/#{it}" |> require
 
 map = (args) ->
   cmd = args[2]
