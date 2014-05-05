@@ -7,7 +7,7 @@ require! {
   progress: 'request-progress'
 }
 { join, dirname } = path
-{ next, env, is-win, is-array, once, platform, arch, mk, rm, exists, clone, extend, discover-pkg } = require './utils'
+{ next, env, is-win, is-array, once, platform, arch, mk, rm, exists, clone, extend, discover-pkg, http-status } = require './utils'
 
 module.exports = download = (options) ->
   { url, dest, filename, auth } = options = options |> apply
@@ -18,13 +18,15 @@ module.exports = download = (options) ->
   create-dest = ->
     mk dest unless dest |> exists
 
-  clean = ->
-    try rm output
+  clean = -> try rm output
 
   on-error = once (err, code) ->
     errored := yes
     clean!
     err |> emitter.emit 'error', _, code if err
+
+  on-download = ->
+    'download' |> emitter.emit
 
   on-end = once ->
     output |> emitter.emit 'end', _ unless errored
@@ -36,7 +38,7 @@ module.exports = download = (options) ->
     if err
       err |> on-error
     else if res.status-code >= 400
-      new Error "Invalid status code: #{res.status-code}"
+      new Error "Invalid response code: #{http-status res.status-code}"
         |> on-error _, res.status-code
     else unless data
       new Error 'Empty response' |> on-error
@@ -45,6 +47,7 @@ module.exports = download = (options) ->
     create-dest!
     stream = output |> fs.create-write-stream
     stream.on 'error', on-error
+    emitter.emit 'download', on-download
 
     http = request options, handler
     http.on 'error', on-error

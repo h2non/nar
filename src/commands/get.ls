@@ -3,29 +3,34 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit, exists, is-file, add-extension, to-kb } = require '../utils'
+{ echo, exit, exists, is-file, to-kb } = require '../utils'
 
 program
-  .command 'extract <archive>'
-  .description '\n  Extract archive'
-  .usage '[archive] [options]'
+  .command 'get <url>'
+  .description '\n  Download remote archive'
+  .usage '[url] [options]'
   .option '-o, --output <path>', 'Output directory. Default to current directory'
+  .option '--user <user>', 'HTTP autenticantion user'
+  .option '--password <password>', 'HTTP user password'
+  .option '--proxy <url>', 'Proxy server URL to use'
+  .option '--timeout <number>', 'HTTP request timeout'
+  .option '--strict-ssl', 'Enable strict SSL'
   .option '-d, --debug', 'Enable debug mode. More information will be shown'
   .option '-v, --verbose', 'Enable verbose mode. A lot of information will be shown'
   .on '--help', ->
     echo '''
       Usage examples:
 
-        $ nar extract
-        $ nar extract app.nar
-        $ nar extract app.nar -o some/dir
-        $ nar extract app.nar --debug
+        $ nar get http://server.net/app.nar
+        $ nar get http://server.net/app.nar --user john --password pa$s
+        $ nar get http://server.net/app.nar --proxy http://proxy:3128
+        $ nar get http://server.net/app.nar --strict-ssl --timeout 60000
     \t
     '''
-  .action -> extract ...
+  .action -> get ...
 
-extract = (archive, options) ->
-  { debug, verbose, output } = options
+get = (archive, options) ->
+  { debug, verbose, output, user, password, proxy } = options
 
   opts =
     path: archive
@@ -49,15 +54,12 @@ extract = (archive, options) ->
     exit 0
 
   extract = ->
-    "The given path is not a file" |> exit 1 unless opts.path |> is-file
-
-    archive = nar.extract opts
+    installer = nar.install opts
       .on 'start', on-start
       .on 'archive', on-archive
       .on 'error', on-error
       .on 'end', on-end
-
-    archive.on 'entry', on-entry if debug or verbose
+    installer.on 'entry', on-entry if debug or verbose
 
   try
     extract!

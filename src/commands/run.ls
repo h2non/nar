@@ -18,7 +18,9 @@ program
   .option '-ax, --args-poststop <args>', 'Aditional arguments to pass to poststop command'
   .option '--user <user>', 'HTTP autenticantion user'
   .option '--password <password>', 'HTTP user password'
-  .option '--proxy <url>', 'URL proxy to use'
+  .option '--proxy <url>', 'Proxy server URL to use'
+  .option '--timeout <number>', 'HTTP request timeout'
+  .option '--strict-ssl', 'Enable strict SSL'
   .option '--no-clean', 'Disable app directory clean after exit'
   .option '--no-hooks', 'Disable command hooks'
   .on '--help', ->

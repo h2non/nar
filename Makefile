@@ -36,11 +36,14 @@ compile: clean mkdir
 	cat src/run.ls | $(LS) -c -s -b > ./lib/run.js
 	cat src/download.ls | $(LS) -c -s -b > ./lib/download.js
 	cat src/install.ls | $(LS) -c -s -b > ./lib/install.js
+	cat src/get.ls | $(LS) -c -s -b > ./lib/get.js
+	cat src/status.ls | $(LS) -c -s -b > ./lib/status.js
 	cat src/commands/create.ls | $(LS) -c -s -b > ./lib/commands/create.js
 	cat src/commands/extract.ls | $(LS) -c -s -b > ./lib/commands/extract.js
 	cat src/commands/run.ls | $(LS) -c -s -b > ./lib/commands/run.js
 	cat src/commands/list.ls | $(LS) -c -s -b > ./lib/commands/list.js
 	cat src/commands/install.ls | $(LS) -c -s -b > ./lib/commands/install.js
+	cat src/commands/get.ls | $(LS) -c -s -b > ./lib/commands/get.js
 
 mocha:
 	cat test/lib/helper.ls | $(LS) -c -s -b > ./test/lib/helper.js

@@ -1,7 +1,7 @@
-{ fs, rm, mk, chdir, exists, expect, server, request } = require './lib/helper'
-download = require '../lib/download'
+{ fs, rm, mk, chdir, exists, expect, server } = require './lib/helper'
+install = require '../lib/install'
 
-describe 'download', ->
+describe 'install', ->
 
   mock = null
   dest = "#{__dirname}/fixtures/.tmp"
@@ -25,11 +25,11 @@ describe 'download', ->
   describe 'normal', (_) ->
 
     options =
-      url: 'http://127.0.0.1:8882/download/archive.nar'
+      path: 'http://127.0.0.1:8882/download/archive.nar'
       dest: '.'
 
-    it 'should download file', (done) ->
-      download options
+    it 'should install file', (done) ->
+      install options
         .on 'end', ->
           expect exists "#{dest}/archive.nar" .to.be.true
           done!
@@ -37,7 +37,7 @@ describe 'download', ->
     describe 'invalid', (_) ->
 
       it 'should emit an error if 404 status is returned', (done) ->
-        download { url: 'http://127.0.0.1:8882/invalid', dest: '.' }
+        install { url: 'http://127.0.0.1:8882/invalid', dest: '.' }
           .on 'error', (err, code) ->
             expect err .to.be.an 'object'
             expect code .to.be.equal 404
@@ -45,19 +45,19 @@ describe 'download', ->
             done!
 
       it 'should emit an error if cannot resolve the host', (done) ->
-        download { url: 'http://nonexistenthost/download', dest: '.', timeout: 1000 }
+        install { url: 'http://nonexistenthost/download', dest: '.', timeout: 1000 }
           .on 'error', ->
             expect it .to.match /ENOTFOUND|ESOCKETTIMEDOUT/
             done!
 
       it 'should emit an error if cannot connect', (done) ->
-        download { url: 'http://127.0.0.1:54321', dest: '.', timeout: 2000 }
+        install { url: 'http://127.0.0.1:54321', dest: '.', timeout: 2000 }
           .on 'error', ->
             expect it .to.match /ECONNREFUSED/
             done!
 
       it 'should emit an error if timeout exceeds', (done) ->
-        download { url: 'http://127.0.0.1:8882/timeout', dest: '.', timeout: 2000 }
+        install { url: 'http://127.0.0.1:8882/timeout', dest: '.', timeout: 2000 }
           .on 'error', ->
             expect it .to.match /ETIMEDOUT|ESOCKETTIMEDOUT/
             done!
@@ -72,8 +72,8 @@ describe 'download', ->
         dest: '.'
         auth: user: 'nar', pass: 'passw0rd'
 
-      it 'should download archive using authentication', (done) ->
-        download options
+      it 'should install archive using authentication', (done) ->
+        install options
           .on 'end', ->
             expect exists "#{dest}/archive-auth.nar" .to.be.true
             done!
@@ -85,8 +85,8 @@ describe 'download', ->
         filename: 'archive-auth.nar'
         dest: '.'
 
-      it 'should download archive using URI-level authentication', (done) ->
-        download options
+      it 'should install archive using URI-level authentication', (done) ->
+        install options
           .on 'end', ->
             expect exists "#{dest}/archive-auth.nar" .to.be.true
             done!
@@ -99,8 +99,8 @@ describe 'download', ->
         dest: '.'
         auth: user: 'nil', pass: 'inval!d'
 
-      it 'should not download the archive', (done) ->
-        download options
+      it 'should not install the archive', (done) ->
+        install options
           .on 'error', (err, code) ->
             expect err .to.match /invalid response code/i
             expect code .to.be.equal 404 # mock server returns 404

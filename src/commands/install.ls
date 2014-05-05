@@ -3,33 +3,42 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit, exists, is-file, add-extension, to-kb } = require '../utils'
+{ echo, exit, exists, is-file, to-kb } = require '../utils'
 
 program
-  .command 'extract <archive>'
-  .description '\n  Extract archive'
+  .command 'install <archive>'
+  .description '\n  Install archive'
   .usage '[archive] [options]'
-  .option '-o, --output <path>', 'Output directory. Default to current directory'
+  .option '-o, --output <path>', 'Output directory. Default to node_modules'
+  .option '--user <user>', 'HTTP autenticantion user'
+  .option '--password <password>', 'HTTP user password'
+  .option '--proxy <url>', 'Proxy server URL to use'
+  .option '--timeout <number>', 'HTTP request timeout'
+  .option '--strict-ssl', 'Enable strict SSL'
   .option '-d, --debug', 'Enable debug mode. More information will be shown'
   .option '-v, --verbose', 'Enable verbose mode. A lot of information will be shown'
   .on '--help', ->
     echo '''
       Usage examples:
 
-        $ nar extract
-        $ nar extract app.nar
-        $ nar extract app.nar -o some/dir
-        $ nar extract app.nar --debug
+        $ nar install app.nar
+        $ nar install app.nar -o some/dir
+        $ nar install app.nar --debug
+        $ nar install http://server.net/app-0.1.0.nar
     \t
     '''
-  .action -> extract ...
+  .action -> install ...
 
-extract = (archive, options) ->
-  { debug, verbose, output } = options
+install = (archive, options) ->
+  { debug, verbose, output, strict-ssl } = options
 
-  opts =
+  opts = {
     path: archive
     dest: output
+    strict-SSL: strict-ssl
+    options.timeout, options.user,
+    options.password, options.proxy
+  }
 
   on-start = -> "Reading archive..." |> echo
 
@@ -49,15 +58,12 @@ extract = (archive, options) ->
     exit 0
 
   extract = ->
-    "The given path is not a file" |> exit 1 unless opts.path |> is-file
-
-    archive = nar.extract opts
+    installer = nar.install opts
       .on 'start', on-start
       .on 'archive', on-archive
       .on 'error', on-error
       .on 'end', on-end
-
-    archive.on 'entry', on-entry if debug or verbose
+    installer.on 'entry', on-entry if debug or verbose
 
   try
     extract!

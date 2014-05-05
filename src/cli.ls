@@ -11,6 +11,8 @@ const cmd-map =
   c: 'create'
   x: 'run'
   l: 'list'
+  i: 'install'
+  g: 'get'
 
 module.exports <<< parse: -> (it |> map |> program.parse)
 
@@ -28,6 +30,8 @@ program.on '--help', help = ->
       $ nar run app.nar
       $ nar extract app.nar -o some/dir
       $ nar list app.nar
+      $ nar install app.nar
+      $ nar get http://server.net/app.nar
 
     Command specific help:
 
@@ -35,10 +39,9 @@ program.on '--help', help = ->
   \t
   '''
 
-<[ create extract run list install]>for-each -> "./commands/#{it}" |> require
+<[ create extract run list install get]>for-each -> "./commands/#{it}" |> require
 
 map = (args) ->
   cmd = args[2]
   for own alias, value of cmd-map when alias is cmd then args[2] = value
   args
-

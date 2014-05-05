@@ -1,4 +1,5 @@
 require! {
+  './get'
   './run'
   './list'
   './create'
@@ -9,5 +10,6 @@ require! {
 
 exports = module.exports = {
   VERSION: version
-  create, extract, run, list, install
+  create, extract, run,
+  list, install, get
 }

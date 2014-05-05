@@ -7,9 +7,9 @@
 With nar you can easily create self-contained node.js applications
 that are ready-to-ship-and-run
 
-It provides built-in support for creating, extracting and running applications
+It provides built-in support for creating, extracting, installing and running applications
 easily through a featured [command-line interface](#command-line-interface)
-and asynchronous event-based [programmatic API](#programmatic-api)
+and full asynchronous event-based [programmatic API](#programmatic-api)
 
 ## Features
 
@@ -21,6 +21,8 @@ and asynchronous event-based [programmatic API](#programmatic-api)
 - Tarball with gzip compression/decompression
 - Built-in support for archive extraction
 - Built-in support for application execution
+- Built-in support for application installation
+- Supports downloading and running archives from remote servers
 - Supports application pre/post run hooks (from [npm scripts][npm-scripts])
 - Allow to embed dependencies by type
 - Allow to embed global dependencies
@@ -55,6 +57,11 @@ $ nar extract app.nar
 Or directly run it
 ```bash
 $ nar run app.nar
+```
+
+Install into `node_modules` (default)
+```bash
+$ nar install http://server.net/files/app-0.1.0.nar
 ```
 
 ## Configuration
@@ -247,6 +254,10 @@ Commands:
     Run archive files
   list [options] <archive>
     List archive files
+  install [options] <archive>
+    Install archives dependency
+  get [options] <url>
+    Download a remote archive
 
 Options:
 
@@ -259,6 +270,8 @@ Usage examples:
   $ nar run app.nar
   $ nar extract app.nar -o some/dir
   $ nar list app.nar
+  $ nar install app.nar
+  $ nar get http://server.net/app-0.1.0.nar
 
 Command specific help:
 
@@ -303,6 +316,29 @@ $ nar run app.nar --no-clean --debug
 $ nar run app.nar --verbose
 $ nar run app.nar --args-start '--env ${ENV}'
 $ nar run app.nar --args-stop '--path ${PATH}'
+```
+
+### install
+Alias: `i`
+
+Install nar archive as dependency (defaults to `node_modules`)
+
+```bash
+$ nar install
+$ nar install app.nar
+$ nar install app.nar -o some/dir
+$ nar install app.nar --debug
+$ nar install http://server.net/app-0.1.0.nar
+```
+
+### get
+Alias: `g`
+
+Download a remote nar archive
+
+```bash
+$ nar get app.nar
+$ nar get app.nar --no-hooks
 ```
 
 ### list
@@ -506,9 +542,7 @@ $ make publish
 
 ## License
 
-Copyright (c) 2014 Tomas Aparicio
-
-Released under the MIT license
+[MIT](http://opensource.org/licenses/MIT) © Tomas Aparicio
 
 [livescript]: http://livescript.net
 [coding-style]: https://github.com/gkz/LiveScript-style-guide

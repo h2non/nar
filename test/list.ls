@@ -45,5 +45,5 @@ describe 'list', ->
     it 'should emit the error event', (done) ->
       @bus.on 'error', ->
         expect it .to.instanceof Error
-        expect it.message .to.match /invalid.nar/
+        expect it.message .to.match /the given path is not a file/
         done!

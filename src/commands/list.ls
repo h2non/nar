@@ -4,7 +4,7 @@ require! {
   Table: 'cli-table'
   program: commander
 }
-{ echo, exit, exists, is-file, add-extension, to-kb, archive-name } = require '../utils'
+{ echo, exit, exists, is-file, to-kb, archive-name } = require '../utils'
 
 program
   .command 'list <archive>'
@@ -26,7 +26,7 @@ list = (archive, options) ->
   { debug, table } = options
   table-list = new Table head: [ 'Name', 'Destination', 'Size', 'Type' ]
 
-  opts = path: archive |> add-extension
+  opts = path: archive
 
   on-error = ->
     "Error: #{it.message or it}".red |> echo if it
@@ -47,8 +47,6 @@ list = (archive, options) ->
     exit 0
 
   list = ->
-    "The given path is not a file" |> exit 1 unless opts.path |> is-file
-
     nar.list opts
       .on 'error', on-error
       .on 'info', on-info

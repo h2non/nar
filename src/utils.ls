@@ -3,6 +3,7 @@ require! {
   hu
   path
   crypto
+  './status'
   os: 'os-shim'
   rm: rimraf.sync
   mk: mkdirp.sync
@@ -41,7 +42,8 @@ module.exports = _ = {
     "nar-#{name}-#{_.random!}" |> join os.tmpdir!, _
 
   add-extension: ->
-    it += '.nar' unless /.nar$/.test it if it
+    if it and not (it |> _.is-url)
+      it += '.nar' unless /.nar$/.test it
     it
 
   is-dir: ->
@@ -58,6 +60,12 @@ module.exports = _ = {
 
   is-url: ->
     it |> /^http[s]?\:/.test
+
+  http-status: (code) ->
+    if code
+      "#{code} #{status[code] or ''}"
+    else
+      ''
 
   replace-env-vars: (str) ->
     /\$\{(\w+)\}/ig |> str.replace _, (_, name) -> process.env[name] or ''
