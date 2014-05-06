@@ -33,6 +33,7 @@ module.exports = list = (options) ->
   parse = -> next ->
     nar = null
     entries = {}
+    path := path |> add-extension
 
     return new Error 'The given path is not a file' |> on-error unless path |> is-file
 
@@ -63,7 +64,7 @@ module.exports = list = (options) ->
       emit-entries!
       on-end!
 
-    stream = path |> add-extension |> fs.create-read-stream
+    stream = path |> fs.create-read-stream
     stream.on 'error', on-error
     stream = stream.pipe create-gunzip! if gzip
     stream.pipe parse

@@ -98,25 +98,25 @@ Packages dependencies names will be taken from `package.json`
 Type: `boolean`
 Default: `true`
 
-Include package dependencies in the nar archive
+Include package dependencies in the archive
 
 #### devDependencies
 Type: `boolean`
 Default: `false`
 
-Include development dependencies in the nar archive
+Include development dependencies in the archive
 
 #### peerDependencies
 Type: `boolean`
 Default: `true`
 
-Include peer dependencies in the nar archive
+Include peer dependencies in the archive
 
 #### globalDependencies
 Type: `array`
 Default: `null`
 
-Include global dependencies in the nar archive.
+Include global dependencies in the archive.
 It should define an array of strings with packages names
 
 nar will resolve globally installed packages (via [requireg][requireg])
@@ -138,6 +138,7 @@ create the archive (taken from `process.execPath`)
 
 Hooks scripts that requires node will use the self-contained binary inside the archive.
 It will be also accessible via `PATH` environment variable
+if you want to call it from hook scripts
 
 **Note**: as you already know, the node binary is OS and platform specific.
 Take that into account if you are going to deploy the archive in multiple platforms
