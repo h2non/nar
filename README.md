@@ -256,9 +256,9 @@ Commands:
   list [options] <archive>
     List archive files
   install [options] <archive>
-    Install archives dependency
+    Install archive
   get [options] <url>
-    Download a remote archive
+    Download archive from HTTP server
 
 Options:
 
@@ -272,7 +272,7 @@ Usage examples:
   $ nar extract app.nar -o some/dir
   $ nar list app.nar
   $ nar install app.nar
-  $ nar get http://server.net/app-0.1.0.nar
+  $ nar get http://server.net/app.nar
 
 Command specific help:
 
@@ -491,6 +491,7 @@ Complete list of available events for subscription
 - **entry** `(entry)` On read/write file, usually fired from file streams
 - **archive** `(archive)` Emit the archive that is being processed
 - **message** `(message)` General information status message, useful for debugging purposes
+- **download** `()` Starts a download process
 - **command** `(command)` Hook command to execute when run an application
 - **info** `(config)` Expose the nar archive config
 - **start** `(command)` On application start hook command
@@ -538,8 +539,6 @@ One of the following types will be valid:
 - `aplication/x-compress`
 - `application/x-compressed`
 - `application/octet-stream`
-
-Ideas about this are welcome!
 
 ## Contributing
 
