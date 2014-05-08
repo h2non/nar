@@ -3,7 +3,7 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit, exists, is-dir, is-file, is-string, to-kb } = require '../utils'
+{ echo, exit, exists, log-error, is-dir, is-file, is-string, to-kb } = require '../utils'
 
 const options = [
   'dependencies'
@@ -66,8 +66,7 @@ create = (pkgpath, options) ->
     opts <<< path: pkgpath
 
   on-error = (err, code) ->
-    "Error: #{err.message or err}".red |> echo if err
-    err.stack |> echo if debug and err.stack
+    err |> log-error _, debug |> echo
     ((code or 1) |> exit)!
 
   on-start = ->

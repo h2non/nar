@@ -3,11 +3,11 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit, exists, is-file, to-kb } = require '../utils'
+{ echo, exit, is-file, to-kb, log-error } = require '../utils'
 
 program
   .command 'get <url>'
-  .description '\n  Download remote archive'
+  .description '\n  Download archive from HTTP server'
   .usage '[url] [options]'
   .option '-o, --output <path>', 'Output directory. Default to current directory'
   .option '--user <user>', 'HTTP autenticantion user'
@@ -30,17 +30,20 @@ program
   .action -> get ...
 
 get = (archive, options) ->
-  { debug, verbose, output, user, password, proxy } = options
+  { debug, verbose, output, strict-ssl } = options
 
-  opts =
+  opts = {
     path: archive
     dest: output
+    strict-SSL: strict-ssl
+    options.timeout, options.user,
+    options.password, options.proxy
+  }
 
   on-start = -> "Reading archive..." |> echo
 
   on-error = (err, code) ->
-    "Error: #{err.message or err}".red |> echo if err
-    err.stack |> echo if debug and err.stack
+    err |> log-error _, debug |> echo
     ((code or 1) |> exit)!
 
   on-entry = ->
@@ -54,7 +57,7 @@ get = (archive, options) ->
     exit 0
 
   extract = ->
-    installer = nar.install opts
+    installer = nar.get opts
       .on 'start', on-start
       .on 'archive', on-archive
       .on 'error', on-error

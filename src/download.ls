@@ -2,6 +2,7 @@ require! {
   fs
   path
   request
+  url.parse
   events.EventEmitter
   '../package.json'.version
   progress: 'request-progress'
@@ -12,8 +13,8 @@ require! {
 module.exports = download = (options) ->
   { url, dest, filename, auth } = options = options |> apply
   emitter = new EventEmitter
-  errored = no
   output = dest |> join _, filename
+  errored = no
 
   create-dest = ->
     mk dest unless dest |> exists
@@ -57,7 +58,10 @@ module.exports = download = (options) ->
       .pipe stream
       .on 'close', on-end
 
-  do-download!
+  try
+    do-download!
+  catch
+    e |> on-error
   emitter
 
 default-dest = ->
@@ -71,13 +75,21 @@ apply = (options) ->
   options = {
     options.url
     options.auth or null
-    options.filename or 'archive.nar'
+    options.filename or (options.url |> get-filename)
     options.dest or default-dest!
     options.timeout or 10000
     options.strict-SSL or no
     options.proxy or get-proxy!
     headers: 'User-Agent': "node nar #{version} (#{platform}-#{arch})"
   }
+
+get-filename = (url) ->
+  if url
+    file = parse url .pathname.split '/' .slice -1 .pop!
+    file = 'archive.nar' unless file
+  else
+    file = 'archive.nar'
+  file
 
 get-proxy = ->
   'http_proxy' |> env

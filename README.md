@@ -335,17 +335,19 @@ $ nar install http://server.net/app-0.1.0.nar
 ### get
 Alias: `g`
 
-Download a remote nar archive
+Download a remote archive
 
 ```bash
-$ nar get app.nar
-$ nar get app.nar --no-hooks
+$ nar get http://server.net/app.nar
+$ nar get http://server.net/app.nar --user john --password pa$s
+$ nar get http://server.net/app.nar --proxy http://proxy:3128
+$ nar get http://server.net/app.nar --strict-ssl --timeout 60000
 ```
 
 ### list
 Alias: `l`
 
-List files from a nar archive
+List files from archive
 
 ```bash
 $ nar list app.nar
@@ -438,6 +440,44 @@ Read and parse a given .nar archive, emitting the `entry` event for each existen
 ##### Options
 
 - **path** `string` Path to nar archive. Required
+
+### nar.install(options)
+Fired events: `end, error, entry, download`
+
+Install archive as dependency in `node_modules` directory.
+It can aditionally download the archive from remote server
+
+##### Options
+
+- **path** `string` Path to nar archive. Required if `url` is empty
+- **url** `string` URL to download the archive. Required if `path` is empty
+- **filename** `string` Downloaded filename. Defaults taken from URI path
+- **dest** `string` Install destination path. Defaults to random `node_modules`
+- **clean** `boolean` Clean downloaded archive after install. Defaults to `true`
+- **proxy** `string` Proxy server URL. Default taken from environment variable `http_proxy`
+- **auth** `object` user and password for HTTP basic authentication
+- **timeout** `number` HTTP request timeout in ms. Defaults to `10000`
+- **strictSSL** `boolean` Performs HTTP request with valid SSL servers. Defaults to `false`
+
+### nar.get(options)
+Alias: `download`
+
+Fired events: `end, error, entry, download`
+
+Download archive from remote server.
+It supports basic HTTP authentication and proxy
+
+##### Options
+
+- **path** `string` Path to nar archive. Required if `url` is empty
+- **url** `string` URL to download the archive. Required if `path` is empty
+- **dest** `string` Install destination path. Defaults to random `node_modules`
+- **filename** `string` Downloaded filename. Defaults taken from URI path
+- **clean** `boolean` Clean downloaded archive after install. Defaults to `true`
+- **proxy** `string` Proxy server URL. Default taken from environment variable `http_proxy`
+- **auth** `object` user and password for HTTP basic authentication
+- **timeout** `number` HTTP request timeout in ms. Defaults to `10000`
+- **strictSSL** `boolean` Performs HTTP request with valid SSL servers. Defaults to `false`
 
 ### nar.VERSION
 Type: `string`

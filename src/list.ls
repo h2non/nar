@@ -33,7 +33,6 @@ module.exports = list = (options) ->
   parse = -> next ->
     nar = null
     entries = {}
-    path := path |> add-extension
 
     return new Error 'The given path is not a file' |> on-error unless path |> is-file
 
@@ -75,5 +74,4 @@ module.exports = list = (options) ->
   emitter
 
 apply = (options) ->
-  { gzip: yes, path: options.path }
-
+  { gzip: yes, path: options.path |> add-extension }

@@ -203,4 +203,4 @@ describe 'CLI', (_) ->
           done!
 
       it 'should have a valid path error', ->
-        expect stdout .to.match /invalid archive path/i
+        expect stdout .to.match /given path is not a file/i

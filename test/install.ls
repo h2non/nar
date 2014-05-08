@@ -1,4 +1,4 @@
-{ fs, rm, mk, chdir, exists, expect, server } = require './lib/helper'
+{ fs, rm, mk, chdir, exists, expect, server, static-server } = require './lib/helper'
 install = require '../lib/install'
 
 describe 'install', ->
@@ -7,32 +7,43 @@ describe 'install', ->
   dest = "#{__dirname}/fixtures/.tmp"
   orig = "#{__dirname}/fixtures/archives"
 
-  before (done) ->
-    mock := server -> done!
-
-  before-each ->
+  before ->
     rm dest
     mk dest
     chdir dest
 
-  after-each ->
+  before (done) ->
+    static-server orig
+    mock := server -> done!
+
+  after ->
     chdir "#{__dirname}/.."
     rm dest
 
-  after ->
-    mock.stop!
+  after (done) ->
+    mock.stop -> done!
 
   describe 'normal', (_) ->
 
     options =
-      path: 'http://127.0.0.1:8882/download/archive.nar'
-      dest: '.'
+      path: 'http://127.0.0.1:8883/sample.nar'
 
-    it 'should install file', (done) ->
-      install options
-        .on 'end', ->
-          expect exists "#{dest}/archive.nar" .to.be.true
-          done!
+    describe 'valid', (_) ->
+
+      it 'should install', (done) ->
+        install options
+          .on 'end', ->
+            expect exists "node_modules/sample.nar" .to.be.true
+            done!
+
+      it 'should exists package.json', ->
+        expect exists "node_modules/package.json" .to.be.true
+
+      it 'should exists .nar.json', ->
+        expect exists "node_modules/.nar.json" .to.be.true
+
+      it 'should exists node_modules', ->
+        expect exists "node_modules/node_modules" .to.be.true
 
     describe 'invalid', (_) ->
 
@@ -60,48 +71,4 @@ describe 'install', ->
         install { url: 'http://127.0.0.1:8882/timeout', dest: '.', timeout: 2000 }
           .on 'error', ->
             expect it .to.match /ETIMEDOUT|ESOCKETTIMEDOUT/
-            done!
-
-  describe 'authentication', (_) ->
-
-    describe 'options', (_) ->
-
-      options =
-        url: 'http://127.0.0.1:8882/download/auth/archive.nar'
-        filename: 'archive-auth.nar'
-        dest: '.'
-        auth: user: 'nar', pass: 'passw0rd'
-
-      it 'should install archive using authentication', (done) ->
-        install options
-          .on 'end', ->
-            expect exists "#{dest}/archive-auth.nar" .to.be.true
-            done!
-
-    describe 'URI', (_) ->
-
-      options =
-        url: 'http://nar:passw0rd@127.0.0.1:8882/download/auth/archive.nar'
-        filename: 'archive-auth.nar'
-        dest: '.'
-
-      it 'should install archive using URI-level authentication', (done) ->
-        install options
-          .on 'end', ->
-            expect exists "#{dest}/archive-auth.nar" .to.be.true
-            done!
-
-    describe 'invalid', (_) ->
-
-      options =
-        url: 'http://127.0.0.1:8882/download/auth/archive.nar'
-        filename: 'archive-auth.nar'
-        dest: '.'
-        auth: user: 'nil', pass: 'inval!d'
-
-      it 'should not install the archive', (done) ->
-        install options
-          .on 'error', (err, code) ->
-            expect err .to.match /invalid response code/i
-            expect code .to.be.equal 404 # mock server returns 404
             done!

@@ -70,6 +70,13 @@ module.exports = _ = {
   replace-env-vars: (str) ->
     /\$\{(\w+)\}/ig |> str.replace _, (_, name) -> process.env[name] or ''
 
+  log-error: (err, debug) ->
+    if err
+      if debug and err.stack
+        err.stack
+      else
+        "Error: #{err.message or err}".red
+
   exit: (code) ->
     code |> exit if code is 0 or not code
     (message) ->

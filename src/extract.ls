@@ -37,13 +37,13 @@ module.exports = extract = (options = {}) ->
 
   extractor = (options, type) -> (done) ->
     { path, dest } = options
-    return new Error 'Invalid archive path' |> on-error unless path |> is-file
+    return new Error 'The given path is not a file' |> on-error unless path |> is-file
 
     create-link = (name, path) ->
       bin-path = path |> join dest, _
       if bin-path |> is-file
         if root = findup 'package.json', cwd: (bin-path |> dirname)
-          bin-dir = (root |> dirname) |> join _, '../../../bin'
+          bin-dir = root |> dirname |> join _, '../../../bin'
           bin-file = bin-dir |> join _, name
           mk bin-dir unless bin-dir |> is-dir
 
@@ -67,7 +67,7 @@ module.exports = extract = (options = {}) ->
       done!
 
     do-extractor = ->
-      mk dest unless dest |> is-dir
+      dest |> mk unless dest |> is-dir
       (options |> unpack)
         .on 'error', on-error
         .on 'entry', on-entry
@@ -84,7 +84,6 @@ module.exports = extract = (options = {}) ->
       path: it.archive |> join tmpdir, _
       dest: it.dest |> join dest, _
       checksum: it.checksum
-
     options |> extractor _, it.type
 
   copy-bin-fn = (options) -> (done) ->
@@ -106,7 +105,7 @@ module.exports = extract = (options = {}) ->
   extract-archives = (done) ->
     nar = '.nar.json' |> join tmpdir, _ |> read
     nar |> emitter.emit 'info', _
-    fw.series (nar |> get-extract-files), done
+    (nar |> get-extract-files) |> fw.series _, done
 
   copy-nar-json = (done) ->
     origin = '.nar.json' |> join tmpdir, _

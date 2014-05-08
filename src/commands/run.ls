@@ -3,7 +3,7 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit, archive-name } = require '../utils'
+{ echo, exit, archive-name, log-error } = require '../utils'
 
 program
   .command 'run <archive>'
@@ -68,8 +68,7 @@ run = (archive, options) ->
     "Extracting [#{it.type.cyan}] #{it.name}" |> echo unless debug and verbose
 
   on-error = (err, code) ->
-    "Error: #{err.message or err}".red |> echo if err
-    err.stack |> echo if debug and err.stack
+    err |> log-error _, debug |> echo
     ((code or 1) |> exit)!
 
   on-command = (cmd, hook) ->

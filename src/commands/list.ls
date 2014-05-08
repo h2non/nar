@@ -4,7 +4,7 @@ require! {
   Table: 'cli-table'
   program: commander
 }
-{ echo, exit, exists, is-file, to-kb, archive-name } = require '../utils'
+{ echo, exit, to-kb, archive-name, log-error } = require '../utils'
 
 program
   .command 'list <archive>'
@@ -28,10 +28,8 @@ list = (archive, options) ->
 
   opts = path: archive
 
-  on-error = ->
-    "Error: #{it.message or it}".red |> echo if it
-    it.stack |> echo if debug and it.stack
-    exit 1
+  on-error = (err) ->
+    err |> log-error _, debug |> exit 1
 
   on-info = ->
     "Package: #{it |> archive-name}" |> echo

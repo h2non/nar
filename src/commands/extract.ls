@@ -3,7 +3,7 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit, exists, is-file, add-extension, to-kb } = require '../utils'
+{ echo, exit, to-kb, log-error } = require '../utils'
 
 program
   .command 'extract <archive>'
@@ -34,8 +34,7 @@ extract = (archive, options) ->
   on-start = -> "Reading archive..." |> echo
 
   on-error = (err, code) ->
-    "Error: #{err.message or err}".red |> echo if err
-    err.stack |> echo if debug and err.stack
+    err |> log-error _, debug |> echo
     ((code or 1) |> exit)!
 
   on-entry = ->
@@ -49,14 +48,11 @@ extract = (archive, options) ->
     exit 0
 
   extract = ->
-    "The given path is not a file" |> exit 1 unless opts.path |> is-file
-
     archive = nar.extract opts
       .on 'start', on-start
       .on 'archive', on-archive
       .on 'error', on-error
       .on 'end', on-end
-
     archive.on 'entry', on-entry if debug or verbose
 
   try

@@ -19,8 +19,8 @@ describe 'download', ->
     chdir "#{__dirname}/.."
     rm dest
 
-  after ->
-    mock.stop!
+  after (done) ->
+    mock.stop -> done!
 
   describe 'normal', (_) ->
 

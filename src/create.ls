@@ -93,14 +93,14 @@ module.exports = create = (options) ->
       nar-config |> compress-all _, done
 
     do-compression = (done) ->
-       [ deps, base-pkg, all ] |> fw.series _, done
+      tmp-path |> mk
+      [ deps, base-pkg, all ] |> fw.series _, done
 
     on-compress = (err) ->
       return err |> on-error if err
       on-end!
 
     try
-      tmp-path |> mk
       on-compress |> do-compression
     catch
       e |> on-error
@@ -283,11 +283,7 @@ nar-manifest = (name, pkg) ->
   name: name
   time: now!
   binary: no
-  info: {
-    platform
-    arch
-    version
-  }
+  info: { platform, arch, version }
   manifest: pkg
   files: []
 
@@ -312,13 +308,14 @@ output-file = (file, dir) ->
   "#{file}.nar" |> join dir, _
 
 get-filename = (options, pkg = {}) ->
-  if options.file
-    name = options.file.replace /\.[a-z0-9]$/i, ''
+  { file, binary } = options
+  if file
+    name = file.replace /\.[a-z0-9]$/i, ''
   else
     name = pkg.name or 'unnamed'
     name += "-#{pkg.version}" if pkg.version
 
-  name += "-#{process.platform}-#{process.arch}" if options.binary
+  name += "-#{process.platform}-#{process.arch}" if binary
   name
 
 apply-pkg-options = (options, pkg) ->

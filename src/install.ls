@@ -12,10 +12,12 @@ const defaults =
   clean: yes
 
 module.exports = install = (options) ->
-  { path, dest, clean } = options = options |> apply
+  { path, url, dest, clean } = options = options |> apply
   emitter = new EventEmitter
+  output = null
 
-  clean-dir = -> try rm dest if clean
+  clean-dir = ->
+    try rm output if clean and output
 
   on-error = (err, code, cmd) ->
     clean-dir!
@@ -45,14 +47,17 @@ module.exports = install = (options) ->
       .on 'end', on-end
 
   downloader = ->
+    options.url = path unless url
     download options
       .on 'download', on-download
       .on 'progress', on-progress
       .on 'error', on-error
-      .on 'end', (|> extractor)
+      .on 'end', ->
+        output := it
+        it |> extractor
 
   do-install = ->
-    if path |> is-url
+    if url or (path |> is-url)
       downloader!
     else
       path |> extractor
@@ -61,4 +66,4 @@ module.exports = install = (options) ->
   emitter
 
 apply = (options) ->
-  (options |> extend (defaults |> clone) _)
+  (options |> extend (defaults |> clone), _)
