@@ -462,7 +462,7 @@ It can aditionally download the archive from remote server
 ### nar.get(options)
 Alias: `download`
 
-Fired events: `end, error, entry, download`
+Fired events: `end, error, download`
 
 Download archive from remote server.
 It supports basic HTTP authentication and proxy

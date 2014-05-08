@@ -1,6 +1,7 @@
 require! {
   path
   '../nar'
+  progress
   program: commander
 }
 { echo, exit, is-file, to-kb, log-error } = require '../utils'
@@ -10,13 +11,13 @@ program
   .description '\n  Download archive from HTTP server'
   .usage '[url] [options]'
   .option '-o, --output <path>', 'Output directory. Default to current directory'
+  .option '-f, --filename <name>', 'Downloaded filename. Default taken from URL path name'
   .option '--user <user>', 'HTTP autenticantion user'
   .option '--password <password>', 'HTTP user password'
   .option '--proxy <url>', 'Proxy server URL to use'
   .option '--timeout <number>', 'HTTP request timeout'
   .option '--strict-ssl', 'Enable strict SSL'
   .option '-d, --debug', 'Enable debug mode. More information will be shown'
-  .option '-v, --verbose', 'Enable verbose mode. A lot of information will be shown'
   .on '--help', ->
     echo '''
       Usage examples:
@@ -29,18 +30,25 @@ program
     '''
   .action -> get ...
 
-get = (archive, options) ->
-  { debug, verbose, output, strict-ssl } = options
+get = (url, options) ->
+  { debug, output, strict-ssl } = options
+  bar = null
 
   opts = {
-    path: archive
+    url,
     dest: output
     strict-SSL: strict-ssl
-    options.timeout, options.user,
-    options.password, options.proxy
+    options.filename,
+    options.timeout, options.proxy
   }
 
-  on-start = -> "Reading archive..." |> echo
+  if options.user
+    "password option is required" |> on-error unless options.password
+    opts.auth = { options.user, options.password }
+
+  update-bar = (value) ->
+    bar.curr = value
+    bar.render!
 
   on-error = (err, code) ->
     err |> log-error _, debug |> echo
@@ -49,20 +57,26 @@ get = (archive, options) ->
   on-entry = ->
     "Extract [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.path or ''}".green |> echo
 
-  on-archive = ->
-    "Extracting [#{it.type.cyan}] #{it.name or ''}" |> echo unless debug and verbose
+  on-download = ->
+    "Downloading archive..." |> echo
+
+  on-progress = (state) ->
+    unless bar
+      bar := new progress '[:bar] :percent :etas', { state.total, width: 30 }
+      bar.start = new Date!
+    else
+      state.received |> update-bar
 
   on-end = ->
-    "Extracted in: #{it.dest}" |> echo
-    exit 0
+    bar.total |> update-bar if bar
+    "\nDownloaded in: #{it}" |> echo
 
   extract = ->
-    installer = nar.get opts
-      .on 'start', on-start
-      .on 'archive', on-archive
+    nar.get opts
+      .on 'download', on-download
+      .on 'progress', on-progress
       .on 'error', on-error
       .on 'end', on-end
-    installer.on 'entry', on-entry if debug or verbose
 
   try
     extract!

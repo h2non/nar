@@ -1,4 +1,4 @@
-{ rm, mk, cwd, exec, read, chdir, exists, expect, version } = require './lib/helper'
+{ rm, mk, cwd, exec, read, chdir, exists, expect } = require './lib/helper'
 
 describe 'CLI', ->
 

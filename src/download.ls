@@ -10,6 +10,9 @@ require! {
 { join, dirname } = path
 { next, env, is-win, is-array, once, platform, arch, mk, rm, exists, clone, extend, discover-pkg, http-status } = require './utils'
 
+const headers =
+  'User-Agent': "node nar #{version} (#{platform}-#{arch})"
+
 module.exports = download = (options) ->
   { url, dest, filename, auth } = options = options |> apply
   emitter = new EventEmitter
@@ -53,7 +56,7 @@ module.exports = download = (options) ->
     http = request options, handler
     http.on 'error', on-error
 
-    progress http, { delay: 500 }
+    progress http
       .on 'progress', on-progress
       .pipe stream
       .on 'close', on-end
@@ -72,7 +75,7 @@ default-dest = ->
     '.'
 
 apply = (options) ->
-  options = {
+  {
     options.url
     options.auth or null
     options.filename or (options.url |> get-filename)
@@ -80,7 +83,7 @@ apply = (options) ->
     options.timeout or 10000
     options.strict-SSL or no
     options.proxy or get-proxy!
-    headers: 'User-Agent': "node nar #{version} (#{platform}-#{arch})"
+    headers: options.headers |> extend (headers |> clone), _
   }
 
 get-filename = (url) ->

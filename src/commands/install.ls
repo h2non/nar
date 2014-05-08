@@ -9,7 +9,8 @@ program
   .command 'install <archive>'
   .description '\n  Install archive'
   .usage '[archive] [options]'
-  .option '-o, --output <path>', 'Output directory. Default to node_modules'
+  .option '-o, --output <path>', 'Install directory. Default to node_modules'
+  .option '-f, --filename <name>', 'Downloaded filename. Default taken from URL path name'
   .option '--user <user>', 'HTTP autenticantion user'
   .option '--password <password>', 'HTTP user password'
   .option '--proxy <url>', 'Proxy server URL to use'
@@ -17,6 +18,7 @@ program
   .option '--strict-ssl', 'Enable strict SSL'
   .option '-d, --debug', 'Enable debug mode. More information will be shown'
   .option '-v, --verbose', 'Enable verbose mode. A lot of information will be shown'
+  .option '--clean', 'Remove downloaded file after install'
   .on '--help', ->
     echo '''
       Usage examples:
@@ -36,6 +38,7 @@ install = (archive, options) ->
     path: archive
     dest: output
     strict-SSL: strict-ssl
+    options.filename, options.clean,
     options.timeout, options.user,
     options.password, options.proxy
   }
