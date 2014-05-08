@@ -11,6 +11,8 @@ It provides built-in support for creating, extracting, installing and running ap
 easily through a featured [command-line interface](#command-line-interface)
 and full asynchronous event-based [programmatic API](#programmatic-api)
 
+If you have questions, please see the [FAQ](#faq) or [open](https://github.com/h2non/nar/issues/new) an issue
+
 ## Features
 
 <img align="right" height="165" src="http://nodejs.org/images/platform-icon-generic.png" />
