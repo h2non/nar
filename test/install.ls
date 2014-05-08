@@ -14,14 +14,14 @@ describe 'install', ->
 
   before (done) ->
     static-server orig
-    mock := server -> done!
+    try mock := server -> done!
 
   after ->
     chdir "#{__dirname}/.."
     rm dest
 
   after (done) ->
-    mock.stop -> done!
+    try mock.stop -> done!
 
   describe 'normal', (_) ->
 
