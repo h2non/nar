@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/h2non/nar.png?label=ready&title=Ready)](https://waffle.io/h2non/nar)
 # nar [![Build Status](https://api.travis-ci.org/h2non/nar.svg?branch=master)][travis] [![Dependency Status](https://gemnasium.com/h2non/nar.svg)][gemnasium] [![NPM version](https://badge.fury.io/js/nar.svg)][npm]
 
 ## About
