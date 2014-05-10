@@ -1,0 +1,7 @@
+src/*
+test
+*.ls
+.gitignore
+.travis.yml
+.editorconfig
+Makefile
