@@ -30,7 +30,7 @@ program.on '--help', help = ->
       $ nar run app.nar
       $ nar extract app.nar -o some/dir
       $ nar list app.nar
-      $ nar install app.nar
+      $ nar install app.nar --save
       $ nar get http://server.net/app.nar
 
     Command specific help:

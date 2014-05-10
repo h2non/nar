@@ -24,7 +24,7 @@ If you have questions, please see the [FAQ](#faq) or [open](https://github.com/h
 - Tarball with gzip compression/decompression
 - Built-in support for archive extraction
 - Built-in support for application execution
-- Built-in support for application installation
+- Built-in support for installating archives (like npm does)
 - Supports downloading and running archives from remote servers
 - Supports application pre/post run hooks (from [npm scripts][npm-scripts])
 - Allow to embed dependencies by type
