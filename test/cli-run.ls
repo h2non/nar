@@ -1,4 +1,4 @@
-{ rm, mk, exec, chdir, exists, expect } = require './lib/helper'
+{ rm, mk, exec, chdir, exists, expect, static-server } = require './lib/helper'
 
 describe 'CLI', (_) ->
 
@@ -204,3 +204,35 @@ describe 'CLI', (_) ->
 
       it 'should have a valid path error', ->
         expect stdout .to.match /given path is not a file/i
+
+    describe 'remote', (_) ->
+
+      http = stdout = null
+      orig = "#{__dirname}/fixtures/archives"
+
+      before (done) ->
+        http := static-server orig, -> done!
+
+      before ->
+        rm dest
+        mk dest
+        chdir dest
+
+      after ->
+        chdir "#{__dirname}/.."
+        rm dest
+
+      after (done) ->
+        http.close -> done!
+
+      it 'should run the archive', (done) ->
+        exec 'data', <[run http://127.0.0.1:8883/sample.nar]>, (data, code) ->
+          stdout := data
+          expect code .to.be.equal 0
+          done!
+
+      it 'should have a valid stdout', ->
+        expect stdout .to.match /downloading/i
+        expect stdout .to.match /extracting/i
+        expect stdout .to.match /running/i
+        expect stdout .to.match /starting/i

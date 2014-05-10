@@ -43,6 +43,7 @@ compile: clean mkdir
 	cat src/commands/list.ls | $(LS) -c -s -b > ./lib/commands/list.js
 	cat src/commands/install.ls | $(LS) -c -s -b > ./lib/commands/install.js
 	cat src/commands/get.ls | $(LS) -c -s -b > ./lib/commands/get.js
+	cat src/commands/common.ls | $(LS) -c -s -b > ./lib/commands/common.js
 
 mocha:
 	cat test/lib/helper.ls | $(LS) -c -s -b > ./test/lib/helper.js

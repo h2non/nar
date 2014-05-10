@@ -29,9 +29,15 @@ module.exports = run = (options) ->
   on-progress = (status) ->
     status |> emitter.emit 'progress', _
 
+  on-download-end = ->
+    it |> emitter.emit 'downloadEnd', _
+
   on-end = (options, nar) ->
     clean-dir!
     options |> emitter.emit 'end', _, nar
+
+  on-download = ->
+    'download' |> emitter.emit
 
   hooks-fn = (nar) ->
     buf = []
@@ -69,6 +75,7 @@ module.exports = run = (options) ->
       options |> on-end _, nar
 
   extract-archive = ->
+    'extract' |> emitter.emit
     (options |> extract)
       .on 'error', on-error
       .on 'entry', on-entry
@@ -78,22 +85,25 @@ module.exports = run = (options) ->
   download-archive = ->
     options <<< url: path
     (options |> download)
+      .on 'download', on-download
       .on 'error', on-error
       .on 'progress', on-progress
       .on 'end', ->
         options <<< path: it
+        it |> on-download-end
         extract-archive!
 
   do-extract = -> next ->
     return new Error 'Required archive path option' |> on-error unless path
-    'extract' |> emitter.emit
-
     if path |> is-url
       download-archive!
     else
       extract-archive!
 
-  do-extract!
+  try
+    do-extract!
+  catch
+    "Cannot run the archive: #{e}" |> on-error
   emitter
 
 apply = (options) ->

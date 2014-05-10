@@ -100,10 +100,7 @@ module.exports = create = (options) ->
       return err |> on-error if err
       on-end!
 
-    try
-      on-compress |> do-compression
-    catch
-      e |> on-error
+    on-compress |> do-compression
 
   compress-all = (nar-config, cb) ->
     config =
@@ -270,7 +267,10 @@ module.exports = create = (options) ->
     else
       cb!
 
-  do-create!
+  try
+    do-create!
+  catch
+    e |> on-error
   emitter
 
 write-config = (config, tmpdir, cb) ->

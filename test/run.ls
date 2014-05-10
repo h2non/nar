@@ -77,7 +77,7 @@ describe 'run', ->
 
   describe 'remote', (_) ->
 
-    stdout = stderr = commands = ''
+    stdout = http = stderr = commands = ''
     options =
       path: 'http://localhost:8883/sample.nar'
       dest: dest
@@ -86,14 +86,16 @@ describe 'run', ->
         start: "--os #{process.platform} --path ${PATH} --invalid ${_INVALID_}"
 
     before (done) ->
-      orig |> static-server
-      set-timeout done, 1000
+      http := static-server orig, -> done!
 
     before ->
       rm dest
       mk dest
 
     after -> rm dest
+
+    after (done) ->
+      http.close -> done!
 
     it 'should download and run the archive', (done) ->
       run options

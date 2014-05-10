@@ -3,7 +3,7 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit, archive-name, log-error } = require '../utils'
+{ echo, exit, create-bar, on-download, on-error, on-progress, update-bar, on-download-end, archive-name } = require './common'
 
 program
   .command 'run <archive>'
@@ -16,8 +16,8 @@ program
   .option '-ap, --args-prestart <args>', 'Aditional arguments to pass to prestart command'
   .option '-as, --args-stop <args>', 'Aditional arguments to pass to stop command'
   .option '-ax, --args-poststop <args>', 'Aditional arguments to pass to poststop command'
-  .option '--user <user>', 'HTTP autenticantion user'
-  .option '--password <password>', 'HTTP user password'
+  .option '-u, --user <user>', 'HTTP autenticantion user'
+  .option '-p, --password <password>', 'HTTP user password'
   .option '--proxy <url>', 'Proxy server URL to use'
   .option '--timeout <number>', 'HTTP request timeout'
   .option '--strict-ssl', 'Enable strict SSL'
@@ -37,26 +37,22 @@ program
   .action -> run ...
 
 run = (archive, options) ->
-  { debug, verbose, output, clean, hooks, proxy, args-start, args-prestart, args-stop, args-poststop } = options
+  { debug, verbose, output, strict-ssl, args-start, args-prestart, args-stop, args-poststop } = options
+  bar = create-bar!
 
-  opts =
+  opts = {
     path: archive
     dest: output
-    clean: clean
-    hooks: hooks
-    proxy: proxy
+    strictSSL: strict-ssl
+    options.clean, options.hooks
+    options.proxy, options.timeout
     args:
       start: args-start
       prestart: args-prestart
       stop: args-stop
       poststop: args-poststop
-
-  if options.user
-    unless options.pass
-      # to do: ask it by prompt
-      return
-    else
-      opts <<< auth: { options.user, options.pass }
+  }
+  opts <<< auth: { options.user, options.pass } if options.user
 
   on-extract = -> "Extracting files..." |> echo
 
@@ -65,11 +61,7 @@ run = (archive, options) ->
   on-end = -> "Finished" |> echo
 
   on-archive = ->
-    "Extracting [#{it.type.cyan}] #{it.name}" |> echo unless debug and verbose
-
-  on-error = (err, code) ->
-    err |> log-error _, debug |> echo
-    ((code or 1) |> exit)!
+    "Extracting [#{it.type.cyan}] #{it.name or ''}" |> echo unless debug and verbose
 
   on-command = (cmd, hook) ->
     "Run [".green + hook.cyan + "]: #{cmd}".green |> echo
@@ -91,11 +83,14 @@ run = (archive, options) ->
 
   run = ->
     archive = nar.run opts
+      .on 'download', on-download
+      .on 'downloadEnd', (bar |> on-download-end)
+      .on 'progress', (bar |> on-progress)
       .on 'extract', on-extract
       .on 'info', on-info
       .on 'archive', on-archive
       .on 'start', on-start
-      .on 'error', on-error
+      .on 'error', (debug |> on-error)
       .on 'end', on-end
 
     if debug or verbose

@@ -3,7 +3,7 @@ install = require '../lib/install'
 
 describe 'install', ->
 
-  mock = null
+  mock = http = null
   dest = "#{__dirname}/fixtures/.tmp"
   orig = "#{__dirname}/fixtures/archives"
 
@@ -13,37 +13,40 @@ describe 'install', ->
     chdir dest
 
   before (done) ->
-    static-server orig
-    try mock := server -> done!
+    http := static-server orig, -> done!
+
+  before (done) ->
+    mock := server -> done!
 
   after ->
     chdir "#{__dirname}/.."
     rm dest
 
   after (done) ->
-    try mock.stop -> done!
+    http.close -> done!
+
+  after (done) ->
+    mock.stop -> done!
 
   describe 'normal', (_) ->
 
-    options =
-      path: 'http://127.0.0.1:8883/sample.nar'
+    options = path: 'http://127.0.0.1:8883/sample.nar'
 
     describe 'valid', (_) ->
 
       it 'should install', (done) ->
-        install options
-          .on 'end', ->
-            expect exists "node_modules/sample.nar" .to.be.true
-            done!
+        install options .on 'end', ->
+          expect it.dest .to.match /node_modules\/pkg/
+          done!
 
       it 'should exists package.json', ->
-        expect exists "node_modules/package.json" .to.be.true
+        expect exists "node_modules/pkg/package.json" .to.be.true
 
       it 'should exists .nar.json', ->
-        expect exists "node_modules/.nar.json" .to.be.true
+        expect exists "node_modules/pkg/.nar.json" .to.be.true
 
       it 'should exists node_modules', ->
-        expect exists "node_modules/node_modules" .to.be.true
+        expect exists "node_modules/pkg/node_modules" .to.be.true
 
     describe 'invalid', (_) ->
 

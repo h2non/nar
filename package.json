@@ -49,7 +49,8 @@
     "request": "~2.34.0",
     "request-progress": "~0.3.1",
     "read": "~1.0.5",
-    "progress": "~1.1.5"
+    "progress": "~1.1.5",
+    "ncp": "~0.5.1"
   },
   "devDependencies": {
     "chai": "~1.9.1",

@@ -66,17 +66,12 @@ module.exports = extract = (options = {}) ->
         pkg |> process-global-binaries if pkg
       done!
 
-    do-extractor = ->
+    do-extractor = do ->
       dest |> mk unless dest |> is-dir
       (options |> unpack)
         .on 'error', on-error
         .on 'entry', on-entry
         .on 'end', extract-end
-
-    try
-      do-extractor!
-    catch
-      e |> on-error
 
   extractor-fn = ->
     options =

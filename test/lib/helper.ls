@@ -80,8 +80,9 @@ module.exports =
     server.start { data: require "../fixtures/mock.json" }, done
     server
 
-  static-server: (dir) ->
+  static-server: (dir, cb) ->
     file = new node-static.Server dir
-    http.createServer (request, response) ->
+    server = http.createServer (request, response) ->
       request.addListener 'end', (-> file.serve request, response) .resume!
-    .listen 8883
+    server.listen 8883, cb
+    server

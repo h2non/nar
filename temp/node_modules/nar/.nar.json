@@ -1,0 +1,192 @@
+{
+  "name": "nar",
+  "time": 1399290387075,
+  "binary": false,
+  "info": {
+    "platform": "darwin",
+    "arch": "x64",
+    "version": "v0.10.26"
+  },
+  "manifest": {
+    "name": "nar",
+    "version": "0.2.0",
+    "description": "node.js application archive",
+    "preferGlobal": true,
+    "repository": "h2non/nar",
+    "author": "Tomas Aparicio",
+    "licenses": "MIT",
+    "main": "lib/nar",
+    "directories": {
+      "lib": "./lib"
+    },
+    "bin": {
+      "nar": "./bin/nar"
+    },
+    "engines": {
+      "node": ">= 0.8.0"
+    },
+    "scripts": {
+      "test": "make test"
+    },
+    "keywords": [
+      "node",
+      "archive",
+      "archiver",
+      "packager",
+      "package",
+      "compress",
+      "zip",
+      "tarball",
+      "gzip",
+      "pkg",
+      "jar",
+      "tar"
+    ],
+    "dependencies": {
+      "commander": "~2.2.0",
+      "colors": "~0.6.2",
+      "os-shim": "~0.1.2",
+      "hu": "~0.1.0",
+      "findup-sync": "~0.1.3",
+      "archiver": "~0.9.0",
+      "tar": "~0.1.19",
+      "rimraf": "~2.2.4",
+      "mkdirp": "~0.4.0",
+      "cli-table": "~0.3.0",
+      "requireg": "~0.1.3",
+      "fw": "~0.1.0",
+      "request": "~2.34.0",
+      "request-progress": "~0.3.1",
+      "read": "~1.0.5"
+    },
+    "devDependencies": {
+      "chai": "~1.9.1",
+      "semver": "~2.2.1",
+      "mocha": "~1.18.2",
+      "LiveScript": "~1.2.0",
+      "stubby": "~0.2.3",
+      "node-static": "~0.7.3"
+    }
+  },
+  "files": [
+    {
+      "name": "commander",
+      "archive": "commander.tar",
+      "dest": "node_modules/commander",
+      "type": "dependency",
+      "checksum": "15dde1f7261eee82631c65afa58158f298b7385e"
+    },
+    {
+      "name": "colors",
+      "archive": "colors.tar",
+      "dest": "node_modules/colors",
+      "type": "dependency",
+      "checksum": "af15e74908546c0b8765387ef34c32f4767a6d18"
+    },
+    {
+      "name": "fw",
+      "archive": "fw.tar",
+      "dest": "node_modules/fw",
+      "type": "dependency",
+      "checksum": "6036f55c83eb5d9b7e871091b1828fae3de857c0"
+    },
+    {
+      "name": "os-shim",
+      "archive": "os-shim.tar",
+      "dest": "node_modules/os-shim",
+      "type": "dependency",
+      "checksum": "e4fd4eeb27b6be3477a09428c21a6da1c0383ed1"
+    },
+    {
+      "name": "rimraf",
+      "archive": "rimraf.tar",
+      "dest": "node_modules/rimraf",
+      "type": "dependency",
+      "checksum": "3a3e47750a56f765d38485015b95c60156096495"
+    },
+    {
+      "name": "cli-table",
+      "archive": "cli-table.tar",
+      "dest": "node_modules/cli-table",
+      "type": "dependency",
+      "checksum": "fbb7afce55f3c6ad368a514b2ec82dd20435c499"
+    },
+    {
+      "name": "modules-bin-dir",
+      "archive": "modules-bin-dir.tar",
+      "dest": "node_modules/.bin",
+      "type": "dependency",
+      "checksum": "260c41dc5944c458c3fd39c4a8fe3bf3aca430d2"
+    },
+    {
+      "name": "request-progress",
+      "archive": "request-progress.tar",
+      "dest": "node_modules/request-progress",
+      "type": "dependency",
+      "checksum": "20bca22f630314943626bec753105584fa433d42"
+    },
+    {
+      "name": "read",
+      "archive": "read.tar",
+      "dest": "node_modules/read",
+      "type": "dependency",
+      "checksum": "91025318162c79eee3d71950e0ef5081208560a8"
+    },
+    {
+      "name": "mkdirp",
+      "archive": "mkdirp.tar",
+      "dest": "node_modules/mkdirp",
+      "type": "dependency",
+      "checksum": "9d9e508983b40aa9fbe7d4d5656efdb1966e06e8"
+    },
+    {
+      "name": "hu",
+      "archive": "hu.tar",
+      "dest": "node_modules/hu",
+      "type": "dependency",
+      "checksum": "95d12a6d15fba8c8ef190b1b9c52d6d3d4cac22a"
+    },
+    {
+      "name": "requireg",
+      "archive": "requireg.tar",
+      "dest": "node_modules/requireg",
+      "type": "dependency",
+      "checksum": "7ef0fd7d65139a540c6483aa2919860c20bba633"
+    },
+    {
+      "name": "tar",
+      "archive": "tar.tar",
+      "dest": "node_modules/tar",
+      "type": "dependency",
+      "checksum": "69d0079317b872b53c9a8058110c6687d417d403"
+    },
+    {
+      "name": "findup-sync",
+      "archive": "findup-sync.tar",
+      "dest": "node_modules/findup-sync",
+      "type": "dependency",
+      "checksum": "13140003a8dcf9824afe9c58b74973b933c658d9"
+    },
+    {
+      "name": "request",
+      "archive": "request.tar",
+      "dest": "node_modules/request",
+      "type": "dependency",
+      "checksum": "5e83cc69b0c9475a021215649386f411cbe1affd"
+    },
+    {
+      "name": "archiver",
+      "archive": "archiver.tar",
+      "dest": "node_modules/archiver",
+      "type": "dependency",
+      "checksum": "cf3b74941bf471fa162628b200025a015d94f431"
+    },
+    {
+      "name": "nar",
+      "archive": "nar.tar",
+      "dest": ".",
+      "type": "package",
+      "checksum": "1892dd014c415e3edb26c061ce803041a6b66f02"
+    }
+  ]
+}

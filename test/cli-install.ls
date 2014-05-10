@@ -1,66 +1,139 @@
-{ rm, mk, exec, chdir, exists, expect } = require './lib/helper'
+{ rm, mk, exec, chdir, exists, expect, server, static-server } = require './lib/helper'
 
 describe 'CLI', (_) ->
 
   dest = "#{__dirname}/fixtures/.tmp"
+  orig = "#{__dirname}/fixtures/archives"
+  stdout = null
 
   describe 'install', (_) ->
 
-    describe 'default', (_) ->
+    describe 'local', ->
 
-      before ->
-        rm dest
-        mk dest
-        chdir dest
+      describe 'default', (_) ->
 
-      after ->
-        chdir "#{__dirname}/.."
-        rm dest
+        before -> stdout := null
 
-      it 'should run the archive', (done) ->
-        exec 'close', <[install ../archives/sample]>, ->
-          expect it .to.be.equal 0
-          done!
+        before ->
+          rm dest
+          mk dest
+          chdir dest
 
-    describe '--output', (_) ->
+        after ->
+          chdir "#{__dirname}/.."
+          rm dest
 
-      output = "#{dest}/output"
-      stdout = null
+        it 'should install the archive', (done) ->
+          exec 'close', <[install ../archives/sample]>, ->
+            expect it .to.be.equal 0
+            done!
 
-      before ->
-        mk output
-        chdir dest
+      describe '--output', (_) ->
 
-      after ->
-        chdir "#{__dirname}/.."
-        rm dest
+        output = "#{dest}/output"
 
-      it 'should install the archive', (done) ->
-        exec 'data', <[install ../archives/sample --clean -o]> ++ [ output ], (data, code) ->
-          stdout := data
-          expect code .to.be.equal 0
-          done!
+        before -> stdout := null
 
-      it 'should exists the archive', ->
-        expect exists "#{output}/package.json" .to.be.true
+        before ->
+          mk output
+          chdir dest
 
-    describe '--debug', (_) ->
+        after ->
+          chdir "#{__dirname}/.."
+          rm dest
 
-      stdout = null
+        it 'should install the archive', (done) ->
+          exec 'data', <[install ../archives/sample --clean -o]> ++ [ output ], (data, code) ->
+            stdout := data
+            expect code .to.be.equal 0
+            done!
 
-      before ->
-        mk dest
-        chdir dest
+        it 'should exists the archive', ->
+          expect exists "#{output}/package.json" .to.be.true
 
-      after ->
-        chdir "#{__dirname}/.."
-        rm dest
+      describe '--debug', (_) ->
 
-      it 'should install the archive', (done) ->
-        exec 'data', <[install ../archives/sample --clean --debug -o]> ++ [ dest ], (data, code) ->
-          stdout := data
-          expect code .to.be.equal 0
-          done!
+        before -> stdout := null
 
-      it 'should exists the archive', ->
-        expect exists "#{dest}/package.json" .to.be.true
+        before ->
+          mk dest
+          chdir dest
+
+        after ->
+          chdir "#{__dirname}/.."
+          rm dest
+
+        it 'should install the archive', (done) ->
+          exec 'data', <[install ../archives/sample --clean --debug -o]> ++ [ dest ], (data, code) ->
+            stdout := data
+            expect code .to.be.equal 0
+            done!
+
+        it 'should exists the archive', ->
+          expect exists "#{dest}/package.json" .to.be.true
+
+    describe 'remote', ->
+      mock = http = null
+
+      before -> stdout := null
+
+      before (done) ->
+        http := static-server orig, -> done!
+
+      before (done) ->
+        mock := server -> done!
+
+      after (done) ->
+        http.close -> done!
+
+      after (done) ->
+        mock.stop -> done!
+
+      describe 'default', (_) ->
+
+        before ->
+          rm dest
+          mk dest
+          chdir dest
+
+        after ->
+          chdir "#{__dirname}/.."
+          rm dest
+
+        it 'should install the archive', (done) ->
+          exec 'data', <[install http://127.0.0.1:8883/sample.nar]>, (data, code) ->
+            expect code .to.be.equal 0
+            stdout := data
+            done!
+
+        it 'should exists archive extract files', ->
+          expect exists "#{dest}/node_modules/pkg/package.json" .to.be.true
+
+        it 'should have a valid stdout', ->
+          expect stdout .to.match /downloading archive/i
+          expect stdout .to.match /installing archive/i
+          expect stdout .to.match /installed in/i
+
+      describe 'invalid', (_) ->
+
+        before ->
+          rm dest
+          mk dest
+          chdir dest
+
+        after ->
+          chdir "#{__dirname}/.."
+          rm dest
+
+        it 'should install the archive', (done) ->
+          exec 'data', <[install http://127.0.0.1:8882/download/invalid]>, (data, code) ->
+            expect code .to.not.equal 0
+            stdout := data
+            done!
+
+        it 'should not exists archive extract files', ->
+          expect exists "#{dest}/pkg/package.json" .to.be.false
+
+        it 'should have a valid stdout', ->
+          expect stdout .to.match /invalid response/i
+          expect stdout .to.match /404 not found/i

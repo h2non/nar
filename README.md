@@ -62,9 +62,9 @@ Or directly run it
 $ nar run app.nar
 ```
 
-Install into `node_modules` (default)
+Install (default to `node_modules`)
 ```bash
-$ nar install http://server.net/files/app-0.1.0.nar
+$ nar install http://server.net/app-0.1.0.nar --save
 ```
 
 ## Configuration
@@ -445,7 +445,7 @@ Read and parse a given .nar archive, emitting the `entry` event for each existen
 - **path** `string` Path to nar archive. Required
 
 ### nar.install(options)
-Fired events: `end, error, entry, download`
+Fired events: `end, downloadEnd, error, entry, start, download`
 
 Install archive as dependency in `node_modules` directory.
 It can aditionally download the archive from remote server
@@ -460,7 +460,11 @@ It can aditionally download the archive from remote server
 - **proxy** `string` Proxy server URL. Default taken from environment variable `http_proxy`
 - **auth** `object` user and password for HTTP basic authentication
 - **timeout** `number` HTTP request timeout in ms. Defaults to `10000`
+- **headers** `object` Define aditional HTTP request headers
 - **strictSSL** `boolean` Performs HTTP request with valid SSL servers. Defaults to `false`
+- **save** `boolean` Save installed package as runtime dependency in `package.json`. Default to `false`
+- **saveDev** `boolean` Save installed package as development dependency in `package.json`. Default to `false`
+- **savePeer** `boolean` Save installed package as peer dependency in `package.json`. Default to `false`
 
 ### nar.get(options)
 Alias: `download`
@@ -519,14 +523,16 @@ $ tar xvfz app-0.1.0.nar
 
 Yes. At least by the moment is still required
 
-In a future version `0.2` there is a planned provide
-support for creating a pure binary-like executable archive
-without depending of `nar` package to extract or run the application,
-so you will beable to run it like:
+In a future version is a planned provide
+support for creating a binary-like executable archive
+without no dependency to any type of package or node.js binary
+to extract or run the application, so you will beable to run it like:
 
 ```bash
 $ ./app-0.1.0.nar.run
 ```
+
+In other words, it will be fully independent and self-contained
 
 ##### When will be used embedbed node binary in the archive?
 

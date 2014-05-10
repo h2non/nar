@@ -48,10 +48,10 @@ module.exports = download = (options) ->
       new Error 'Empty response' |> on-error
 
   do-download = -> next ->
+    on-download!
     create-dest!
     stream = output |> fs.create-write-stream
     stream.on 'error', on-error
-    emitter.emit 'download', on-download
 
     http = request options, handler
     http.on 'error', on-error
@@ -67,19 +67,12 @@ module.exports = download = (options) ->
     e |> on-error
   emitter
 
-default-dest = ->
-  dest = discover-pkg!
-  if dest
-    dest |> dirname
-  else
-    '.'
-
 apply = (options) ->
   {
     options.url
     options.auth or null
     options.filename or (options.url |> get-filename)
-    options.dest or default-dest!
+    options.dest or process.cwd!
     options.timeout or 10000
     options.strict-SSL or no
     options.proxy or get-proxy!

@@ -18,7 +18,11 @@ module.exports = _ = {
   os.EOL, hu.clone, hu.is-object, hu.is-array,
   hu.is-string, mk, rm, delimiter, hu.has
 
-  echo: -> console.log ...
+  echo: ->
+    if it
+      console.log ...
+    else
+      console.log ''
 
   next: next-tick
 
@@ -28,7 +32,7 @@ module.exports = _ = {
 
   is-win: platform is 'win32'
 
-  to-kb: -> if it then Math.round it / 1024 else 0
+  to-kb: -> if it then ((Math.round it / 1024) or 1) else 0
 
   exists: -> it and (it |> normalize |> fs.exists-sync)
 

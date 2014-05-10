@@ -3,7 +3,7 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit, to-kb, log-error } = require '../utils'
+{ echo, extend, create-bar, on-extract, on-download, on-start, on-error, on-progress, on-entry, update-bar, on-download-end } = require './common'
 
 program
   .command 'install <archive>'
@@ -11,13 +11,16 @@ program
   .usage '[archive] [options]'
   .option '-o, --output <path>', 'Install directory. Default to node_modules'
   .option '-f, --filename <name>', 'Downloaded filename. Default taken from URL path name'
-  .option '--user <user>', 'HTTP autenticantion user'
-  .option '--password <password>', 'HTTP user password'
+  .option '-u, --user <user>', 'HTTP autenticantion user'
+  .option '-p, --password <password>', 'HTTP user password'
   .option '--proxy <url>', 'Proxy server URL to use'
   .option '--timeout <number>', 'HTTP request timeout'
   .option '--strict-ssl', 'Enable strict SSL'
   .option '-d, --debug', 'Enable debug mode. More information will be shown'
   .option '-v, --verbose', 'Enable verbose mode. A lot of information will be shown'
+  .option '-s, --save', 'Save as runtime dependency in package.json'
+  .option '-sd, --save-dev', 'Save as development dependency in package.json'
+  .option '-sp, --save-peer', 'Save as peer dependency in package.json'
   .option '--clean', 'Remove downloaded file after install'
   .on '--help', ->
     echo '''
@@ -33,41 +36,31 @@ program
 
 install = (archive, options) ->
   { debug, verbose, output, strict-ssl } = options
+  bar = create-bar!
 
-  opts = {
+  opts = options |> extend _, {
     path: archive
     dest: output
     strict-SSL: strict-ssl
-    options.filename, options.clean,
-    options.timeout, options.user,
-    options.password, options.proxy
   }
 
-  on-start = -> "Reading archive..." |> echo
-
-  on-error = (err, code) ->
-    err |> log-error _, debug |> echo
-    ((code or 1) |> exit)!
-
-  on-entry = ->
-    "Extract [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.path or ''}".green |> echo
-
-  on-archive = ->
-    "Extracting [#{it.type.cyan}] #{it.name or ''}" |> echo unless debug and verbose
+  on-start = ->
+    "Installing archive..." |> echo
 
   on-end = ->
     "Installed in: #{it.dest}" |> echo
-    exit 0
 
   extract = ->
     installer = nar.install opts
       .on 'start', on-start
-      .on 'archive', on-archive
-      .on 'error', on-error
+      .on 'progress', (bar |> on-progress)
+      .on 'download', on-download
+      .on 'error', (debug |> on-error)
+      .on 'downloadEnd', (bar |> on-download-end)
       .on 'end', on-end
     installer.on 'entry', on-entry if debug or verbose
 
   try
     extract!
   catch
-    "Cannot extract the archive: #{e.message}" |> on-error
+    "Cannot install the archive: #{e.message}" |> on-error

@@ -1,4 +1,4 @@
-{ fs, rm, mk, chdir, exists, expect, server, request } = require './lib/helper'
+{ fs, rm, mk, chdir, exists, expect, server } = require './lib/helper'
 download = require '../lib/download'
 
 describe 'download', ->

@@ -1,10 +1,24 @@
-{ rm, mk, exec, chdir, exists, expect } = require './lib/helper'
+{ rm, mk, exec, chdir, exists, expect, server, static-server  } = require './lib/helper'
 
 describe 'CLI', (_) ->
 
   dest = "#{__dirname}/fixtures/.tmp"
+  orig = "#{__dirname}/fixtures/archives"
+  http = mock = stdout = null
 
-  xdescribe 'get', (_) ->
+  describe 'get', (_) ->
+
+    before (done) ->
+      http := static-server orig, -> done!
+
+    before (done) ->
+      mock := server -> done!
+
+    after (done) ->
+      http.close -> done!
+
+    after (done) ->
+      mock.stop -> done!
 
     describe 'default', (_) ->
 
@@ -18,14 +32,16 @@ describe 'CLI', (_) ->
         rm dest
 
       it 'should run the archive', (done) ->
-        exec 'close', <[get ../archives/sample]>, ->
+        exec 'close', <[get http://127.0.0.1:8883/sample.nar]>, ->
           expect it .to.be.equal 0
+          expect exists 'sample.nar' .to.be.true
           done!
 
     describe '--output', (_) ->
 
       output = "#{dest}/output"
-      stdout = null
+
+      before -> stdout := null
 
       before ->
         mk output
@@ -36,24 +52,26 @@ describe 'CLI', (_) ->
         rm dest
 
       it 'should get the archive', (done) ->
-        exec 'data', <[get ../archives/sample --no-clean -o]> ++ [ output ], (data, code) ->
+        exec 'data', <[get http://127.0.0.1:8883/sample.nar -o]> ++ [ output ], (data, code) ->
           stdout := data
           expect code .to.be.equal 0
           done!
 
       it 'should exists the archive', ->
-        expect exists "#{output}/package.json" .to.be.true
+        expect exists "#{output}/sample.nar" .to.be.true
 
       it 'should have a valid stdout', ->
-        expect stdout .to.match /test\-1\.0\.0\.nar/
-        expect stdout .to.match /finished/i
+        expect stdout .to.match /downloading/i
+        expect stdout .to.match /downloaded in/i
 
-    describe '--debug', (_) ->
+    describe 'authentication', (_) ->
 
-      stdout = null
+      output = "#{dest}/output"
+
+      before -> stdout := null
 
       before ->
-        mk dest
+        mk output
         chdir dest
 
       after ->
@@ -61,51 +79,14 @@ describe 'CLI', (_) ->
         rm dest
 
       it 'should get the archive', (done) ->
-        exec 'data', <[get ../archives/sample --no-clean --debug -o]> ++ [ dest ], (data, code) ->
+        exec 'data', <[get http://127.0.0.1:8882/download/auth/archive.nar -u nar -p passw0rd -f app.nar]>, (data, code) ->
           stdout := data
           expect code .to.be.equal 0
           done!
 
       it 'should exists the archive', ->
-        expect exists "#{dest}/package.json" .to.be.true
+        expect exists "app.nar" .to.be.true
 
       it 'should have a valid stdout', ->
-        expect stdout .to.match /get/i
-        expect stdout .to.match /finished/i
-
-      it 'should have a valid debug stdout', ->
-        expect stdout .to.match /\> node/i
-        expect stdout .to.match /sample\.js/i
-        expect stdout .to.match /end/i
-
-    describe '--verbose', (_) ->
-
-      stdout = null
-
-      before ->
-        mk dest
-        chdir dest
-
-      after ->
-        chdir "#{__dirname}/.."
-        rm dest
-
-      it 'should get the archive', (done) ->
-        exec 'data', <[get ../archives/sample --no-clean --verbose -o]> ++ [ dest ], (data, code) ->
-          stdout := data
-          expect code .to.be.equal 0
-          done!
-
-      it 'should exists the archive', ->
-        expect exists "#{dest}/package.json" .to.be.true
-
-      it 'should have a valid stdout', ->
-        expect stdout .to.match /extract/i
-        expect stdout .to.match /some.tar/i
-        expect stdout .to.match /get/i
-        expect stdout .to.match /finished/i
-
-      it 'should have a valid verbose stdout', ->
-        expect stdout .to.match /\> node/i
-        expect stdout .to.match /sample\.js/i
-        expect stdout .to.match /end/i
+        expect stdout .to.match /downloading/i
+        expect stdout .to.match /downloaded in/i
