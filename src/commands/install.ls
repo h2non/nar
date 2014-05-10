@@ -26,7 +26,7 @@ program
     echo '''
       Usage examples:
 
-        $ nar install app.nar
+        $ nar install app.nar --save
         $ nar install app.nar -o some/dir
         $ nar install app.nar --debug
         $ nar install http://server.net/app-0.1.0.nar
