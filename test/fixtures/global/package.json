@@ -1,0 +1,13 @@
+{
+  "name": "global",
+  "main": "global.js",
+  "archive": {
+    "binary": true,
+    "globalDependencies": [
+      "npm"
+    ]
+  },
+  "dependencies": {
+    "some": "~0.1.0"
+  }
+}
