@@ -7,20 +7,12 @@ describe 'install', ->
   dest = "#{__dirname}/fixtures/.tmp"
   orig = "#{__dirname}/fixtures/archives"
 
-  before ->
-    rm dest
-    mk dest
-    chdir dest
-
   before (done) ->
     http := static-server orig, -> done!
 
   before (done) ->
     mock := server -> done!
 
-  after ->
-    chdir "#{__dirname}/.."
-    rm dest
 
   after (done) ->
     http.close -> done!
@@ -28,9 +20,47 @@ describe 'install', ->
   after (done) ->
     mock.stop -> done!
 
-  describe 'normal', (_) ->
+  describe 'local', (_) ->
+
+    before ->
+      rm dest
+      mk dest
+      chdir dest
+
+    after ->
+      chdir "#{__dirname}/.."
+      rm dest
+
+    options = path: "#{orig}/sample.nar"
+
+    describe 'valid', (_) ->
+
+      it 'should install', (done) ->
+        install options .on 'end', ->
+          expect it.dest .to.match /node_modules\/pkg/
+          done!
+
+      it 'should exists package.json', ->
+        expect exists "node_modules/pkg/package.json" .to.be.true
+
+      it 'should exists .nar.json', ->
+        expect exists "node_modules/pkg/.nar.json" .to.be.true
+
+      it 'should exists node_modules', ->
+        expect exists "node_modules/pkg/node_modules" .to.be.true
+
+  describe 'remote', (_) ->
 
     options = path: 'http://127.0.0.1:8883/sample.nar'
+
+    before ->
+      rm dest
+      mk dest
+      chdir dest
+
+    after ->
+      chdir "#{__dirname}/.."
+      rm dest
 
     describe 'valid', (_) ->
 

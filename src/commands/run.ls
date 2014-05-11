@@ -3,7 +3,7 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit, create-bar, on-entry, on-archive, on-download, on-error, on-progress, update-bar, on-download-end, archive-name } = require './common'
+{ echo, create-bar, on-entry, on-archive, on-download, on-error, on-progress, update-bar, on-download-end, archive-name } = require './common'
 
 program
   .command 'run <archive>'
