@@ -446,7 +446,7 @@ Read and parse a given .nar archive, emitting the `entry` event for each existen
 - **path** `string` Path to nar archive. Required
 
 ### nar.install(options)
-Fired events: `end, downloadEnd, error, entry, start, download`
+Fired events: `end, download, downloadEnd, error, entry, start, progress`
 
 Install archive as dependency in `node_modules` directory.
 It can aditionally download the archive from remote server
@@ -470,7 +470,7 @@ It can aditionally download the archive from remote server
 ### nar.get(options)
 Alias: `download`
 
-Fired events: `end, error, download`
+Fired events: `end, error, download, progress`
 
 Download archive from remote server.
 It supports basic HTTP authentication and proxy
