@@ -9,7 +9,8 @@ With nar you can **create self-contained node.js applications**
 that are **ready-to-ship-and-run**
 
 It provides built-in support for creating, extracting, installing and running node.js
-applications easily through a featured [command-line interface](#command-line-interface)
+applications easily from a simple [configuration](#configuration) through
+a featured [command-line interface](#command-line-interface)
 and full asynchronous event-based [programmatic API](#programmatic-api)
 
 If you have questions, please see the [FAQ](#faq) or [open](https://github.com/h2non/nar/issues/new) an issue
@@ -274,7 +275,7 @@ Usage examples:
   $ nar run app.nar
   $ nar extract app.nar -o some/dir
   $ nar list app.nar
-  $ nar install app.nar
+  $ nar install app.nar --save
   $ nar get http://server.net/app.nar
 
 Command specific help:
@@ -320,6 +321,7 @@ $ nar run app.nar --no-clean --debug
 $ nar run app.nar --verbose
 $ nar run app.nar --args-start '--env ${ENV}'
 $ nar run app.nar --args-stop '--path ${PATH}'
+$ nar run http://server.net/app.nar
 ```
 
 ### install
@@ -328,9 +330,8 @@ Alias: `i`
 Install nar archive as dependency (defaults to `node_modules`)
 
 ```bash
-$ nar install
-$ nar install app.nar
-$ nar install app.nar -o some/dir
+$ nar install app.nar --save
+$ nar install app.nar -o some/dir --save-dev
 $ nar install app.nar --debug
 $ nar install http://server.net/app-0.1.0.nar
 ```
