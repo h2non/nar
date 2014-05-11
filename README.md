@@ -19,7 +19,7 @@ If you have questions, please see the [FAQ](#faq) or [open](https://github.com/h
 
 <img align="right" height="165" src="http://nodejs.org/images/platform-icon-generic.png" />
 
-- Simple command-line interface
+- Simple and featured command-line interface
 - Easy-to-use asynchronous programmatic API
 - Fully configurable from package.json
 - Tarball with gzip compression/decompression
