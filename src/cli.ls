@@ -19,7 +19,7 @@ module.exports <<< parse: -> (it |> map |> program.parse)
 program
   .version nar.VERSION
 
-program.command 'help' .action (-> help |> echo)
+program.command 'help' .action (-> echo! |> help)
   .description '\n  Output usage information'
 
 program.on '--help', help = ->
