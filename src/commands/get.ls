@@ -9,7 +9,7 @@ require! {
 program
   .command 'get <url>'
   .description '\n  Download archive from HTTP server'
-  .usage '[url] [options]'
+  .usage '<url> [options]'
   .option '-o, --output <path>', 'Output directory. Default to current directory'
   .option '-f, --filename <name>', 'Downloaded filename. Default taken from URL path name'
   .option '-u, --user <user>', 'HTTP autenticantion user'
@@ -60,4 +60,4 @@ get = (url, options) ->
   try
     download!
   catch
-    "Cannot download the archive: #{e.message}" |> on-error
+    "Cannot download the archive: #{e.message}" |> on-error debug

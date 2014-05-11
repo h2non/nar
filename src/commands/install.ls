@@ -8,7 +8,7 @@ require! {
 program
   .command 'install <archive>'
   .description '\n  Install archive'
-  .usage '[archive] [options]'
+  .usage '<archive> [options]'
   .option '-o, --output <path>', 'Install directory. Default to node_modules'
   .option '-f, --filename <name>', 'Downloaded filename. Default taken from URL path name'
   .option '-u, --user <user>', 'HTTP autenticantion user'
@@ -44,11 +44,9 @@ install = (archive, options) ->
     strict-SSL: strict-ssl
   }
 
-  on-start = ->
-    "Installing archive..." |> echo
+  on-start = -> "Installing archive..." |> echo
 
-  on-end = ->
-    "Installed in: #{it.dest}" |> echo
+  on-end = -> "Installed in: #{it.dest}" |> echo
 
   extract = ->
     installer = nar.install opts
@@ -58,9 +56,9 @@ install = (archive, options) ->
       .on 'error', (debug |> on-error)
       .on 'downloadEnd', (bar |> on-download-end)
       .on 'end', on-end
-    installer.on 'entry', on-entry if debug or verbose
+    installer.on 'entry', ('Extract' |> on-entry) if debug or verbose
 
   try
     extract!
   catch
-    "Cannot install the archive: #{e.message}" |> on-error
+    "Cannot install the archive: #{e.message}" |> on-error debug

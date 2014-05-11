@@ -14,7 +14,7 @@ describe 'CLI', (_) ->
 
     describe 'default', (_) ->
 
-      it 'should create the archive', (done) ->
+      it 'should list the archive', (done) ->
         exec 'data', <[list sample]>, (data, code) ->
           stdout := data
           expect code .to.be.equal 0
@@ -32,7 +32,7 @@ describe 'CLI', (_) ->
 
     describe '--no-table', (_) ->
 
-      it 'should create the archive', (done) ->
+      it 'should list the archive', (done) ->
         exec 'data', <[list sample --no-table]>, (data, code) ->
           stdout := data
           expect code .to.be.equal 0
@@ -51,7 +51,7 @@ describe 'CLI', (_) ->
 
     describe 'error', (_) ->
 
-      it 'should not create the archive', (done) ->
+      it 'should not list the archive', (done) ->
         exec 'data', <[list ../invalid]>, (data, code) ->
           stdout := data
           expect code .to.be.equal 1

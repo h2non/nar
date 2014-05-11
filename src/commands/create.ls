@@ -3,7 +3,8 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit, exists, log-error, is-dir, is-file, is-string, to-kb } = require '../utils'
+{ echo, exit, on-entry, on-error } = require './common'
+{ exists, is-dir, is-file, is-string } = require '../utils'
 
 const options = [
   'dependencies'
@@ -18,7 +19,7 @@ const options = [
 program
   .command 'create [path]'
   .description '\n  Create a nar archive'
-  .usage '[path] [options]'
+  .usage '<path> [options]'
   .option '-o, --output <path>', 'Output directory. Default to current directory'
   .option '-f, --file <name>', 'Define the archive file name'
   .option '-r, --dependencies', 'Include dependencies'
@@ -38,7 +39,7 @@ program
         $ nar create
         $ nar create some/dir --debug
         $ nar create path/to/package.json -o some/dir
-        $ nar create --verbose
+        $ nar create --verbose --binary
         $ nar create --global-dependencies 'npm,grunt' --patterns '!.tmp,src/**'
     \t
     '''
@@ -65,35 +66,27 @@ create = (pkgpath, options) ->
       "Error: path must be a directory" |> exit 1
     opts <<< path: pkgpath
 
-  on-error = (err, code) ->
-    err |> log-error _, debug |> echo
-    ((code or 1) |> exit)!
-
   on-start = ->
     "Creating archive..." |> echo
 
   on-archive = ->
     "Adding [#{it.type.cyan}] #{it.name or ''}" |> echo unless debug and verbose
 
-  on-entry = ->
-    "Add [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.name or ''}".green |> echo
-
   on-end = (output) ->
     "Created in: #{output}" |> echo
-    exit 0
 
   create = ->
     archive = nar.create opts
       .on 'start', on-start
       .on 'archive', on-archive
-      .on 'error', on-error
+      .on 'error', (debug |> on-error)
       .on 'end', on-end
-    archive.on 'entry', on-entry if debug or verbose
+    archive.on 'entry', ('Add' |> on-entry) if debug or verbose
 
   try
     create!
   catch
-    e |> on-error
+    e |> on-error debug
 
 normalize = (type, value) ->
   if type is 'globalDependencies' or type is 'patterns'

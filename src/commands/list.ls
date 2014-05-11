@@ -4,12 +4,12 @@ require! {
   Table: 'cli-table'
   program: commander
 }
-{ echo, exit, to-kb, archive-name, log-error } = require '../utils'
+{ echo, on-error, to-kb, archive-name } = require './common'
 
 program
   .command 'list <archive>'
   .description '\n  List archive files'
-  .usage '[archive] [options]'
+  .usage '<archive> [options]'
   .option '-d, --debug', 'Enable debud mode. More information will be shown'
   .option '--no-table', 'Disable table format output'
   .on '--help', ->
@@ -28,9 +28,6 @@ list = (archive, options) ->
 
   opts = path: archive
 
-  on-error = (err) ->
-    err |> log-error _, debug |> exit 1
-
   on-info = ->
     "Package: #{it |> archive-name}" |> echo
 
@@ -42,11 +39,10 @@ list = (archive, options) ->
 
   on-end = ->
     table-list.to-string! |> echo if table
-    exit 0
 
   list = ->
     nar.list opts
-      .on 'error', on-error
+      .on 'error', (debug |> on-error)
       .on 'info', on-info
       .on 'entry', on-entry
       .on 'end', on-end
@@ -54,7 +50,7 @@ list = (archive, options) ->
   try
     list!
   catch
-    e |> on-error
+    e |> on-error debug
 
 map-entry = ->
   [ (it.archive |> path.basename _, '.tar'), it.dest, (it.size |> to-kb) + ' KB', it.type ] if it

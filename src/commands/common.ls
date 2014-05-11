@@ -1,10 +1,11 @@
 require! { progress }
-{ echo, log-error, exit, to-kb, is-url, extend, archive-name } = require '../utils'
+{ echo, log-error, exit, to-kb, is-url, extend, archive-name, to-kb } = require '../utils'
 
 module.exports = _ =
 
   echo: echo
   exit: exit
+  to-kb: to-kb
   is-url: is-url
   extend: extend
   archive-name: archive-name
@@ -29,8 +30,11 @@ module.exports = _ =
     else
       state.received |> _.update-bar bar
 
-  on-entry: ->
-    "Extract [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.path or ''}".green |> echo
+  on-entry: (action) -> ->
+    "#{action} [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.path or it.name or ''}".green |> echo
+
+  on-archive: (debug, verbose) -> ->
+    "Extracting [#{it.type.cyan}] #{it.name or ''}" |> echo unless debug and verbose
 
   on-error: (debug) -> (err, code) ->
     err |> log-error _, debug |> echo

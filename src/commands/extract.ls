@@ -3,12 +3,12 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit, to-kb, log-error } = require '../utils'
+{ echo, on-entry, on-error, on-archive } = require './common'
 
 program
   .command 'extract <archive>'
   .description '\n  Extract archive'
-  .usage '[archive] [options]'
+  .usage '<archive> [options]'
   .option '-o, --output <path>', 'Output directory. Default to current directory'
   .option '-d, --debug', 'Enable debug mode. More information will be shown'
   .option '-v, --verbose', 'Enable verbose mode. A lot of information will be shown'
@@ -33,29 +33,17 @@ extract = (archive, options) ->
 
   on-start = -> "Reading archive..." |> echo
 
-  on-error = (err, code) ->
-    err |> log-error _, debug |> echo
-    ((code or 1) |> exit)!
-
-  on-entry = ->
-    "Extract [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.path or ''}".green |> echo
-
-  on-archive = ->
-    "Extracting [#{it.type.cyan}] #{it.name or ''}" |> echo unless debug and verbose
-
-  on-end = ->
-    "Extracted in: #{it.dest}" |> echo
-    exit 0
+  on-end = -> "Extracted in: #{it.dest}" |> echo
 
   extract = ->
     archive = nar.extract opts
       .on 'start', on-start
-      .on 'archive', on-archive
-      .on 'error', on-error
+      .on 'archive', (debug |> on-archive _, verbose)
+      .on 'error', (debug |> on-error)
       .on 'end', on-end
-    archive.on 'entry', on-entry if debug or verbose
+    archive.on 'entry', ('Extract' |> on-entry) if debug or verbose
 
   try
     extract!
   catch
-    "Cannot extract the archive: #{e.message}" |> on-error
+    "Cannot extract the archive: #{e.message}" |> on-error debug

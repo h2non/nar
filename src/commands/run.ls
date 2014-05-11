@@ -3,12 +3,12 @@ require! {
   '../nar'
   program: commander
 }
-{ echo, exit, create-bar, on-download, on-error, on-progress, update-bar, on-download-end, archive-name } = require './common'
+{ echo, exit, create-bar, on-entry, on-archive, on-download, on-error, on-progress, update-bar, on-download-end, archive-name } = require './common'
 
 program
   .command 'run <archive>'
   .description '\n  Run archive files'
-  .usage '[archive] [options]'
+  .usage '<archive> [options]'
   .option '-o, --output <path>', 'Output directory'
   .option '-d, --debug', 'Enable debud mode. More information will be shown'
   .option '-v, --verbose', 'Enable verbose  mode. Will output stdout and stderr'
@@ -60,14 +60,8 @@ run = (archive, options) ->
 
   on-end = -> "Finished" |> echo
 
-  on-archive = ->
-    "Extracting [#{it.type.cyan}] #{it.name or ''}" |> echo unless debug and verbose
-
   on-command = (cmd, hook) ->
     "Run [".green + hook.cyan + "]: #{cmd}".green |> echo
-
-  on-entry = ->
-    "Extract [".green + "#{it.size} KB".cyan + "] #{it.path}".green |> echo
 
   on-info = ->
     "Running #{it |> archive-name}" |> echo
@@ -88,7 +82,7 @@ run = (archive, options) ->
       .on 'progress', (bar |> on-progress)
       .on 'extract', on-extract
       .on 'info', on-info
-      .on 'archive', on-archive
+      .on 'archive', (debug |> on-archive _, verbose)
       .on 'start', on-start
       .on 'error', (debug |> on-error)
       .on 'end', on-end
@@ -99,12 +93,12 @@ run = (archive, options) ->
       archive.on 'stdout', on-stdout
       archive.on 'stderr', on-stderr
     if verbose
-      archive.on 'entry', on-entry
+      archive.on 'entry', ('Extract' |> on-entry)
 
   try
     run!
   catch
-    e |> on-error
+    e |> on-error debug
 
 format-eol = ->
   it.replace /\n(\s+)?$/, '' .replace /\n/g, '\n> ' if it
