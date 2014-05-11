@@ -15,7 +15,7 @@ module.exports = _ =
 
   update-bar: (bar) -> (value) ->
     bar.curr = value
-    bar.render!
+    try bar.render!
 
   on-download: ->
     'Downloading archive...' |> echo
