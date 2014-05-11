@@ -72,9 +72,6 @@ module.exports =
       command.stdout.on type, -> data += it.to-string!
       command.on 'close', (code) -> data |> callback _, code
 
-  suppose: (args) ->
-    suppose node, [ nar-bin ] ++ args
-
   server: (done) ->
     server = new stubby.Stubby
     server.start { data: require "../fixtures/mock.json" }, done

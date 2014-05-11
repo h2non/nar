@@ -43,6 +43,7 @@ install = (archive, options) ->
     dest: output
     strict-SSL: strict-ssl
   }
+  opts.auth = { options.user, options.password } if options.user
 
   on-start = -> "Installing archive..." |> echo
 
