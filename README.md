@@ -99,7 +99,7 @@ Packages dependencies names will be taken from `package.json`
 Type: `boolean`
 Default: `true`
 
-Include package dependencies in the archive
+Include runtime dependencies in the archive
 
 #### devDependencies
 Type: `boolean`
