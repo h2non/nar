@@ -1,14 +1,11 @@
 require! { progress }
 { echo, log-error, exit, to-kb, is-url, extend, archive-name, to-kb } = require '../utils'
 
-module.exports = _ =
+module.exports = _ = {
 
-  echo: echo
-  exit: exit
-  to-kb: to-kb
-  is-url: is-url
-  extend: extend
-  archive-name: archive-name
+  echo, exit, to-kb
+  is-url, extend
+  archive-name
 
   create-bar: ->
     new progress '[:bar] :percent :etas', { total: 1, width: 30 }
@@ -45,3 +42,5 @@ module.exports = _ =
 
   on-download-end: (bar) -> ->
     bar.total |> (bar |> _.update-bar) |> echo
+
+}
