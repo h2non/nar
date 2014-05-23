@@ -91,7 +91,7 @@ describe 'install', ->
       it 'should emit an error if cannot resolve the host', (done) ->
         install { url: 'http://nonexistenthost/download', dest: '.', timeout: 1000 }
           .on 'error', ->
-            expect it .to.match /ENOTFOUND|ESOCKETTIMEDOUT/
+            expect it .to.match /ENOTFOUND|ETIMEDOUT|ESOCKETTIMEDOUT/
             done!
 
       it 'should emit an error if cannot connect', (done) ->

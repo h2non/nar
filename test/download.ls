@@ -47,7 +47,7 @@ describe 'download', ->
       it 'should emit an error if cannot resolve the host', (done) ->
         download { url: 'http://nonexistenthost/download', dest: '.', timeout: 1000 }
           .on 'error', ->
-            expect it .to.match /ENOTFOUND|ESOCKETTIMEDOUT/
+            expect it .to.match /ENOTFOUND|ETIMEDOUT|ESOCKETTIMEDOUT/
             done!
 
       it 'should emit an error if cannot connect', (done) ->
@@ -59,7 +59,7 @@ describe 'download', ->
       it 'should emit an error if timeout exceeds', (done) ->
         download { url: 'http://127.0.0.1:8882/timeout', dest: '.', timeout: 2000 }
           .on 'error', ->
-            expect it .to.match /ETIMEDOUT|ESOCKETTIMEDOUT/
+            expect it .to.match /ETIMEDOUT|ETIMEDOUT|ESOCKETTIMEDOUT/
             done!
 
   describe 'authentication', (_) ->
