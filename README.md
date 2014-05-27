@@ -9,7 +9,7 @@ applications easily from a simple [configuration](#configuration) through
 a featured [command-line interface](#command-line-interface)
 and full asynchronous event-based [programmatic API](#programmatic-api)
 
-If you have questions, please see the [FAQ](#faq) or [open](https://github.com/h2non/nar/issues/new) an issue
+If you have questions, please read the [FAQ](#faq) or [open](https://github.com/h2non/nar/issues/new) an issue
 
 ## Features
 
