@@ -4,10 +4,12 @@
 that **creates self-contained node.js applications**
 that are **ready-to-ship-and-run**
 
-It provides built-in support for creating, extracting, installing and running node.js
-applications easily from a simple [configuration](#configuration) through
+It provides built-in support for creating, extracting, installing and running node.js applications easily from a simple [configuration](#configuration) through
 a featured [command-line interface](#command-line-interface)
 and full asynchronous event-based [programmatic API](#programmatic-api)
+
+It could be an ideal solution for distributing, deploying, running and testing
+private node.js applications that are outside of the `npm` ecosystem
 
 If you have questions, please read the [FAQ](#faq) or [open](https://github.com/h2non/nar/issues/new) an issue
 
