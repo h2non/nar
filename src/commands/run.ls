@@ -56,7 +56,7 @@ run = (archive, options) ->
 
   on-extract = -> "Extracting files..." |> echo
 
-  on-start = -> "Starting app..." |> echo
+  on-start = -> "Running application..." |> echo
 
   on-end = -> "Finished" |> echo
 
@@ -86,9 +86,9 @@ run = (archive, options) ->
       .on 'start', on-start
       .on 'error', (debug |> on-error)
       .on 'end', on-end
+      .on 'command', on-command
 
     if debug or verbose
-      archive.on 'command', on-command
       archive.on 'exit', on-exit
       archive.on 'stdout', on-stdout
       archive.on 'stderr', on-stderr

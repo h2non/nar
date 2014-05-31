@@ -235,4 +235,4 @@ describe 'CLI', (_) ->
         expect stdout .to.match /downloading/i
         expect stdout .to.match /extracting/i
         expect stdout .to.match /running/i
-        expect stdout .to.match /starting/i
+        expect stdout .to.match /running application/i

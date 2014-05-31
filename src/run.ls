@@ -114,7 +114,7 @@ apply = (options) ->
     options.auth
     options.proxy
     options.strict-SSL
-    options.dest or tmpdir!
+    options.dest or (options.path |> tmpdir)
     clean: if options.clean? then options.clean else yes
     hooks: if options.hooks? then options.hooks else yes
   }

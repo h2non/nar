@@ -9,7 +9,7 @@ require! {
   mk: mkdirp.sync
   findup: 'findup-sync'
 }
-{ normalize, join, basename, delimiter } = path
+{ normalize, join, basename, delimiter, extname } = path
 { env, platform, exit, next-tick, arch } = process
 
 module.exports = _ = {
@@ -43,6 +43,7 @@ module.exports = _ = {
     if it |> hu.is-object then it |> Object.keys else []
 
   tmpdir: (name = 'pkg') ->
+    name = name |> basename _, (name |> extname)
     "nar-#{name}-#{_.random!}" |> join os.tmpdir!, _
 
   add-extension: ->
