@@ -541,12 +541,12 @@ Of course. You could use both methods:
 
 Passing credentials via optional flags:
 ```
-$ nar get https://@server.net/archive.nar --user john --password p@s$
+$ nar get https://server.net/archive.nar --user john --password p@s$
 ```
 
 Or using the `HTTP_USER` and `HTTP_PASSWORD` environment variables
 ```
-$ HTTP_USER=john HTTP_PASSWORD=p@s$ nar get https://@server.net/archive.nar
+$ HTTP_USER=john HTTP_PASSWORD=p@s$ nar get https://server.net/archive.nar
 ```
 
 ## Contributing
