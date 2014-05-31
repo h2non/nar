@@ -166,20 +166,6 @@ Default: `true`
 Enable/disable [ignore-like files](#ignoring-files) processing in order to load
 files patterns to discard from the archive
 
-<!--
-#### executable
-Type: `boolean`
-Default: `false`
-
-Create a self-contained executable binary-like archive.
-This archive mode is only supported in UNIX-like operative systems
-
-You can run the `nar` archive like a binary
-```bash
-$ ./app-0.1.0.nar
-```
--->
-
 #### patterns
 Type: `array`
 Default: `['**']`
@@ -548,6 +534,20 @@ One of the following types will be valid:
 - `aplication/x-compress`
 - `application/x-compressed`
 - `application/octet-stream`
+
+##### Can I download archives which requires server authentication?
+
+Of course. You could use both methods:
+
+Passing credentials via optional flags:
+```
+$ nar get https://@server.net/archive.nar --user john --password p@s$
+```
+
+Or using the `HTTP_USER` and `HTTP_PASSWORD` environment variables
+```
+$ HTTP_USER=john HTTP_PASSWORD=p@s$ nar get https://@server.net/archive.nar
+```
 
 ## Contributing
 
