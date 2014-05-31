@@ -20,7 +20,7 @@ module.exports = install = (options) ->
   emitter = new EventEmitter
   output = null
   pkg-info = {}
-  tmp = tmpdir!
+  tmp = (path |> tmpdir)
 
   clean-dir = ->
     try

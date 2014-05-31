@@ -20,6 +20,7 @@ cwd = process.cwd!
 module.exports =
 
   fs: fs
+  stat-sync: fs.stat-sync
   nar: nar
   cwd: cwd
   node: node
@@ -83,3 +84,6 @@ module.exports =
       request.addListener 'end', (-> file.serve request, response) .resume!
     server.listen 8883, cb
     server
+
+  is-executable: (file) ->
+    ``!!(1 & parseInt(((fs.statSync(file)).mode & parseInt('775', 8)).toString(8)[0]))``

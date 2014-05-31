@@ -1,4 +1,4 @@
-{ rm, mk, nar, read, chdir, exists, expect, version } = require './lib/helper'
+{ rm, mk, nar, read, chdir, exists, expect, version, is-executable } = require './lib/helper'
 
 describe 'nar', ->
 
@@ -88,6 +88,9 @@ describe 'nar', ->
 
         it 'should exists .bin/hu', ->
           expect exists "#{dest}/node_modules/.bin/hu" .to.be.true
+
+        it 'should have execution permissions', ->
+          expect (is-executable "#{dest}/node_modules/.bin/hu") .to.be.true
 
         it 'should not exists test directory', ->
           expect exists "#{dest}/test" .to.be.false

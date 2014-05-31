@@ -1,11 +1,12 @@
 require! {
+  fs
   fw
   path
   './unpack'
-  fs.symlink-sync
   events.EventEmitter
   findup: 'findup-sync'
 }
+{ symlink-sync, chmod-sync, readdir-sync } = fs
 { join, dirname, normalize } = path
 { next, copy, is-file, is-dir, tmpdir, rm, mk, read, write, clone, add-extension, is-win, is-string, is-object } = require './utils'
 
@@ -60,10 +61,20 @@ module.exports = extract = (options = {}) ->
         for own name, path of bin when path
         then path |> create-link name, _
 
+    set-execution-perms = ->
+      deps-bin-dir = '.bin' |> join dest, 'node_modules', _
+      bin-dir = 'bin' |> join dest, _
+      [bin-dir deps-bin-dir]
+        .filter (|> is-dir)
+        .for-each ->
+          (bin-dir |> readdir-sync).for-each ->
+            (it |> join bin-dir, _) |> chmod-sync _, '775'
+
     extract-end = ->
       if type is 'global-dependency'
         pkg = (dest |> join _, 'package.json') |> read
         pkg |> process-global-binaries if pkg
+      try set-execution-perms!
       done!
 
     do-extractor = do ->

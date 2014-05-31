@@ -83,9 +83,9 @@ module.exports = pack = (options = {}) ->
 apply = (options) ->
   {
     options.src or process.cwd!
-    options.dest or tmpdir!
     options.ext or 'tar'
     options.name or 'unnamed'
+    options.dest or (options.name |> tmpdir)
     options.gzip or no
     patterns: (options.patterns or [ '**', '.*' ]) ++ ignored-files
   }
