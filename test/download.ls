@@ -70,7 +70,7 @@ describe 'download', ->
         url: 'http://127.0.0.1:8882/download/auth/archive.nar'
         filename: 'archive-auth.nar'
         dest: '.'
-        auth: user: 'nar', pass: 'passw0rd'
+        auth: user: 'nar', password: 'passw0rd'
 
       it 'should download archive using authentication', (done) ->
         download options
@@ -97,7 +97,7 @@ describe 'download', ->
         url: 'http://127.0.0.1:8882/download/auth/archive.nar'
         filename: 'archive-auth.nar'
         dest: '.'
-        auth: user: 'nil', pass: 'inval!d'
+        auth: user: 'nil', password: 'inval!d'
 
       it 'should not download the archive', (done) ->
         download options

@@ -70,7 +70,7 @@ module.exports = download = (options) ->
 apply = (options) ->
   {
     options.url
-    options.auth or null
+    auth: options.auth |> discover-auth
     options.filename or (options.url |> get-filename)
     options.dest or process.cwd!
     options.timeout or 10000
@@ -89,3 +89,9 @@ get-filename = (url) ->
 
 get-proxy = ->
   'http_proxy' |> env
+
+discover-auth = (auth) ->
+  { user, password } = auth if auth
+  user = 'HTTP_USER' |> env unless user
+  password = 'HTTP_PASSWORD' |> env unless password
+  { user, password } if user and password
