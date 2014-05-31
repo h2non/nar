@@ -64,17 +64,17 @@ module.exports = extract = (options = {}) ->
     set-execution-perms = ->
       deps-bin-dir = '.bin' |> join dest, 'node_modules', _
       bin-dir = 'bin' |> join dest, _
-      [bin-dir deps-bin-dir]
+      [bin-dir, deps-bin-dir]
         .filter (|> is-dir)
-        .for-each ->
-          (bin-dir |> readdir-sync).for-each ->
-            (it |> join bin-dir, _) |> chmod-sync _, '775'
+        .for-each (dir) ->
+          (dir |> readdir-sync).for-each ->
+            try (it |> join dir, _) |> chmod-sync _, '775'
 
     extract-end = ->
       if type is 'global-dependency'
         pkg = (dest |> join _, 'package.json') |> read
         pkg |> process-global-binaries if pkg
-      try set-execution-perms!
+      set-execution-perms!
       done!
 
     do-extractor = do ->

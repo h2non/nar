@@ -35,7 +35,7 @@ module.exports = install = (options) ->
     entry |> emitter.emit 'entry', _ if entry
 
   on-download = ->
-    'download' |> emitter.emit
+    emitter.emit <| 'download'
 
   on-progress = ->
     it |> emitter.emit 'progress', _
