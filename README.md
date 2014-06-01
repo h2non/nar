@@ -79,7 +79,7 @@ Example `package.json` with full configuration
     "binary": true,
     "dependencies": true,
     "devDependencies": false,
-    "globalDependencies": ["npm", "grunt"],
+    "globalDependencies": ["npm", "grunt-cli", "bower"],
     "patterns": ["**", "!test/**"]
   },
   "scripts": {
