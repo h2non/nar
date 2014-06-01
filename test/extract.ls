@@ -54,7 +54,7 @@ describe 'extract', ->
     describe 'path', (_) ->
 
       options =
-        path: "#{orig}/invalid.nar"
+        path: "#{orig}/nonexistent.nar"
         dest: dest
 
       it 'should not extract files', (done) ->
@@ -62,5 +62,5 @@ describe 'extract', ->
         extract options
           .on 'end', done
           .on 'error', ->
-            expect it.message .to.match /do not exists or is invalid/i
+            expect it.message .to.match /the given path is not a file/i
             done!

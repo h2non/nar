@@ -298,7 +298,15 @@ get-ignored-files = (dir) ->
   files = files.slice -1 if files.length > 1
   if files.length
     ignored = ((files[0] |> read) |> lines)
-    patterns = ignored.filter (-> it) .map (-> "!#{it.trim!}") if ignored
+    if ignored |> is-array
+      patterns = ignored
+        .filter (-> it)
+        .map -> "!#{it.trim!}"
+        .map ->
+          if it |> is-dir
+            "#{it}/**"
+          else
+            it
   patterns = patterns ++ ignore-files.map -> "!#{it}"
   patterns
 

@@ -50,6 +50,7 @@ module.exports = download = (options) ->
   do-download = -> next ->
     on-download!
     create-dest!
+
     stream = output |> fs.create-write-stream
     stream.on 'error', on-error
 

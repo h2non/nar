@@ -6,7 +6,7 @@ require! {
   child_process.spawn
   events.EventEmitter
 }
-{ next, tmpdir, read, has, rm, delimiter, is-win, is-array, replace-env-vars, is-url } = require './utils'
+{ next, tmpdir, read, has, rm, delimiter, is-win, is-array, replace-env-vars, is-url, handle-exit } = require './utils'
 
 const hooks-keys = [ 'prestart' 'start' 'stop' 'poststop' ]
 
@@ -95,6 +95,7 @@ module.exports = run = (options) ->
 
   do-extract = -> next ->
     return new Error 'Required archive path option' |> on-error unless path
+    #clean-dir |> handle-exit
     if path |> is-url
       download-archive!
     else
@@ -131,8 +132,8 @@ get-hooks = (nar) ->
 is-binary-valid = (nar) ->
   { platform, arch } = nar.info
   platform is process.platform
-    and (arch is process.arch
-      or (arch is 'ia32' and process.arch is 'x64'))
+  and (arch is process.arch
+    or (arch is 'ia32' and process.arch is 'x64'))
 
 exec = (emitter, command, cwd, hook) -> (done) ->
   { cmd, args } = command |> get-command-script |> parse-command

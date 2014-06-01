@@ -112,6 +112,14 @@ module.exports = _ = {
   discover-pkg: (dir = process.cwd!) ->
     'package.json' |> findup _, cwd: dir
 
+  handle-exit: (cb) ->
+    process.stdin.resume!
+    process.on 'exit', cb
+    #process.on 'uncaughtException', cb
+    #process.on 'SIGINT', ->
+    #  cb!
+    #  process.exit!
+
   archive-name: (nar) ->
     name = ''
     if nar

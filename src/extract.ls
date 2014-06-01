@@ -132,13 +132,12 @@ module.exports = extract = (options = {}) ->
   do-extract = -> next ->
     mk-dirs dest, tmpdir
     dest |> emitter.emit 'start', _
+    extract-tasks!
 
-    try
-      extract-tasks!
-    catch
-      e |> on-error
-
-  do-extract!
+  try
+    do-extract!
+  catch
+    e |> on-error
   emitter
 
 apply = (options) ->

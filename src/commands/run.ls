@@ -87,11 +87,11 @@ run = (archive, options) ->
       .on 'error', (debug |> on-error)
       .on 'end', on-end
       .on 'command', on-command
+      .on 'stderr', on-stderr
+      .on 'exit', on-exit
 
     if debug or verbose
-      archive.on 'exit', on-exit
       archive.on 'stdout', on-stdout
-      archive.on 'stderr', on-stderr
     if verbose
       archive.on 'entry', ('Extract' |> on-entry)
 
