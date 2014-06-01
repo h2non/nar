@@ -294,19 +294,15 @@ include-files-patterns = (dir, ignore) ->
 
 get-ignored-files = (dir) ->
   patterns = []
-  files = ignore-files.map (|> join "#{dir}", _) .filter (|> exists)
+  files = ignore-files.map (|> join dir, _) .filter (|> exists)
   files = files.slice -1 if files.length > 1
   if files.length
     ignored = ((files[0] |> read) |> lines)
     if ignored |> is-array
       patterns = ignored
         .filter (-> it)
+        .map -> if (it |> join dir, _) |> is-dir then "#{it}/**" else it
         .map -> "!#{it.trim!}"
-        .map ->
-          if it |> is-dir
-            "#{it}/**"
-          else
-            it
   patterns = patterns ++ ignore-files.map -> "!#{it}"
   patterns
 

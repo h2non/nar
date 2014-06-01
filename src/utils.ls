@@ -115,10 +115,10 @@ module.exports = _ = {
   handle-exit: (cb) ->
     process.stdin.resume!
     process.on 'exit', cb
-    #process.on 'uncaughtException', cb
-    #process.on 'SIGINT', ->
-    #  cb!
-    #  process.exit!
+    process.on 'uncaughtException', cb
+    process.on 'SIGINT', ->
+      cb!
+      process.exit!
 
   archive-name: (nar) ->
     name = ''
