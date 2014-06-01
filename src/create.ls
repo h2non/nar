@@ -11,7 +11,7 @@ require! {
   read, rm, tmpdir, clone, extend, copy, keys, archive-name,
   is-object, is-file, is-dir, is-string, mk, stringify,
   vals, exists, checksum, lines, next, is-array, now,
-  replace-env-vars, discover-pkg
+  replace-env-vars, discover-pkg, handle-exit
 } = require './utils'
 
 const nar-file = '.nar.json'
@@ -68,6 +68,7 @@ module.exports = create = (options) ->
     output |> emitter.emit 'end', _ unless errored
 
   do-create = -> next ->
+    clean-error |> handle-exit
     nar-config = name |> nar-manifest _, pkg
     nar-config |> emitter.emit 'start', _
     nar-config |> emitter.emit 'info', _

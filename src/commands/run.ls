@@ -82,7 +82,6 @@ run = (archive, options) ->
       .on 'progress', (bar |> on-progress)
       .on 'extract', on-extract
       .on 'info', on-info
-      .on 'archive', (debug |> on-archive _, verbose)
       .on 'start', on-start
       .on 'error', (debug |> on-error)
       .on 'end', on-end
@@ -92,8 +91,9 @@ run = (archive, options) ->
 
     if debug or verbose
       archive.on 'stdout', on-stdout
-    if verbose
-      archive.on 'entry', ('Extract' |> on-entry)
+      archive.on 'entry', ('Extract' |> on-entry) if verbose
+    else
+      archive.on 'archive', (debug |> on-archive _, verbose)
 
   try
     run!

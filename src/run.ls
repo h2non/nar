@@ -95,7 +95,8 @@ module.exports = run = (options) ->
 
   do-extract = -> next ->
     return new Error 'Required archive path option' |> on-error unless path
-    #clean-dir |> handle-exit
+    clean-dir |> handle-exit
+
     if path |> is-url
       download-archive!
     else

@@ -38,11 +38,13 @@ extract = (archive, options) ->
   extract = ->
     archive = nar.extract opts
       .on 'start', on-start
-      .on 'archive', (debug |> on-archive _, verbose)
       .on 'error', (debug |> on-error)
       .on 'end', on-end
-    archive.on 'entry', ('Extract' |> on-entry) if debug or verbose
 
+    if debug or verbose
+      archive.on 'entry', ('Extract' |> on-entry)
+    else
+      archive.on 'archive', (debug |> on-archive _, verbose)
   try
     extract!
   catch

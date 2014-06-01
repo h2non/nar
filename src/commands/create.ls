@@ -78,10 +78,13 @@ create = (pkgpath, options) ->
   create = ->
     archive = nar.create opts
       .on 'start', on-start
-      .on 'archive', on-archive
       .on 'error', (debug |> on-error)
       .on 'end', on-end
-    archive.on 'entry', ('Add' |> on-entry) if debug or verbose
+
+    if debug or verbose
+      archive.on 'entry', ('Add' |> on-entry)
+    else
+      archive.on 'archive', on-archive
 
   try
     create!

@@ -113,10 +113,8 @@ module.exports = _ = {
     'package.json' |> findup _, cwd: dir
 
   handle-exit: (cb) ->
-    process.stdin.resume!
-    process.on 'exit', cb
-    process.on 'uncaughtException', cb
     process.on 'SIGINT', ->
+      process.stdin.resume!
       cb!
       process.exit!
 
