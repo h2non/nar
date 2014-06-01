@@ -1,11 +1,14 @@
 require! {
+  fs
   ncp.ncp
   path.join
   './extract'
   './download'
+  requireg.resolve
   events.EventEmitter
 }
-{ rm, mk, next, write, read, is-win, is-array, replace-env-vars, is-file, is-url, is-dir, clone, extend, tmpdir, discover-pkg } = require './utils'
+{ symlink-sync, chmod-sync } = fs
+{ rm, mk, next, write, read, is-win, is-string, is-object, is-array, replace-env-vars, is-file, is-url, is-dir, clone, extend, tmpdir, discover-pkg, win-binary-script } = require './utils'
 
 const defaults =
   gzip: yes
@@ -14,9 +17,10 @@ const defaults =
   save: no
   save-dev: no
   save-peer: no
+  global: no
 
 module.exports = install = (options) ->
-  { path, url, dest, clean } = options = options |> apply
+  { path, url, dest, clean, global } = options = options |> apply
   emitter = new EventEmitter
   output = null
   pkg-info = {}
@@ -58,12 +62,58 @@ module.exports = install = (options) ->
     else
       it |> on-end
 
+  get-install-path = ->
+    if global
+      dest = resolve 'npm'
+      if dest
+        dest = join dest, '../../../', (pkg-info.name or 'pkg')
+      else
+        new Error 'Cannot resolve global installation path' |> on-error
+    else
+      dest = join process.cwd!, 'node_modules', (pkg-info.name or 'pkg')
+
   copy = ->
-    dest = join process.cwd!, 'node_modules', (pkg-info.name or 'pkg')
+    dest = get-install-path!
     mk dest unless dest |> is-dir
     ncp tmp, dest, (err) ->
       return err |> on-error if err
+      dest |> process-binaries
       { dest } |> on-end
+
+  create-bin-dir = (dir) ->
+    mk <| dir unless dir |> is-dir
+
+  set-execution-perms = (file) ->
+    try file |> chmod-sync _, '775'
+
+  create-link = (bin-path, dest) ->
+    if is-win
+      bin-path |> win-binary-script |> write "#{dest}.cmd", _
+    else
+      bin-path |> symlink-sync _, dest
+      dest |> set-execution-perms
+
+  create-binary = (dest, path, name) ->
+    bin-path = path |> join dest, _
+    if bin-path |> is-file
+      if global
+        root = dest |> join _, '../../../', 'bin'
+        create-bin-dir <| root
+        bin-path |> create-link _, (root |> join _, name)
+      else
+        root = dest |> join _, '../', '.bin'
+        create-bin-dir <| root
+        bin-path |> create-link _, (root |> join _, name)
+
+  process-binaries = (dest) ->
+    pkg = dest |> join _, 'package.json'
+    if pkg |> is-file
+      { bin } = pkg = pkg |> read
+      if bin |> is-string
+        bin |> create-binary dest, _, pkg.name
+      else if bin |> is-object
+        for own name, path of bin when path
+        then name |> create-binary dest, path, _
 
   extractor = (path) ->
     'start' |> emitter.emit
@@ -95,7 +145,7 @@ module.exports = install = (options) ->
   try
     do-install!
   catch
-    "Cannot install archive: #{e}" |> on-error
+    "Cannot install: #{e}" |> on-error
   emitter
 
 apply = (options) ->

@@ -21,6 +21,7 @@ program
   .option '-s, --save', 'Save as runtime dependency in package.json'
   .option '-sd, --save-dev', 'Save as development dependency in package.json'
   .option '-sp, --save-peer', 'Save as peer dependency in package.json'
+  .option '-g, --global', 'Install as global dependency'
   .option '--clean', 'Remove downloaded file after install'
   .on '--help', ->
     echo '''

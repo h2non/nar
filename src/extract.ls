@@ -8,7 +8,7 @@ require! {
 }
 { symlink-sync, chmod-sync, readdir-sync } = fs
 { join, dirname, normalize } = path
-{ next, copy, is-file, is-dir, tmpdir, rm, mk, read, write, clone, add-extension, is-win, is-string, is-object } = require './utils'
+{ next, copy, is-file, is-dir, tmpdir, rm, mk, read, write, clone, add-extension, is-win, is-string, is-object, win-binary-script } = require './utils'
 
 module.exports = extract = (options = {}) ->
   { path, dest, tmpdir } = options = options |> apply
@@ -44,12 +44,12 @@ module.exports = extract = (options = {}) ->
       bin-path = path |> join dest, _
       if bin-path |> is-file
         if root = findup 'package.json', cwd: (bin-path |> dirname)
-          bin-dir = root |> dirname |> join _, '../../../bin'
+          bin-dir = root |> dirname |> join _, '../../../', 'bin'
           bin-file = bin-dir |> join _, name
           mk bin-dir unless bin-dir |> is-dir
 
           if is-win
-            bin-path |> win-bin-script |> write "#{bin-file}.cmd", _
+            bin-path |> win-binary-script |> write "#{bin-file}.cmd", _
           else
             bin-path |> symlink-sync _, bin-file
 
@@ -64,7 +64,7 @@ module.exports = extract = (options = {}) ->
     set-execution-perms = ->
       deps-bin-dir = '.bin' |> join dest, 'node_modules', _
       bin-dir = 'bin' |> join dest, _
-      [bin-dir, deps-bin-dir]
+      [ bin-dir, deps-bin-dir ]
         .filter (|> is-dir)
         .for-each (dir) ->
           (dir |> readdir-sync).for-each ->
@@ -151,14 +151,3 @@ apply = (options) ->
 mk-dirs = (dest, tmpdir) ->
   mk dest unless dest |> is-dir
   mk tmpdir unless tmpdir |> is-dir
-
-win-bin-script = (path) ->
-  path = path |> normalize
-  """
-  @ECHO OFF
-  @IF EXIST "%~dp0\\node.exe" (
-    "%~dp0\\node.exe" "#{path}" %*
-  ) ELSE (
-    node "#{path}" %*
-  )
-  """

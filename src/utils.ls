@@ -19,10 +19,7 @@ module.exports = _ = {
   hu.is-string, mk, rm, delimiter, hu.has
 
   echo: ->
-    if it
-      console.log ...
-    else
-      console.log ''
+    if it then console.log ... else console.log ''
 
   next: next-tick
 
@@ -140,4 +137,15 @@ module.exports = _ = {
       .pipe fs.create-write-stream dest
       .on 'close', -> dest |> cb null, _
       .on 'error', cb
+
+  win-binary-script: (path) ->
+    path = path |> normalize
+    """
+    @ECHO OFF
+    @IF EXIST "%~dp0\\node.exe" (
+      "%~dp0\\node.exe" "#{path}" %*
+    ) ELSE (
+      node "#{path}" %*
+    )
+    """
 }

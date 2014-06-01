@@ -319,6 +319,7 @@ $ nar install app.nar --save
 $ nar install app.nar -o some/dir --save-dev
 $ nar install app.nar --debug
 $ nar install http://server.net/app-0.1.0.nar
+$ nar install -g http://server.net/app-0.1.0.nar
 ```
 
 ### get
@@ -451,6 +452,7 @@ It can aditionally download the archive from remote server
 - **save** `boolean` Save installed package as runtime dependency in `package.json`. Default to `false`
 - **saveDev** `boolean` Save installed package as development dependency in `package.json`. Default to `false`
 - **savePeer** `boolean` Save installed package as peer dependency in `package.json`. Default to `false`
+- **global** `boolean` Install package as global dependency. Default to `false`
 
 ### nar.get(options)
 Alias: `download`
