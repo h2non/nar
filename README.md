@@ -27,6 +27,7 @@ If you have questions, please read the [FAQ](#faq) or [open](https://github.com/
 - Built-in support for installating archives (like npm does)
 - Supports downloading and running archives from remote servers
 - Supports application pre/post run hooks (from [npm scripts][npm-scripts])
+- Supports installing archives from local and remote servers (like npm does)
 - Allow to embed dependencies by type
 - Allow to embed global dependencies
 - Allow to embed node binary for isolated runtime environments
