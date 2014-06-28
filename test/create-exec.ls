@@ -1,10 +1,11 @@
 { rm, mk, chdir, exists, expect, spawn } = require './lib/helper'
 create = require '../lib/create-exec'
 { tmpdir } = require 'os'
+{ normalize } = require 'path'
 
 describe 'create exec', ->
 
-  dest = "#{tmpdir!}nar-testing"
+  dest = "#{tmpdir!}/nar-testing" |> normalize
 
   describe 'basic', (_) ->
     output = "#{dest}/test-1.0.0.nar"
