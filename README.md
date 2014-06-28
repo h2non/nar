@@ -12,7 +12,7 @@ and full asynchronous event-based [programmatic API](#programmatic-api)
 It could be an ideal solution for distributing, deploying, running and testing
 private node.js applications that are outside of the `npm` ecosystem
 
-If you have questions, please read the [FAQ](#faq) or [open](https://github.com/h2non/nar/issues/new) an issue
+Questions? Read the [FAQs](#faq) or [open](https://github.com/h2non/nar/issues/new) an issue
 
 ## Features
 
