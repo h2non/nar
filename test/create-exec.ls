@@ -41,11 +41,14 @@ describe 'create exec', ->
           expect code .to.be.equal 0
           done!
 
-    it 'should exists the .nar directory', (done) ->
+    it 'should exists the .nar directory', ->
       expect ("#{dest}/.nar" |> exists) .to.be.true
 
-    it 'should exists the node binary', (done) ->
+    it 'should exists the node binary', ->
       expect ("#{dest}/.nar/bin/node" |> exists) .to.be.true
 
-    it 'should exists the nar package', (done) ->
+    it 'should exists the nar package.json', ->
       expect ("#{dest}/.nar/nar/package.json" |> exists) .to.be.true
+
+    it 'should exists the sample package.json', ->
+      expect ("#{dest}/package.json" |> exists) .to.be.true
