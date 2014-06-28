@@ -4,7 +4,6 @@ require! {
   ncp.ncp
   './pack'
   './create'
-  requireg.resolve
   child_process.exec
   events.EventEmitter
 }
@@ -56,10 +55,8 @@ module.exports = (options) ->
       copy process.execPath, bin-dir, done
 
     copy-nar-pkg = (done) ->
-      nar-path = resolve 'nar'
-      return new Error 'nar package is not installed' |> on-error unless nar-path |> exists
       dest = tmp-path |> join _, 'nar'
-      nar-path = ((nar-path |> dirname) |> join _, '..')
+      nar-path = __dirname |> join _, '..'
       ncp nar-path, dest, done
 
     create-tarball = (done) ->
