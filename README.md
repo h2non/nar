@@ -31,6 +31,7 @@ If you have questions, please read the [FAQ](#faq) or [open](https://github.com/
 - Allow to embed dependencies by type
 - Allow to embed global dependencies
 - Allow to embed node binary for isolated runtime environments
+- Allow to create executables binary-like application containers
 - Integrable in your development workflow through [Grunt][grunt-plugin] or [Gulp][gulp-plugin]
 - Transparent file checksum integrity verification
 
@@ -281,6 +282,7 @@ $ nar create path/to/package.json -o some/dir
 $ nar create --dev-dependencies --global-dependencies 'npm,grunt'
 $ nar create --omit-dependencies
 $ nar create --verbose
+$ nar create --executable
 ```
 
 ### extract
@@ -508,26 +510,30 @@ Example using `tar`
 $ tar xvfz app-0.1.0.nar
 ```
 
-##### Is required to use nar for extracting or running an archive?
+##### Is required to have installed node or nar in order to work with nar archives?
 
-Yes. At least by the moment is still required
+No. From version `0.3.0` you can create executable binary-like applications containers
+and there is no more required to have previously installed `node` or `nar` in order
+to run, install or extract an application
 
-In a future version is a planned provide
-support for creating a binary-like executable archive
-without no dependency to any type of package or node.js binary
-to extract or run the application, so you will beable to run it like:
-
+You must create a executable nar archive
 ```bash
-$ ./app-0.1.0.nar.run
+$ nar create --executable
 ```
 
-In other words, it will be fully independent and self-contained
+Then you could simply run it like this:
+```bash
+$ ./app-0.1.0.nar [run|extract|install] [options]
+```
+
+If you don't create your archive with this option, you must to have `nar`
+(and consequently node) installed in the target computer
 
 ##### When will be used embedbed node binary in the archive?
 
 Yes.
-If you use the `run` command, if the archive has node binary embedded,
-nar will use it
+If you use the `run` command, if the archive was created with the node binary embedded,
+your application will run with the self-contained binary
 
 ##### Which MIME type is recommened to serve nar files?
 

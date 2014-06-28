@@ -48,7 +48,7 @@ compile: clean mkdir
 
 mocha:
 	cat test/lib/helper.ls | $(LS) -c -s -b > ./test/lib/helper.js
-	$(MOCHA) --timeout 10000 --reporter spec --ui tdd --compilers ls:$(LS_MODULE)
+	$(MOCHA) --timeout 15000 --reporter spec --ui tdd --compilers ls:$(LS_MODULE)
 
 release:
 	@$(call release,patch)

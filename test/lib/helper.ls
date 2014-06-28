@@ -32,6 +32,7 @@ module.exports =
   chdir: process.chdir
   env: process.env
   join: path.join
+  spawn: spawn
 
   createWriteStream: fs.createWriteStream
 

@@ -5,6 +5,7 @@ require! {
   crypto
   './status'
   os: 'os-shim'
+  buffer.Buffer
   rm: rimraf.sync
   mk: mkdirp.sync
   findup: 'findup-sync'
@@ -110,10 +111,31 @@ module.exports = _ = {
     'package.json' |> findup _, cwd: dir
 
   handle-exit: (cb) ->
-    process.on 'SIGINT', ->
+    fn = process.on 'SIGINT', ->
       process.stdin.resume!
       cb!
-      process.exit!
+      process.remove-listener 'SIGINT', fn
+
+  is-executable: (path) ->
+    buffer = new Buffer 25
+    num = (fs.openSync path, 'r') |> fs.readSync _, buffer, 0, 25, 0
+    data = buffer.toString 'utf-8', 0, num
+    /^\#\/bin\/bash/.test(data) and /\#\#nar\#\#/.test(data)
+
+  executable-msg: (file) ->
+    file = file or 'sample.nar' |> basename
+    if _.is-win
+      """
+      the nar file is an executable, you cannot run it in Windows
+      """
+    else
+      """
+      the nar file is an executable, you must run it as binary:
+
+        $ chmod +x #{file}
+        $ ./#{file} extract --o some/dir
+
+      """
 
   archive-name: (nar) ->
     name = ''

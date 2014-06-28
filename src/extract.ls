@@ -8,7 +8,7 @@ require! {
 }
 { symlink-sync, chmod-sync, readdir-sync } = fs
 { join, dirname, normalize } = path
-{ next, copy, is-file, is-dir, tmpdir, rm, mk, read, write, clone, add-extension, is-win, is-string, is-object, win-binary-script } = require './utils'
+{ next, copy, is-file, is-dir, tmpdir, rm, mk, read, write, clone, add-extension, is-executable, executable-msg, is-win, is-string, is-object, win-binary-script } = require './utils'
 
 module.exports = extract = (options = {}) ->
   { path, dest, tmpdir } = options = options |> apply
@@ -39,6 +39,7 @@ module.exports = extract = (options = {}) ->
   extractor = (options, type) -> (done) ->
     { path, dest } = options
     return new Error 'The given path is not a file' |> on-error unless path |> is-file
+    return path |> executable-msg |> on-error if path |> is-executable
 
     create-link = (name, path) ->
       bin-path = path |> join dest, _

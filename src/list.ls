@@ -4,7 +4,7 @@ require! {
   zlib.create-gunzip
   events.EventEmitter
 }
-{ next, is-file, add-extension } = require './utils'
+{ next, is-file, add-extension, is-executable, executable-msg } = require './utils'
 
 module.exports = list = (options) ->
   { path, gzip } = options |> apply
@@ -35,6 +35,7 @@ module.exports = list = (options) ->
     entries = {}
 
     return new Error 'The given path is not a file' |> on-error unless path |> is-file
+    return path |> executable-msg |> on-error if path |> is-executable
 
     entry-reader = (entry) ->
       data = ''
