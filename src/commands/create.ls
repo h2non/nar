@@ -29,6 +29,7 @@ program
   .option '-n, --omit-dependencies', 'Create archive without embed any type of dependencies'
   .option '-i, --patterns <patterns>', 'Glob patterns to use for files include/exclude, comma separated'
   .option '-b, --binary', 'Include node binary'
+  .option '-e, --exec', 'Create nar as self executable binary'
   .option '-l, --binary-path <path>', 'Custom node binary to embed into the archive'
   .option '-d, --debug', 'Enable debug mode. More information will be shown'
   .option '-v, --verbose', 'Enable verbose mode. A lot of information will be shown'
@@ -46,7 +47,7 @@ program
   .action -> create ...
 
 create = (pkgpath, options) ->
-  { debug, verbose, output, file } = options
+  { debug, verbose, output, file, exec } = options
 
   opts = { dest: output, file }
   options |> apply _, opts
@@ -76,7 +77,7 @@ create = (pkgpath, options) ->
     "Created in: #{output}" |> echo
 
   create = ->
-    archive = nar.create opts
+    archive = nar[exec |> get-mode] opts
       .on 'start', on-start
       .on 'error', (debug |> on-error)
       .on 'end', on-end
@@ -101,3 +102,9 @@ apply = (args, opts) ->
   options
     .filter -> args[it] is yes or (args[it] |> is-string)
     .for-each -> opts <<< (it): args[it] |> normalize it, _
+
+get-mode = (exec) ->
+  if exec
+    'createExec'
+  else
+    'create'

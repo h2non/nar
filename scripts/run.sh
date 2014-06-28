@@ -1,4 +1,5 @@
 #/bin/bash
+##nar binary##
 
 output=$1
 log=nar-debug.log

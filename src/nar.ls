@@ -5,12 +5,14 @@ require! {
   './extract'
   './install'
   './download'
+  './create-exec'
   '../package.json'.version
 }
 
 exports = module.exports = {
   VERSION: version
-  create, extract, run,
+  create, create-exec,
+  extract, run,
   list, install, download
   get: download
 }
