@@ -1,0 +1,8 @@
+/node_modules
+npm-debug.log
+.DS_Store
+Thumbs.db
+/lib
+test/fixtures/.tmp
+/test/lib/*.js
+/*.nar
