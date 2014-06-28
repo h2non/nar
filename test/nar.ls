@@ -110,7 +110,7 @@ describe 'nar', ->
 
         it 'should create the archive', (done) ->
           nar.run options
-            .on 'error', -> throw it
+            .on 'error', done
             .on 'message', -> messages += "#{it}\n"
             .on 'command', -> commands += "#{it}\n"
             .on 'stdout', -> stdout += it
