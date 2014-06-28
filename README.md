@@ -54,6 +54,11 @@ Create new archive
 $ nar create
 ```
 
+Create new executable binary archive
+```bash
+$ nar create --executable
+```
+
 Extract files
 ```bash
 $ nar extract app.nar
