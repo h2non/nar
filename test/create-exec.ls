@@ -34,8 +34,18 @@ describe 'create exec', ->
       expect (output |> exists) .to.be.true
 
     it 'should execute the file as binary', (done) ->
+      chdir dest
       return done! if process.platform is 'win32'
       (spawn 'bash', [ output, 'extract' ])
         .on 'close', (code) ->
           expect code .to.be.equal 0
           done!
+
+    it 'should exists the .nar directory', (done) ->
+      expect ("#{dest}/.nar" |> exists) .to.be.true
+
+    it 'should exists the node binary', (done) ->
+      expect ("#{dest}/.nar/bin/node" |> exists) .to.be.true
+
+    it 'should exists the nar package', (done) ->
+      expect ("#{dest}/.nar/nar/package.json" |> exists) .to.be.true
