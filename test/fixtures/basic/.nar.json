@@ -1,6 +1,6 @@
 {
   "name": "test",
-  "time": 1403983691425,
+  "time": 1403985138294,
   "binary": false,
   "info": {
     "platform": "darwin",
@@ -30,14 +30,14 @@
       "archive": "some.tar",
       "dest": "node_modules/some",
       "type": "dependency",
-      "checksum": "0aa359cb07fefdc82d1150573c800c3492b078ea"
+      "checksum": "f2ddfdefd6d807f24fb6b39f3b17f9d519ab9f8c"
     },
     {
       "name": "test",
       "archive": "test.tar",
       "dest": ".",
       "type": "package",
-      "checksum": "79a33850d5cb34e349773a6a35970797e721fda4"
+      "checksum": "afa158deaee803825672ecf47a24de5353ca13eb"
     }
   ]
 }
