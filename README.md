@@ -31,7 +31,7 @@ If you have questions, please read the [FAQ](#faq) or [open](https://github.com/
 - Allow to embed dependencies by type
 - Allow to embed global dependencies
 - Allow to embed node binary for isolated runtime environments
-- Allow to create executables binary-like application containers
+- Allow to create archives like executables binary-like containers (embedded node)
 - Integrable in your development workflow through [Grunt][grunt-plugin] or [Gulp][gulp-plugin]
 - Transparent file checksum integrity verification
 
