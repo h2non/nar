@@ -26,7 +26,7 @@ Questions? Read the [FAQs](#faq) or [open](https://github.com/h2non/nar/issues/n
 - Built-in support for application execution
 - Built-in support for installating archives (like npm does)
 - Supports downloading and running archives from remote servers
-- Supports application pre/post run hooks (from [npm scripts][npm-scripts])
+- Supports application pre/post run hooks (like [npm scripts][npm-scripts])
 - Supports installing archives from local and remote servers (like npm does)
 - Allow to embed dependencies by type
 - Allow to embed global dependencies
@@ -403,6 +403,10 @@ You can pass any configuration [options](#options) and the following options:
 - **dest** `string` Extract destination path. Default to random temporal directory
 - **file** `string` Archive file name. Default to package name + version, taken from `package.json`
 - **patterns** `array` List of glob patterns for matching files to include or exclude
+
+### nar.createExec(options)
+
+Same as `nar.create()`, but this generate an executable binary-like archive
 
 ### nar.extract(options)
 Fired events: `end, error, entry, archive, message, info, start`
