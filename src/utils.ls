@@ -1,10 +1,10 @@
 require! {
   fs
+  os
   hu
   path
   crypto
   './status'
-  os: 'os-shim'
   buffer.Buffer
   rm: rimraf.sync
   mk: mkdirp.sync

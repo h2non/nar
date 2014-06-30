@@ -2,7 +2,7 @@ require! {
   fs
   path
   archiver
-  'os-shim'.tmpdir
+  'os'.tmpdir
   zlib.create-gzip
   events.EventEmitter
 }

@@ -538,6 +538,12 @@ $ ./app-0.1.0.nar [run|extract|install] [options]
 If you don't create your archive with this option, you must to have `nar`
 (and consequently node) installed in the target computer
 
+##### nar executables runs in Windows?
+
+No. nar executables only can run in any UNIX-like OS
+
+Is not planned to support it due to technical limitations in Windows OS
+
 ##### When will be used embedbed node binary in the archive?
 
 Yes.
