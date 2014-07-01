@@ -2,13 +2,14 @@
 create = require '../lib/create-exec'
 { tmpdir } = require 'os'
 { normalize } = require 'path'
+{ get-platform } = require '../lib/utils'
 
 describe 'create exec', ->
 
   dest = "#{tmpdir!}/nar-testing" |> normalize
 
   describe 'basic', (_) ->
-    output = "#{dest}/test-1.0.0.nar"
+    output = "#{dest}/test-1.0.0-#{get-platform!}-#{process.arch}.nar"
 
     before ->
       rm dest

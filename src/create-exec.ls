@@ -8,7 +8,7 @@ require! {
   events.EventEmitter
 }
 { dirname, join, basename } = path
-{ rm, mk, is-win, tmpdir, copy, exists, once, handle-exit } = require './utils'
+{ rm, mk, is-win, tmpdir, copy, exists, once, handle-exit, get-platform, arch } = require './utils'
 
 const script = "#{__dirname}/../scripts/run.sh"
 
@@ -43,7 +43,7 @@ module.exports = (options) ->
   create-executable = (nar) ->
     nar-file = nar |> basename _, '.nar'
     nar-path = (dest |> join _, nar-file) + '.run'
-    nar-output = (dest |> join _, nar-file) + '.nar'
+    nar-output = (dest |> join _, nar-file) + "-#{get-platform!}-#{arch}.nar"
 
     clean-exec = ->
       nar-path |> rm

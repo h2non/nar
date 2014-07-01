@@ -13,6 +13,7 @@ const cmd-map =
   l: 'list'
   i: 'install'
   g: 'get'
+  start: 'run'
 
 module.exports <<< parse: -> (it |> map |> program.parse)
 
