@@ -13,8 +13,6 @@ require! {
 const script = "#{__dirname}/../scripts/run.sh"
 
 module.exports = (options) ->
-  throw new Error 'Windows platform cannot create nar executables' if is-win
-
   name = null
   dest = options.dest or process.cwd!
   emitter = new EventEmitter
@@ -82,6 +80,8 @@ module.exports = (options) ->
         return new Error 'cannot create the executable' |> on-error if err
         clean-exec!
         emitter.emit 'end', nar-output
+
+  return new Error 'Windows platform cannot create nar executables' |> on-error if is-win
 
   clean |> handle-exit
   (options |> create)
