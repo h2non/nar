@@ -552,7 +552,7 @@ To be exactly, the binary that
 [process.execPath](http://nodejs.org/api/process.html#process_process_execpath) points to
 
 That means, if you create an executable archive in OSX and then deploy it into a GNU/Linux server, it will fail.
-At the momento, you must create the archive in the same OS as the target OS.
+At the moment, you must create the archive in the same OS as you want to use it
 
 It was created a [feature request](https://github.com/h2non/nar/issues/88) about add support to configure the embebbed binary to use
 
