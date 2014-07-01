@@ -88,5 +88,7 @@ module.exports = (options) ->
     .on 'error', on-error
     .on 'entry', on-entry
     .on 'end', on-create-end
+    .on 'start', -> 'start' |> emitter.emit
+    .on 'archive', -> 'archive' |> emitter.emit _, it
 
   emitter
