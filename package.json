@@ -1,6 +1,6 @@
 {
   "name": "nar",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "node.js application archive",
   "preferGlobal": true,
   "engineStrict": true,
@@ -32,7 +32,12 @@
     "gzip",
     "pkg",
     "jar",
-    "tar"
+    "tar",
+    "nexe",
+    "executable",
+    "embedded",
+    "exe",
+    "portable"
   ],
   "dependencies": {
     "commander": "~2.2.0",
