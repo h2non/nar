@@ -31,14 +31,14 @@ module.exports = _ = {
     "#{action} [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.path or it.name or ''}".green |> echo
 
   on-archive: (debug, verbose) -> ->
-    "Extracting [#{it.type.cyan}] #{it.name or ''}" |> echo unless debug and verbose
+    "Extract [#{it.type.cyan}] #{it.name or ''}" |> echo unless debug and verbose
 
   on-error: (debug) -> (err, code) ->
     err |> log-error _, debug |> echo
     ((code or 1) |> exit)!
 
   on-extract: ->
-    "Extracting [#{it.type.cyan}] #{it.name or ''}" |> echo
+    "Extract [#{it.type.cyan}] #{it.name or ''}" |> echo
 
   on-download-end: (bar) -> ->
     bar.total |> (bar |> _.update-bar) |> echo

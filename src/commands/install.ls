@@ -1,5 +1,4 @@
 require! {
-  path
   '../nar'
   program: commander
 }

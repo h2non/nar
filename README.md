@@ -2,14 +2,15 @@
 # nar [![Build Status](https://api.travis-ci.org/h2non/nar.svg?branch=master)][travis] [![Dependency Status](https://gemnasium.com/h2non/nar.svg)][gemnasium] [![NPM version](https://badge.fury.io/js/nar.svg)][npm] [![Stories in Ready](https://badge.waffle.io/h2non/nar.png?label=ready&title=Ready)](https://waffle.io/h2non/nar)
 
 **nar** is a simple application packager utility for [node.js](http://nodejs.org)
-that **creates self-contained applications**
+that **creates fully self-contained applications**
 that are **ready-to-ship-and-run**
 
-It provides built-in support for creating, extracting, installing and running node applications easily from a simple [configuration](#configuration) through
+It provides built-in support for creating, extracting, installing and running node
+applications easily from a simple [configuration](#configuration) through
 a featured [command-line interface](#command-line-interface)
 and full asynchronous event-based [programmatic API](#programmatic-api)
 
-It could be an ideal solution for distributing, deploying, running and testing
+It could be an great solution for distributing, running and testing
 private node.js applications that are outside of the `npm` ecosystem
 
 Questions? Read the [FAQs](#faq) or [open](https://github.com/h2non/nar/issues/new) an issue
@@ -54,11 +55,6 @@ Create new archive
 $ nar create
 ```
 
-Create new executable binary archive
-```bash
-$ nar create --executable
-```
-
 Extract files
 ```bash
 $ nar extract app.nar
@@ -73,6 +69,35 @@ Install (default to `node_modules`)
 ```bash
 $ nar install http://server.net/app-0.1.0.nar --save
 ```
+
+### Executables
+
+`nar` also provides support for creating **executables binary-like** archives which
+has `node` binary embebbed, and therefore, do not required that node is already installed in the target OS
+
+This is a useful feature when you need to deploy or test node applications in new servers
+
+Create new executable binary `nar` archive
+```bash
+$ nar create --executable
+> Creates: myapp-0.1.0-linux-x64.nar
+```
+
+Then you can run it, for example, as simple as:
+```bash
+$ chmod +x myapp-0.1.0-linux-x64.nar
+$ ./myapp-0.1.0-linux-x64.nar start --args-start='--port 8080'
+```
+
+You can embed a custom node binary per platform, processor architecture and version
+```bash
+$ nar create --executable --os darwin --arch x64 --node 0.11.9
+```
+
+Supported platforms are:
+- `linux` (x86|x64)
+- `darwin` (x86|x64)
+- `sunos` (x86|x64)
 
 ## Configuration
 

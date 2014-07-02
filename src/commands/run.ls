@@ -1,5 +1,4 @@
 require! {
-  path
   '../nar'
   program: commander
 }
@@ -52,7 +51,7 @@ run = (archive, options) ->
       stop: args-stop
       poststop: args-poststop
   }
-  opts <<< auth: { options.user, options.pass } if options.user
+  opts <<< auth: { options.user, options.password } if options.user
 
   on-extract = -> "Extracting files..." |> echo
 

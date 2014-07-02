@@ -1,9 +1,8 @@
 require! {
-  path
   '../nar'
   program: commander
 }
-{ echo, exit, on-entry, on-error } = require './common'
+{ echo, exit, on-entry, on-error, create-bar, on-progress, update-bar, on-download-end } = require './common'
 { exists, is-dir, is-file, is-string } = require '../utils'
 
 const options = [
@@ -14,6 +13,10 @@ const options = [
   'patterns'
   'binary'
   'binaryPath'
+  'os'
+  'arch'
+  'node'
+  'proxy'
 ]
 
 program
@@ -31,9 +34,9 @@ program
   .option '-b, --binary', 'Include node binary'
   .option '-e, --exec', 'Create nar as self executable binary'
   .option '-l, --binary-path <path>', 'Custom node binary to embed into the archive'
-  .option '-s, --os <name>', 'Node OS binary platform to embed. Default to current OS'
-  .option '-a, --arch <name>', 'Node OS binary architecture to embed. Default to ' + process.arch
-  .option '-q, --node <name>', 'Node OS binary version to embed. Default to ' + process.version
+  .option '-s, --os <name>', 'Node.js OS binary platform to embed. Default to current OS'
+  .option '-a, --arch <name>', 'Node.js OS binary architecture to embed. Default to ' + process.arch
+  .option '-q, --node <name>', 'Node.js version to embed. Default to ' + process.version
   .option '--proxy <url>', 'Proxy server URL to use to download binaries'
   .option '-d, --debug', 'Enable debug mode. More information will be shown'
   .option '-v, --verbose', 'Enable verbose mode. A lot of information will be shown'
@@ -52,6 +55,7 @@ program
 
 create = (pkgpath, options) ->
   { debug, verbose, output, file, exec } = options
+  bar = create-bar!
 
   opts = { dest: output, file }
   options |> apply _, opts
@@ -64,18 +68,24 @@ create = (pkgpath, options) ->
 
   if pkgpath
     unless pkgpath |> exists
-      "Error: path do not exists" |> exit 1
+      'Error: path do not exists' |> exit 1
     if pkgpath |> is-file
       pkgpath = pkgpath |> path.dirname
     unless pkgpath |> is-dir
-      "Error: path must be a directory" |> exit 1
+      'Error: path must be a directory' |> exit 1
     opts <<< path: pkgpath
 
   on-start = ->
-    "Creating archive..." |> echo
+    'Creating archive...' |> echo
+
+  on-download = ->
+    'Downloading node binary...' |> echo
 
   on-archive = ->
-    "Adding [#{it.type.cyan}] #{it.name or ''}" |> echo unless debug and verbose
+    "Add [#{it.type.cyan}] #{it.name or ''}" |> echo unless debug and verbose
+
+  on-generate = ->
+    'Generating executable...' |> echo
 
   on-end = (output) ->
     "Created in: #{output}" |> echo
@@ -84,6 +94,10 @@ create = (pkgpath, options) ->
     archive = nar[exec |> get-mode] opts
       .on 'start', on-start
       .on 'error', (debug |> on-error)
+      .on 'download', on-download
+      .on 'downloadEnd', (bar |> on-download-end)
+      .on 'progress', (bar |> on-progress)
+      .on 'generate', on-generate
       .on 'end', on-end
 
     if debug or verbose

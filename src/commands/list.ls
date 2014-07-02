@@ -4,6 +4,7 @@ require! {
   Table: 'cli-table'
   program: commander
 }
+{ join, basename } = path
 { echo, on-error, to-kb, archive-name } = require './common'
 
 program
@@ -35,7 +36,7 @@ list = (archive, options) ->
     if table
       it |> map-entry |> table-list.push
     else
-      (it.archive |> path.join it.dest, _) + " (#{(it.size |> to-kb)} KB)".cyan |> echo
+      (it.archive |> join it.dest, _) + " (#{(it.size |> to-kb)} KB)".cyan |> echo
 
   on-end = ->
     table-list.to-string! |> echo if table
@@ -53,4 +54,4 @@ list = (archive, options) ->
     e |> on-error debug
 
 map-entry = ->
-  [ (it.archive |> path.basename _, '.tar'), it.dest, (it.size |> to-kb) + ' KB', it.type ] if it
+  [ (it.archive |> basename _, '.tar'), it.dest, (it.size |> to-kb) + ' KB', it.type ] if it

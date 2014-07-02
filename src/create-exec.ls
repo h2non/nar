@@ -3,33 +3,42 @@ require! {
   path
   ncp.ncp
   './pack'
+  './unpack'
   './create'
+  './download'
   child_process.exec
   events.EventEmitter
 }
 { dirname, join, basename } = path
-{ rm, mk, is-win, tmpdir, copy, exists, once, extend, handle-exit, get-platform, arch } = require './utils'
+{ rm, mk, is-win, tmpdir, copy, exists, once, extend, handle-exit, arch } = require './utils'
 
 const script = __dirname |> join _, '..', 'scripts/run.sh'
 const download-url = 'http://nodejs.org/dist'
 const supported-platforms = <[ linux darwin sunos ]>
 const supported-archs = <[ x86 x64 ]>
-const supported-versions = [ /^0.8/, /^0.10/ ]
+const supported-versions = [ /^0.8/, /^0.9/, /^0.10/, /^0.11/, /^0.12/ ]
 
 module.exports = (options) ->
   emitter = new EventEmitter
   options = options |> apply
   dest = options.dest or process.cwd!
   tmp-path = tmpdir!
+  tmp-download = null
   options.dest = tmp-path
+  node-binary = null
 
   clean = ->
     emitter.emit 'message', 'Cleaning temporary directories'
-    try rm tmp-path
+    try
+      tmp-path |> rm
+      tmp-download |> rm if tmp-download
 
   on-error = once (err) ->
     clean!
     err |> emitter.emit 'error', _
+
+  on-download-error = (err) ->
+    err |> on-error
 
   on-entry = ->
     it |> emitter.emit 'entry', _ if it
@@ -41,10 +50,24 @@ module.exports = (options) ->
   on-create-end = (nar-path) ->
     nar-path |> create-executable
 
+  on-progress = (status) ->
+    status |> emitter.emit 'progress', _
+
+  on-download = ->
+    'download' |> emitter.emit
+
+  on-download-end = ->
+    it |> emitter.emit 'downloadEnd', _
+
+  get-binary-type = ->
+    { os, arch } = options
+    os = 'osx' if os is 'darwin'
+    "#{os}-#{arch}"
+
   create-executable = (nar) ->
     nar-file = nar |> basename _, '.nar'
     nar-path = (dest |> join _, nar-file) + '.run'
-    nar-output = (dest |> join _, nar-file) + "-#{get-platform!}-#{arch}.nar"
+    nar-output = (dest |> join _, nar-file) + "-#{get-binary-type!}.nar"
 
     clean-exec = ->
       nar-path |> rm
@@ -53,12 +76,12 @@ module.exports = (options) ->
     copy-binary = (done) ->
       bin-dir = tmp-path |> join _, 'bin'
       mk bin-dir
-      copy process.execPath, bin-dir, done
+      (node-binary or process.exec-path) |> copy _, bin-dir, done
 
     copy-nar-pkg = (done) ->
       dest = tmp-path |> join _, 'nar'
       nar-path = __dirname |> join _, '..'
-      ncp nar-path, dest, done
+      nar-path |> ncp _, dest, done
 
     create-tarball = (done) ->
       const config =
@@ -69,22 +92,53 @@ module.exports = (options) ->
         ext: 'run'
         gzip: yes
 
-      pack config
+      (config |> pack)
         .on 'error', done
         .on 'entry', on-entry
-        .on 'end', (file) -> done!
+        .on 'end', -> done!
 
     create-binary = (done) ->
-      exec "cat #{script} #{nar-path} > #{nar-output}", done
+      cmd = if is-win then 'type' else 'cat'
+      exec "#{cmd} #{script} #{nar-path} > #{nar-output}", done
 
-    fw.parallel [ copy-binary, copy-nar-pkg ], (err) ->
-      return new Error 'cannot copy files to temporal directory' |> on-error if err
-      fw.series [ create-tarball, create-binary ], (err) ->
-        return new Error 'cannot create the executable' |> on-error if err
-        clean-exec!
-        emitter.emit 'end', nar-output
+    generate = ->
+      'generate' |> emitter.emit
+      fw.parallel [ copy-binary, copy-nar-pkg ], (err) ->
+        return new Error 'cannot copy files to temporal directory' |> on-error if err
+        fw.series [ create-tarball, create-binary ], (err) ->
+          return new Error 'cannot create the executable' |> on-error if err
+          clean-exec!
+          emitter.emit 'end', nar-output
 
-  return new Error 'Windows platform cannot create nar executables' |> on-error if is-win
+    extract-binary = (options) ->
+      options <<< gzip: yes
+      (options |> unpack)
+        .on 'error', on-error
+        .on 'end', ->
+          node-binary := options.dest |> join _, options.name, 'bin', 'node'
+          generate!
+
+    download-binary = ->
+      { node } = options
+      name = "node-#{node}-#{get-binary-type!}"
+      url = "#{download-url}/#{node}/#{name}.tar.gz"
+      dest = tmp-download := tmpdir!
+
+      ({ url, dest } |> download)
+        .on 'download', on-download
+        .on 'progress', on-progress
+        .on 'error', on-download-error
+        .on 'end', ->
+          it |> on-download-end
+          { path: it, dest, name } |> extract-binary
+
+    unless options |> same-node-binary
+      download-binary!
+    else
+      generate!
+
+  if is-win and options.os is 'win32'
+    return new Error 'Windows do not support nar executables. Use --os <linux|darwin|sunos>' |> on-error
 
   mk tmp-path
   clean |> handle-exit
@@ -105,10 +159,14 @@ apply = (options) ->
   options
 
 find-index = (arr, item) ->
-  arr.index-of(os) isnt -1
+  arr.index-of(item) isnt -1
 
 match-version = (version) ->
   (supported-versions.filter -> it.test version).length isnt 0
+
+same-node-binary = (options) ->
+  { os, arch, node } = options
+  os is process.platform and arch is process.arch and node and process.version
 
 set-os = (options) ->
   { os } = options
