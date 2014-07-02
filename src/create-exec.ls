@@ -8,16 +8,19 @@ require! {
   events.EventEmitter
 }
 { dirname, join, basename } = path
-{ rm, mk, is-win, tmpdir, copy, exists, once, handle-exit, get-platform, arch } = require './utils'
+{ rm, mk, is-win, tmpdir, copy, exists, once, extend, handle-exit, get-platform, arch } = require './utils'
 
-const script = "#{__dirname}/../scripts/run.sh"
+const script = __dirname |> join _, '..', 'scripts/run.sh'
+const download-url = 'http://nodejs.org/dist'
+const supported-platforms = <[ linux darwin sunos ]>
+const supported-archs = <[ x86 x64 ]>
+const supported-versions = [ /^0.8/, /^0.10/ ]
 
 module.exports = (options) ->
-  name = null
-  dest = options.dest or process.cwd!
   emitter = new EventEmitter
+  options = options |> apply
+  dest = options.dest or process.cwd!
   tmp-path = tmpdir!
-  mk tmp-path
   options.dest = tmp-path
 
   clean = ->
@@ -83,7 +86,9 @@ module.exports = (options) ->
 
   return new Error 'Windows platform cannot create nar executables' |> on-error if is-win
 
+  mk tmp-path
   clean |> handle-exit
+
   (options |> create)
     .on 'error', on-error
     .on 'entry', on-entry
@@ -92,3 +97,47 @@ module.exports = (options) ->
     .on 'archive', -> 'archive' |> emitter.emit _, it
 
   emitter
+
+apply = (options) ->
+  options |> set-os
+  options |> set-arch
+  options |> set-node
+  options
+
+find-index = (arr, item) ->
+  arr.index-of(os) isnt -1
+
+match-version = (version) ->
+  (supported-versions.filter -> it.test version).length isnt 0
+
+set-os = (options) ->
+  { os } = options
+  if os
+    if (supported-platforms |> find-index _, os)
+      options <<< os: os
+    else
+      throw new Error "Invalid OS platform '#{os}'. Only #{supported-platforms.join ', '} are supported"
+  else
+    options <<< os: process.platform
+
+set-arch = (options) ->
+  { arch } = options
+  if arch
+    if (supported-archs |> find-index _, arch)
+      options <<< arch: arch
+    else
+      throw new Error "Invalid architecture '#{arch}'. Only x86 or x64 are supported"
+  else
+    options <<< arch: process.arch
+
+set-node = (options) ->
+  { node } = options
+  if node
+    if node is 'latest'
+      options <<< node: 'latest'
+    else if (node |> match-version)
+      options <<< node: "v#{node}"
+    else
+      throw new Error "Invalid node version '#{node}'"
+  else
+    options <<< node: process.version

@@ -31,6 +31,10 @@ program
   .option '-b, --binary', 'Include node binary'
   .option '-e, --exec', 'Create nar as self executable binary'
   .option '-l, --binary-path <path>', 'Custom node binary to embed into the archive'
+  .option '-s, --os <name>', 'Node OS binary platform to embed. Default to current OS'
+  .option '-a, --arch <name>', 'Node OS binary architecture to embed. Default to ' + process.arch
+  .option '-q, --node <name>', 'Node OS binary version to embed. Default to ' + process.version
+  .option '--proxy <url>', 'Proxy server URL to use to download binaries'
   .option '-d, --debug', 'Enable debug mode. More information will be shown'
   .option '-v, --verbose', 'Enable verbose mode. A lot of information will be shown'
   .on '--help', ->
