@@ -95,9 +95,9 @@ $ nar create --executable --os darwin --arch x64 --node 0.11.9
 ```
 
 Supported platforms are:
-- `linux` (x86|x64)
-- `darwin` (x86|x64)
-- `sunos` (x86|x64)
+- `linux` (x86, x64)
+- `darwin` (x86, x64)
+- `sunos` (x86, x64)
 
 ## Configuration
 
