@@ -11,7 +11,7 @@ require! {
   read, rm, tmpdir, clone, extend, copy, keys, archive-name,
   is-object, is-file, is-dir, is-string, mk, stringify,
   vals, exists, checksum, lines, next, is-array, now,
-  replace-env-vars, discover-pkg, handle-exit
+  replace-env-vars, discover-pkg, handle-exit, once
 } = require './utils'
 
 const nar-file = '.nar.json'
@@ -55,7 +55,7 @@ module.exports = create = (options) ->
     clean!
     try rm output
 
-  on-error = (err) ->
+  on-error = once (err) ->
     clean-error!
     err |> emitter.emit 'error', _ unless errored
     errored := yes
@@ -126,7 +126,7 @@ module.exports = create = (options) ->
 
     add-binary = ->
       { binary-path } = options
-      return  new Error "Binary path do not exists: #{binary-path}" |> on-error unless binary-path |> is-file
+      return new Error "Binary path do not exists: #{binary-path}" |> on-error unless binary-path |> is-file
 
       pkg-info =
         name: 'node'
