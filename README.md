@@ -107,7 +107,6 @@ Example `package.json` with full configuration
   "name": "my-package",
   "version": "1.0.0",
   "archive": {
-    "binary": true,
     "dependencies": true,
     "devDependencies": false,
     "globalDependencies": ["npm", "grunt-cli", "bower"],
