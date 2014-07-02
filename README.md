@@ -433,6 +433,12 @@ You can pass any configuration [options](#options) and the following options:
 
 Same as `nar.create()`, but this generate an executable binary-like archive
 
+Aditional executable options are:
+
+- **os** `string` Node.js OS binary platform to embed. Detault to current OS
+- **arch** `string` Node.js OS binary architecture to embed. Default to current OS
+- **node** `string` Node.js version to embed. Default to current node runtime version
+
 ### nar.extract(options)
 Fired events: `end, error, entry, archive, message, info, start`
 

@@ -44,12 +44,6 @@ module.exports = _ = {
     name = name |> basename _, (name |> extname)
     "nar-#{name}-#{_.random!}" |> join os.tmpdir!, _
 
-  get-platform: ->
-    if platform is 'darwin'
-      'osx'
-    else
-      platform
-
   add-extension: ->
     if it and not (it |> _.is-url)
       it += '.nar' unless /.nar$/.test it

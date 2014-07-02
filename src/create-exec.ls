@@ -16,7 +16,7 @@ const script = __dirname |> join _, '..', 'scripts/run.sh'
 const download-url = 'http://nodejs.org/dist'
 const supported-platforms = <[ linux darwin sunos ]>
 const supported-archs = <[ x86 x64 ]>
-const supported-versions = [ /^0.8/, /^0.9/, /^0.10/, /^0.11/, /^0.12/ ]
+const supported-versions = [ /^0.8.[0-9]+/, /^0.9.[0-9]+/, /^0.10.[0-9]+/, /^0.11.[0-9]+/, /^0.12.[0-9]+/ ]
 
 module.exports = (options) ->
   emitter = new EventEmitter
@@ -61,7 +61,6 @@ module.exports = (options) ->
 
   get-binary-type = ->
     { os, arch } = options
-    os = 'osx' if os is 'darwin'
     "#{os}-#{arch}"
 
   create-executable = (nar) ->
@@ -166,7 +165,7 @@ match-version = (version) ->
 
 same-node-binary = (options) ->
   { os, arch, node } = options
-  os is process.platform and arch is process.arch and node and process.version
+  os is process.platform and arch is process.arch and node is process.version
 
 set-os = (options) ->
   { os } = options
