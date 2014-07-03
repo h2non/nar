@@ -6,12 +6,12 @@ require! {
   requireg.resolve
   events.EventEmitter
 }
-{ dirname, basename, join, normalize } = path
+{ dirname, basename, join, normalize, sep } = path
 {
   read, rm, tmpdir, clone, extend, copy, keys, archive-name,
   is-object, is-file, is-dir, is-string, mk, stringify,
   vals, exists, checksum, lines, next, is-array, now,
-  replace-env-vars, discover-pkg, handle-exit, once
+  replace-env-vars, discover-pkg, handle-exit, once, is-win
 } = require './utils'
 
 const nar-file = '.nar.json'
@@ -74,14 +74,14 @@ module.exports = create = (options) ->
     nar-config |> emitter.emit 'info', _
 
     deps = (done) ->
-      compress-dependencies tmp-path, base-dir, (err, files) ->
+      tmp-path |> compress-dependencies _, base-dir, (err, files) ->
         return err |> on-error if err
         nar-config.files = nar-config.files ++ files if files
         done!
 
     base-pkg = (done) ->
       config =
-        dest: tmp-path
+        dest: tmp-path |> normalize-path
         base: base-dir
         name: name
         patterns: options.patterns
@@ -183,7 +183,7 @@ module.exports = create = (options) ->
       bin-dir = join base, ('.bin' |> get-module-path)
       {
         name: 'modules-bin-dir'
-        dest: dest
+        dest: dest |> normalize-path
         src: bin-dir
       } |> it.push if bin-dir |> is-dir
 
@@ -196,7 +196,7 @@ module.exports = create = (options) ->
     find-pkg = ->
       it.map ->
         name: it
-        dest: dest
+        dest: dest |> normalize-path
         src: it |> get-pkg-path
 
     calculate-checksum = (pkg-path, pkg-info, done) ->
@@ -349,11 +349,17 @@ resolve-pkg-path = ->
 get-binary-path = (options) ->
   binary = options.binary-path
   binary = process.env.NAR_BINARY if process.env.NAR_BINARY
-  binary |> normalize |> replace-env-vars
+  binary |> normalize |> normalize-path |> replace-env-vars
 
 get-module-path = ->
   it = '.bin' if it is 'modules-bin-dir'
-  it |> join 'node_modules', _
+  (it |> join 'node_modules', _) |> normalize-path
+
+normalize-path = (path) ->
+  if is-win
+    path.replace new RegExp(sep, 'g'), '/' if path
+  else
+    path
 
 match-dependencies = (options, pkg) ->
   { dependencies, dev-dependencies, peer-dependencies, global-dependencies } = options
