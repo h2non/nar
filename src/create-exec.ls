@@ -123,7 +123,7 @@ module.exports = (options) ->
       url = "#{download-url}/#{node}/#{name}.tar.gz"
       dest = tmp-download := tmpdir!
 
-      ({ url, dest } |> download)
+      ({ url, dest, options.proxy } |> download)
         .on 'download', on-download
         .on 'progress', on-progress
         .on 'error', on-download-error
