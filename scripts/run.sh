@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 ##nar##
 
 output="`pwd`/.nar"
