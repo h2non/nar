@@ -120,7 +120,7 @@ module.exports = _ = {
     buffer = new Buffer 25
     num = (fs.openSync path, 'r') |> fs.readSync _, buffer, 0, 25, 0
     data = buffer.toString 'utf-8', 0, num
-    /^\#\/bin\/bash/.test(data) and /\#\#nar\#\#/.test(data)
+    /^\#\!\/bin\/bash/.test(data) and /\#\#nar\#\#/.test(data)
 
   executable-msg: (file) ->
     file = file or 'sample.nar' |> basename
