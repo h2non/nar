@@ -73,9 +73,11 @@ $ nar install http://server.net/app-0.1.0.nar --save
 ### Executables
 
 `nar` also provides support for creating **executables binary-like** archives which
-has `node` binary embebbed, and therefore, do not required that node is already installed in the target OS
+has `node` binary embedded, and therefore, is not required
+to have node.js already installed in the target OS
 
-This is a useful feature when you need to deploy or test node applications in new servers
+This is a useful feature when you need to deploy or test
+node applications in new or isolated servers
 
 Create new executable binary `nar` archive
 ```bash
@@ -89,7 +91,7 @@ $ chmod +x myapp-0.1.0-linux-x64.nar
 $ ./myapp-0.1.0-linux-x64.nar start --args-start='--port 8080'
 ```
 
-You can embed a custom node binary per platform, processor architecture and version
+You can also embed a custom node binary per platform, processor architecture and version
 ```bash
 $ nar create --executable --os darwin --arch x64 --node 0.11.9
 ```
@@ -98,6 +100,12 @@ Supported platforms are:
 - `linux` (x86, x64)
 - `darwin` (x86, x64)
 - `sunos` (x86, x64)
+
+Suported node version are:
+- `0.8.x`
+- `0.9.x`
+- `0.10.x`
+- `0.11.x`
 
 ## Configuration
 
