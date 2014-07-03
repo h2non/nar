@@ -111,10 +111,11 @@ module.exports = _ = {
     'package.json' |> findup _, cwd: dir
 
   handle-exit: (cb) ->
-    process.on 'SIGINT', ->
+    listener = ->
       process.stdin.resume!
       cb!
-      process.remove-listener 'SIGINT'
+      listener |> process.remove-listener 'SIGINT', _
+    process.on 'SIGINT', listener
 
   is-executable: (path) ->
     buffer = new Buffer 25
