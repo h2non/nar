@@ -6,7 +6,7 @@ require! {
   requireg.resolve
   events.EventEmitter
 }
-{ dirname, basename, join, normalize, sep } = path
+{ dirname, basename, join, normalize } = path
 {
   read, rm, tmpdir, clone, extend, copy, keys, archive-name,
   is-object, is-file, is-dir, is-string, mk, stringify,
@@ -81,7 +81,7 @@ module.exports = create = (options) ->
 
     base-pkg = (done) ->
       config =
-        dest: tmp-path |> normalize-path
+        dest: tmp-path
         base: base-dir
         name: name
         patterns: options.patterns
@@ -183,7 +183,7 @@ module.exports = create = (options) ->
       bin-dir = join base, ('.bin' |> get-module-path)
       {
         name: 'modules-bin-dir'
-        dest: dest |> normalize-path
+        dest: dest
         src: bin-dir
       } |> it.push if bin-dir |> is-dir
 
@@ -196,13 +196,14 @@ module.exports = create = (options) ->
     find-pkg = ->
       it.map ->
         name: it
-        dest: dest |> normalize-path
+        dest: dest
         src: it |> get-pkg-path
 
     calculate-checksum = (pkg-path, pkg-info, done) ->
       checksum pkg-path, (err, hash) ->
         throw new Error "Error while calculating checksum for package #{pkg-info.name}" if err
         pkg-info <<< checksum: hash
+        pkg-info <<< dest: pkg-info.dest
         pkg-info |> files.push
         done null, pkg-info
 
@@ -349,17 +350,11 @@ resolve-pkg-path = ->
 get-binary-path = (options) ->
   binary = options.binary-path
   binary = process.env.NAR_BINARY if process.env.NAR_BINARY
-  binary |> normalize |> normalize-path |> replace-env-vars
+  binary |> normalize |> replace-env-vars
 
 get-module-path = ->
   it = '.bin' if it is 'modules-bin-dir'
-  (it |> join 'node_modules', _) |> normalize-path
-
-normalize-path = (path) ->
-  if is-win
-    path.replace new RegExp(sep, 'g'), '/' if path
-  else
-    path
+  it |> join 'node_modules', _
 
 match-dependencies = (options, pkg) ->
   { dependencies, dev-dependencies, peer-dependencies, global-dependencies } = options

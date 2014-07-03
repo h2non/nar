@@ -7,7 +7,7 @@ require! {
   findup: 'findup-sync'
 }
 { symlink-sync, chmod-sync, readdir-sync } = fs
-{ join, dirname, normalize } = path
+{ join, dirname, normalize, sep } = path
 { next, copy, is-file, is-dir, tmpdir, rm, mk, read, write, clone, add-extension, is-executable, executable-msg, is-win, is-string, is-object, win-binary-script } = require './utils'
 
 module.exports = extract = (options = {}) ->
@@ -89,15 +89,15 @@ module.exports = extract = (options = {}) ->
     options =
       gzip: no
       path: it.archive |> join tmpdir, _
-      dest: it.dest |> join dest, _
+      dest: it.dest |> join dest, _ |> normalize-path
       checksum: it.checksum
     options |> extractor _, it.type
 
   copy-bin-fn = (options) -> (done) ->
     origin = options.archive |> join tmpdir, _
-    target = options.dest |> join dest, _
+    target = options.dest |> join dest, _ |> normalize-path
     mk target unless target |> is-dir
-    copy origin, target, done
+    origin |> copy _, target, done
 
   get-extract-files = (nar) ->
     tasks = []
@@ -152,3 +152,6 @@ apply = (options) ->
 mk-dirs = (dest, tmpdir) ->
   mk dest unless dest |> is-dir
   mk tmpdir unless tmpdir |> is-dir
+
+normalize-path = (path) ->
+  path.replace new RegExp('\\\\', 'g'), '/' if path
