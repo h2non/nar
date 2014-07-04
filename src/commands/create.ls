@@ -32,7 +32,7 @@ program
   .option '-n, --omit-dependencies', 'Create archive without embed any type of dependencies'
   .option '-i, --patterns <patterns>', 'Glob patterns to use for files include/exclude, comma separated'
   .option '-b, --binary', 'Include node binary'
-  .option '-e, --exec', 'Create nar as self executable binary'
+  .option '-e, --executable', 'Create nar as self executable binary'
   .option '-l, --binary-path <path>', 'Custom node binary to embed into the archive'
   .option '-s, --os <name>', 'Node.js OS binary platform to embed. Default to current OS'
   .option '-a, --arch <name>', 'Node.js OS binary architecture to embed. Default to ' + process.arch
