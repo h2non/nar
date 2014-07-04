@@ -54,7 +54,7 @@ program
   .action -> create ...
 
 create = (pkgpath, options) ->
-  { debug, verbose, output, file, exec } = options
+  { debug, verbose, output, file, executable } = options
   bar = create-bar!
 
   opts = { dest: output, file }
@@ -91,7 +91,7 @@ create = (pkgpath, options) ->
     "Created in: #{output}" |> echo
 
   create = ->
-    archive = nar[exec |> get-mode] opts
+    archive = nar[executable |> get-mode] opts
       .on 'start', on-start
       .on 'error', (debug |> on-error)
       .on 'download', on-download
