@@ -85,10 +85,17 @@ $ nar create --executable
 > Creates: myapp-0.1.0-linux-x64.nar
 ```
 
-Then you can run it, for example, as simple as:
+Then you can run it as simple as:
 ```bash
 $ chmod +x myapp-0.1.0-linux-x64.nar
 $ ./myapp-0.1.0-linux-x64.nar start --args-start='--port 8080'
+```
+
+If you need to pass custom arguments to your application, instead
+of use the `--args-start` flag to pass custom arguments,
+you could use the `exec` command directly
+```bash
+$ ./myapp-0.1.0-linux-x64.tar exec --port 8080 --env dev --debug
 ```
 
 You can also embed a custom node binary per platform, processor architecture and version

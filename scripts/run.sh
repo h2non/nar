@@ -2,6 +2,7 @@
 ##nar##
 
 output="`pwd`/.nar"
+command=$1
 
 die() {
   echo "Error: $*"
@@ -34,7 +35,12 @@ fi
 export PATH="${output}/bin:$PATH"
 nar_file=`cd .nar && ls *.nar | head -n 1`
 chmod +x ${output}/bin/node
-${output}/bin/node ${output}/nar/bin/nar $* ${output}/${nar_file}
+
+if [[ $command == 'exec' ]]; then
+  ${output}/bin/node ${output}/nar/bin/nar start --args-start="$*" ${output}/${nar_file}
+else
+  ${output}/bin/node ${output}/nar/bin/nar $* ${output}/${nar_file}
+fi
 
 exit $?
 

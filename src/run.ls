@@ -1,14 +1,17 @@
 require! {
   fw
   path.join
+  './utils'
   './extract'
   './download'
   child_process.spawn
   events.EventEmitter
 }
-{ next, tmpdir, read, has, rm, delimiter, is-win, is-array, replace-env-vars, is-url, handle-exit } = require './utils'
+{ next, tmpdir, read, has, rm, delimiter, is-win, is-array, replace-env-vars, is-url, handle-exit } = utils
 
-const hooks-keys = [ 'prestart' 'start' 'stop' 'poststop' ]
+const hooks-keys = <[ prestart start stop poststop ]>
+const regex-quotes = /^[\'\"]+|[\'\"]+$/g
+const regex-spaces = /\s+/g
 
 module.exports = run = (options) ->
   { path, hooks, args, dest, clean } = options = options |> apply
@@ -44,7 +47,11 @@ module.exports = run = (options) ->
 
     add-hook-fn = (cmd, hook) ->
       if args and (hook |> has args, _) and args[hook]
-        cmd += " " + if args[hook] |> is-array then args[hook].join ' ' else args[hook]
+        cmd += ' ' + (
+          (if args[hook] |> is-array then
+            args[hook].join ' '
+          else
+            args[hook]) |> parse-flags)
       cmd |> exec emitter, _, dest, hook |> buf.push
 
     add-start-main-script = ->
@@ -127,7 +134,8 @@ read-nar-json = (dest) ->
 get-hooks = (nar) ->
   scripts = nar.manifest.scripts
   hooks = {}
-  hooks-keys.for-each -> hooks <<< (it): scripts[it] if scripts and (it |> has scripts, _)
+  hooks-keys.for-each ->
+    hooks <<< (it): scripts[it] if scripts and (it |> has scripts, _)
   hooks
 
 is-binary-valid = (nar) ->
@@ -164,7 +172,11 @@ parse-command = (cmd) ->
   [ cmd, ...args ] = (cmd |> replace-env-vars |> clean-spaces).split ' '
   { cmd, args }
 
-clean-spaces = -> it.replace /\s+/g, ' '
+parse-flags = (flags) ->
+  (flags or '').trim!replace regex-quotes, '' .trim!
+
+clean-spaces = ->
+  it.replace regex-spaces, ' '
 
 set-environment = (dest) ->
   process.env.NODE_PATH = ('.node' |> join dest, _)

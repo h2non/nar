@@ -125,7 +125,7 @@ describe 'CLI', (_) ->
         rm dest
 
       it 'should run the archive', (done) ->
-        exec 'data', <[run ../archives/sample --verbose --args-start]> ++ ['--env ${ENV}'], (data, code) ->
+        exec 'data', <[run ../archives/sample --verbose]> ++ ['--args-start="--env=${ENV} --debug"'], (data, code) ->
           stdout := data
           expect code .to.be.equal 0
           done!
@@ -135,9 +135,11 @@ describe 'CLI', (_) ->
         expect stdout .to.match /prestart/
         expect stdout .to.match /start/
 
-      it 'should have a print the start argument', ->
-        expect stdout .to.match /\> --env/
-        expect stdout .to.match /\> dev/
+      it 'should have a print the env flag', ->
+        expect stdout .to.match /--env=dev/
+
+      it 'should have a print the debug flag', ->
+        expect stdout .to.match /--debug/
 
     describe '--args-prestart', (_) ->
 
@@ -154,7 +156,7 @@ describe 'CLI', (_) ->
         rm dest
 
       it 'should run the archive', (done) ->
-        exec 'data', <[run ../archives/sample --verbose --args-prestart]> ++ ['--env ${ENV}'], (data, code) ->
+        exec 'data', <[run ../archives/sample --verbose]> ++ ['--args-prestart="--env=${ENV} --debug"'], (data, code) ->
           stdout := data
           expect code .to.be.equal 0
           done!
@@ -164,8 +166,11 @@ describe 'CLI', (_) ->
         expect stdout .to.match /prestart/
         expect stdout .to.match /start/
 
-      it 'should have a print the start argument', ->
-        expect stdout .to.match /\--env dev/
+      it 'should have a print the custom env flag', ->
+        expect stdout .to.match /--env=dev/
+
+      it 'should have a print the custom debug flag', ->
+        expect stdout .to.match /--debug/
 
     describe '--no-hooks', (_) ->
 
