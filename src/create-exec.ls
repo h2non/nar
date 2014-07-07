@@ -10,7 +10,7 @@ require! {
   events.EventEmitter
 }
 { dirname, join, basename } = path
-{ rm, mk, is-win, tmpdir, copy, exists, once, extend, handle-exit, arch } = require './utils'
+{ rm, mk, is-win, tmpdir, copy-binary, rename, exists, once, extend, handle-exit, arch } = require './utils'
 
 const script = __dirname |> join _, '..', 'scripts/run.sh'
 const download-url = 'http://nodejs.org/dist'
@@ -72,10 +72,11 @@ module.exports = (options) ->
       nar-path |> rm
       clean!
 
-    copy-binary = (done) ->
+    copy-node-binary = (done) ->
       bin-dir = tmp-path |> join _, 'bin'
-      mk bin-dir
-      (node-binary or process.exec-path) |> copy _, bin-dir, done
+      bin-dir |> mk
+      (node-binary or process.exec-path)
+      |> copy-binary _, bin-dir, done
 
     copy-nar-pkg = (done) ->
       dest = tmp-path |> join _, 'nar'
@@ -102,7 +103,7 @@ module.exports = (options) ->
 
     generate = ->
       'generate' |> emitter.emit
-      fw.parallel [ copy-binary, copy-nar-pkg ], (err) ->
+      fw.parallel [ copy-node-binary, copy-nar-pkg ], (err) ->
         return new Error 'cannot copy files to temporal directory' |> on-error if err
         fw.series [ create-tarball, create-binary ], (err) ->
           return new Error 'cannot create the executable' |> on-error if err

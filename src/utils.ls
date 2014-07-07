@@ -10,7 +10,7 @@ require! {
   mk: mkdirp.sync
   findup: 'findup-sync'
 }
-{ normalize, join, basename, delimiter, extname } = path
+{ normalize, join, dirname, basename, delimiter, extname } = path
 { env, platform, exit, next-tick, arch } = process
 
 module.exports = _ = {
@@ -133,9 +133,12 @@ module.exports = _ = {
       """
       the nar file is an executable, you must run it as binary:
 
+        Example:
         $ chmod +x #{file}
-        $ ./#{file} extract --o some/dir
+        $ ./#{file} exec --port 8080 --verbose
 
+      You could use the exec, start, extract, install or list commands
+      For more usage information, see the docs at github.com/h2non/nar
       """
 
   archive-name: (nar) ->
@@ -160,6 +163,20 @@ module.exports = _ = {
       .pipe fs.create-write-stream dest
       .on 'close', -> dest |> cb null, _
       .on 'error', cb
+
+  copy-binary: (file, dest, cb) ->
+    file |> _.copy _, dest, (err, output) ->
+      return err |> cb if err
+      if (name = file |> basename) isnt 'node'
+        (output = (output |> dirname) |> join _, name) |> rename _, 'node', (err) ->
+          return err |> cb if err
+          output |> cb null, _
+      else
+        output |> cb null, _
+
+  rename: (orig, filename, cb) ->
+    base = orig |> dirname
+    orig |> fs.rename _, (filename |> join base, _), cb
 
   win-binary-script: (path) ->
     path = path |> normalize

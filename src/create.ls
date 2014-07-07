@@ -8,7 +8,7 @@ require! {
 }
 { dirname, basename, join, normalize } = path
 {
-  read, rm, tmpdir, clone, extend, copy, keys, archive-name,
+  read, rm, tmpdir, clone, extend, copy-binary, keys, archive-name,
   is-object, is-file, is-dir, is-string, mk, stringify,
   vals, exists, checksum, lines, next, is-array, now,
   replace-env-vars, discover-pkg, handle-exit, once, is-win
@@ -136,7 +136,7 @@ module.exports = create = (options) ->
 
       pkg-info |> emitter.emit 'archive', _
 
-      copy binary-path, tmp-path, (err, file) ->
+      copy-binary binary-path, tmp-path, (err, file) ->
         return new Error "Error while copying the node binary: #{err}" |> on-error if err
         file |> basename |> config.patterns.push
         { name: pkg-info.archive, pkg-info.type, size: '10485760', source-path: binary-path } |> on-entry
