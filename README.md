@@ -92,8 +92,7 @@ $ ./myapp-0.1.0-linux-x64.nar start --args-start='--port 8080'
 ```
 
 If you need to pass custom arguments to your application, instead
-of use the `--args-start` flag to pass custom arguments,
-you could use the `exec` command directly
+of use the `--args-start` flag, you could use the `exec` command directly
 ```bash
 $ ./myapp-0.1.0-linux-x64.tar exec --port 8080 --env dev --debug
 ```
