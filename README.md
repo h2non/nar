@@ -2,7 +2,7 @@
 # nar [![Build Status](https://api.travis-ci.org/h2non/nar.svg?branch=master)][travis] [![Dependency Status](https://gemnasium.com/h2non/nar.svg)][gemnasium] [![NPM version](https://badge.fury.io/js/nar.svg)][npm] [![Stories in Ready](https://badge.waffle.io/h2non/nar.png?label=ready&title=Ready)](https://waffle.io/h2non/nar)
 
 **nar** is a simple application packager utility for [node.js](http://nodejs.org)
-that **creates fully self-contained applications**
+that **creates full self-contained executable applications**
 that are **ready-to-ship-and-run**
 
 It provides built-in support for creating, extracting, installing and running node
