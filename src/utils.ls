@@ -156,6 +156,10 @@ module.exports = _ = {
       .on 'end', -> hash.digest 'hex' |> cb null, _
       .on 'error', cb
 
+  rename: (orig, filename, cb) ->
+    base = orig |> dirname
+    orig |> fs.rename _, (filename |> join base, _), cb
+
   copy: (file, dest, cb) ->
     filename = file |> basename
     dest = filename |> join dest, _
@@ -168,15 +172,11 @@ module.exports = _ = {
     file |> _.copy _, dest, (err, output) ->
       return err |> cb if err
       if (name = file |> basename) isnt 'node'
-        (output = (output |> dirname) |> join _, name) |> rename _, 'node', (err) ->
+        (output = (output |> dirname) |> join _, name) |> _.rename _, 'node', (err) ->
           return err |> cb if err
           output |> cb null, _
       else
         output |> cb null, _
-
-  rename: (orig, filename, cb) ->
-    base = orig |> dirname
-    orig |> fs.rename _, (filename |> join base, _), cb
 
   win-binary-script: (path) ->
     path = path |> normalize
