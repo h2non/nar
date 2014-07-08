@@ -7,7 +7,7 @@ require! {
   findup: 'findup-sync'
 }
 { symlink-sync, chmod-sync, readdir-sync } = fs
-{ join, dirname, normalize, sep } = path
+{ join, dirname, normalize, sep, relative } = path
 { next, copy, is-file, is-dir, tmpdir, rm, mk, read, write, clone, add-extension, is-executable, executable-msg, is-win, is-string, is-object, win-binary-script } = require './utils'
 
 module.exports = extract = (options = {}) ->
@@ -62,23 +62,13 @@ module.exports = extract = (options = {}) ->
         for own name, path of bin when path
         then path |> create-link name, _
 
-    set-execution-perms = ->
-      deps-bin-dir = '.bin' |> join dest, 'node_modules', _
-      bin-dir = 'bin' |> join dest, _
-      [ bin-dir, deps-bin-dir ]
-        .filter (|> is-dir)
-        .for-each (dir) ->
-          (dir |> readdir-sync).for-each ->
-            try (it |> join dir, _) |> chmod-sync _, '775'
-
     extract-end = ->
       if type is 'global-dependency'
         pkg = (dest |> join _, 'package.json') |> read
         pkg |> process-global-binaries if pkg
-      set-execution-perms!
       done!
 
-    do-extractor = do ->
+    do ->
       dest |> mk unless dest |> is-dir
       (options |> unpack)
         .on 'error', on-error
@@ -99,14 +89,31 @@ module.exports = extract = (options = {}) ->
     mk target unless target |> is-dir
     origin |> copy _, target, done
 
+  create-symlinks = (files) -> (done) ->
+    { links } = files
+    base = dest |> join _, 'node_modules', '.bin'
+    cwd = process.cwd!
+
+    base |> mk
+    base |> process.chdir
+    for own name, link of links
+      when (link |> is-file) and not (name |> is-file)
+      then link |> symlink-sync _, name
+    cwd |> process.chdir
+    done!
+
   get-extract-files = (nar) ->
     tasks = []
+    links = null
     nar.files.for-each ->
-      emitter.emit 'archive', it
+      emitter.emit 'archive', it if it.type isnt 'binaries'
       if it.type is 'binary'
         it |> copy-bin-fn |> tasks.push
+      else if it.type is 'binaries'
+        links := it
       else
         it |> extractor-fn |> tasks.push
+    links |> create-symlinks |> tasks.push if links
     tasks
 
   extract-archives = (done) ->
@@ -120,6 +127,15 @@ module.exports = extract = (options = {}) ->
       return err |> on-error if err
       done!
 
+  set-execution-perms = ->
+    deps-bin-dir = dest |> join _, 'node_modules', '.bin'
+    bin-dir = 'bin' |> join dest, _
+    [ bin-dir, deps-bin-dir ]
+      .filter (|> is-dir)
+      .for-each (dir) ->
+        (dir |> readdir-sync).for-each ->
+          try (it |> join dir, _) |> chmod-sync _, '775'
+
   extract-nar = do ->
     config = options |> clone
     config <<< dest: tmpdir
@@ -128,6 +144,7 @@ module.exports = extract = (options = {}) ->
   extract-tasks = ->
     fw.series [ extract-nar, extract-archives, copy-nar-json ], (err) ->
       return err |> on-error if err
+      set-execution-perms!
       on-end!
 
   do-extract = -> next ->

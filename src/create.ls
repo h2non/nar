@@ -3,16 +3,17 @@ require! {
   fw
   path
   './pack'
+  './utils'
   requireg.resolve
   events.EventEmitter
 }
 { dirname, basename, join, normalize } = path
 {
   read, rm, tmpdir, clone, extend, copy-binary, keys, archive-name,
-  is-object, is-file, is-dir, is-string, mk, stringify,
+  is-object, is-file, is-dir, is-link, is-string, mk, stringify,
   vals, exists, checksum, lines, next, is-array, now,
   replace-env-vars, discover-pkg, handle-exit, once, is-win
-} = require './utils'
+} = utils
 
 const nar-file = '.nar.json'
 const ext = 'nar'
@@ -181,16 +182,28 @@ module.exports = create = (options) ->
 
     add-bin-directory = ->
       bin-dir = join base, ('.bin' |> get-module-path)
-      {
-        name: 'modules-bin-dir'
-        dest: dest
-        src: bin-dir
-      } |> it.push if bin-dir |> is-dir
+      if bin-dir |> is-dir
+        links = {}
+        (bin-dir |> fs.readdir-sync)
+          .filter -> not((/^\./).test it)
+          .filter -> it isnt 'Thumbs.db'
+          .for-each (file) ->
+            if is-win
+              # beta implementation for Windows binaries: pending parse batch code
+              links <<< (file): (file |> join (bin-dir |> join _, '..', file, 'bin', file), _)
+            else
+              link-path = file |> join bin-dir, _
+              links <<< (file): link-path |> fs.readlink-sync if link-path |> is-link
+        {
+          name: '_modules-bindir'
+          src: bin-dir
+          dest, links
+        } |> it.push
 
     get-pkg-path = (name) ->
       path = name |> get-module-path |> join base, _
       unless path |> join _, 'package.json' |> is-file
-        throw new Error "Missing dependency in node_modules: #{name}"
+        throw new Error "Missing required dependency in node_modules: #{name}\nRun: npm install"
       path
 
     find-pkg = ->
@@ -200,37 +213,45 @@ module.exports = create = (options) ->
         src: it |> get-pkg-path
 
     calculate-checksum = (pkg-path, pkg-info, done) ->
-      checksum pkg-path, (err, hash) ->
+      pkg-path |> checksum _, (err, hash) ->
         throw new Error "Error while calculating checksum for package #{pkg-info.name}" if err
         pkg-info <<< checksum: hash
         pkg-info <<< dest: pkg-info.dest
-        pkg-info |> files.push
-        done null, pkg-info
+        pkg-info |> done null, _
 
     define-pkg-info = (pkg, done) ->
-      pkg-info =
-        name: pkg.name
-        archive: pkg.file
+      pkg-info = name: pkg.name
+      pkg-info <<< archive: pkg.file if pkg.file
 
-      if (pkg.name |> globals.index-of) isnt -1
-        pkg-info <<< dest: ".node/lib/node/#{pkg.name}"
-        pkg-info <<< type: 'global-dependency'
+      if pkg.name is '_modules-bindir'
+        pkg-info <<< type: 'binaries'
+        pkg-info <<< { pkg.links }
+        pkg-info |> files.push
+        pkg-info |> done null, _
       else
-        pkg-info <<< dest: pkg.name |> get-module-path
-        pkg-info <<< type: 'dependency'
+        if (pkg.name |> globals.index-of) isnt -1
+          pkg-info <<< dest: ".node/lib/node/#{pkg.name}"
+          pkg-info <<< type: 'global-dependency'
+        else
+          pkg-info <<< dest: pkg.name |> get-module-path
+          pkg-info <<< type: 'dependency'
 
-      pkg-info |> emitter.emit 'archive', _
-
-      pkg.path |> calculate-checksum _, pkg-info, done
+        pkg-info |> emitter.emit 'archive', _
+        pkg.path |> calculate-checksum _, pkg-info, (err, pkg-info) ->
+          pkg-info |> files.push
+          done ...
 
     do-pack = (options, done) ->
-      (options |> pack)
-        .on 'error', done
-        .on 'entry', on-entry
-        .on 'end', -> done null, it
+      if options.name is '_modules-bindir'
+        options |> done null, _
+      else
+        (options |> pack)
+          .on 'error', done
+          .on 'entry', on-entry
+          .on 'end', -> done null, it
 
-    compress-pkg = (pkg, done) ->
-      fw.map pkg, do-pack, (err, results) ->
+    compress-dep-pkgs = (pkgs, done) ->
+      fw.map pkgs, do-pack, (err, results) ->
         return err |> done if err
         fw.map results, define-pkg-info, done
 
@@ -238,7 +259,7 @@ module.exports = create = (options) ->
       module = name |> resolve
       throw new Error "Cannot find global dependency: #{name}" unless module
 
-      if json-path = discover-pkg (module |> dirname)
+      if json-path = (module |> dirname) |> discover-pkg
         if pkg = json-path |> read
           pkg.name |> globals.push
           src = json-path |> dirname
@@ -265,7 +286,7 @@ module.exports = create = (options) ->
 
     list = dependencies-list!
     if list.length
-      list |> fw.each _, compress-pkg, (|> cb _, files)
+      list |> fw.each _, compress-dep-pkgs, (|> cb _, files)
     else
       cb!
 
@@ -353,7 +374,7 @@ get-binary-path = (options) ->
   binary |> normalize |> replace-env-vars
 
 get-module-path = ->
-  it = '.bin' if it is 'modules-bin-dir'
+  it = '.bin' if it is '_modules-bindir'
   it |> join 'node_modules', _
 
 match-dependencies = (options, pkg) ->

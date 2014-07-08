@@ -1,4 +1,5 @@
 { rm, mk, nar, read, chdir, exists, expect, version, is-executable } = require './lib/helper'
+{ symlink-sync } = require 'fs'
 
 describe 'nar', ->
 
@@ -34,6 +35,11 @@ describe 'nar', ->
         rm dest
         mk dest
         chdir dest
+
+      before ->
+        rm "#{orig}/node_modules/.bin"
+        mk "#{orig}/node_modules/.bin"
+        symlink-sync "#{orig}/node_modules/hu/package.json" "#{orig}/node_modules/.bin/hu"
 
       after ->
         chdir "#{__dirname}/.."

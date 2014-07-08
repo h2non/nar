@@ -52,8 +52,11 @@ module.exports = _ = {
   is-dir: ->
     (it |> _.exists) and (it |> normalize |> fs.lstat-sync).is-directory!
 
+  is-link: ->
+    (it |> normalize |> fs.lstat-sync).is-symbolic-link!
+
   is-file: ->
-    (it |> _.exists) and (it |> normalize |> fs.lstat-sync).is-file!
+    (it |> _.exists) and ((it |> normalize |> fs.lstat-sync).is-file! or (it |> _.is-link))
 
   random: ->
     _.now! + (Math.floor Math.random! * 10000)
