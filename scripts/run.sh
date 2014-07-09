@@ -36,9 +36,15 @@ export PATH="${output}/bin:$PATH"
 nar_file=`cd .nar && ls *.nar | head -n 1`
 chmod +x ${output}/bin/node
 
-if [[ $command == 'exec' ]]; then
-  shift 1
-  ${output}/bin/node ${output}/nar/bin/nar start --args-start="$*" ${output}/${nar_file}
+if [[ $command == 'exec' || -z $command ]]; then
+  if [[ $command == 'exec' ]]; then 
+    shift 1
+  fi
+  if [ $# -eq 0 ]; then 
+    ${output}/bin/node ${output}/nar/bin/nar start ${output}/${nar_file}
+  else
+    ${output}/bin/node ${output}/nar/bin/nar start --args-start="$*" ${output}/${nar_file}
+  fi
 else
   ${output}/bin/node ${output}/nar/bin/nar $* ${output}/${nar_file}
 fi
