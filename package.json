@@ -40,7 +40,7 @@
     "portable"
   ],
   "dependencies": {
-    "commander": "~2.2.0",
+    "commander": "~2.3.0",
     "colors": "~0.6.2",
     "hu": "~0.1.0",
     "findup-sync": "~0.1.3",
