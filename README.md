@@ -314,7 +314,7 @@ Command specific help:
 ```
 
 ### create
-Alias: `c`
+Alias: `c` `build`
 
 Create a new archive from an existent application
 
@@ -369,7 +369,7 @@ $ nar install -g http://server.net/app-0.1.0.nar
 ```
 
 ### get
-Alias: `g`
+Alias: `g` `download`
 
 Download a remote archive
 
@@ -381,7 +381,7 @@ $ nar get http://server.net/app.nar --strict-ssl --timeout 60000
 ```
 
 ### list
-Alias: `l`
+Alias: `l` `show`
 
 List files from archive
 

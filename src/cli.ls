@@ -14,6 +14,9 @@ const cmd-map =
   i: 'install'
   g: 'get'
   start: 'run'
+  build: 'create'
+  download: 'get'
+  show: 'list'
 
 module.exports <<< parse: -> (it |> map |> program.parse)
 
