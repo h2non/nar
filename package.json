@@ -60,7 +60,7 @@
   "devDependencies": {
     "chai": "~1.9.1",
     "semver": "~2.3.1",
-    "mocha": "~1.20.1",
+    "mocha": "~1.21.1",
     "LiveScript": "~1.2.0",
     "stubby": "~0.2.3",
     "node-static": "~0.7.3"
