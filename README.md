@@ -50,22 +50,22 @@ $ npm install nar --save
 
 ## Basic usage
 
-Create new archive
+Creating a new archive
 ```bash
 $ nar create
 ```
 
-Extract files
+Extracting the application
 ```bash
 $ nar extract app.nar
 ```
 
-Or directly run it
+Running the application
 ```bash
 $ nar run app.nar
 ```
 
-Install (default to `node_modules`)
+Installing from remote to `node_modules` (local path is also supported)
 ```bash
 $ nar install http://server.net/app-0.1.0.nar --save
 ```
@@ -88,13 +88,13 @@ $ nar create --executable
 Then you can run it as simple as:
 ```bash
 $ chmod +x myapp-0.1.0-linux-x64.nar
-$ ./myapp-0.1.0-linux-x64.nar start --args-start='--port 8080'
+$ ./myapp-0.1.0-linux-x64.nar start --args-start='--port 8080 --env dev'
 ```
 
 If you need to pass custom arguments to your application, instead
 of use the `--args-start` flag, you could use the `exec` command directly
 ```bash
-$ ./myapp-0.1.0-linux-x64.tar exec --port 8080 --env dev --debug
+$ ./myapp-0.1.0-linux-x64.tar exec --port 8080 --env dev
 ```
 
 You can also embed a custom node binary per platform, processor architecture and version
