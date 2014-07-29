@@ -5,7 +5,7 @@
 that **[creates](https://gist.github.com/h2non/ad21e0eda698e68e7743) full self-contained executable applications**
 that are **ready-to-ship-and-run**
 
-It provides built-in support for creating, extracting, installing and running node
+It provides **built-in support** for **creating**, **extracting**, **installing** and **running** node
 applications easily from a simple [configuration](#configuration) through
 a featured [command-line interface](#command-line-interface)
 and full asynchronous event-based [programmatic API](#programmatic-api)
