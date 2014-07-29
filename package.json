@@ -65,5 +65,8 @@
     "stubby": "~0.2.3",
     "node-static": "~0.7.3"
   },
-  "bundledDependencies": ["hu", "fw"]
+  "bundledDependencies": [
+    "hu",
+    "fw"
+  ]
 }
