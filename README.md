@@ -596,7 +596,7 @@ To be exactly, the binary that
 [process.execPath](http://nodejs.org/api/process.html#process_process_execpath) points to
 
 That means, if you create an executable archive in OSX and then deploy it into a GNU/Linux server, it will fail.
-If you want to create a `nar` archive for different OS, you must create a `nar` [executable](#executable) 
+If you want to create a `nar` archive for different OS, you must create a `nar` [executable](#executables) 
 passing the target OS and processor architecture
 
 ##### When will be used embedbed node binary in the archive?
