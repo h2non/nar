@@ -322,7 +322,7 @@ Create a new archive from an existent application
 $ nar create
 $ nar create some/path --debug
 $ nar create path/to/package.json -o some/dir
-$ nar create --dev-dependencies --global-dependencies 'npm,grunt-cli'
+$ nar create --dev-dependencies --global-dependencies 'npm, grunt-cli'
 $ nar create --omit-dependencies
 $ nar create --verbose
 $ nar create --executable
