@@ -55,19 +55,24 @@ Creating a new archive
 $ nar create
 ```
 
-Extracting the application
+Extracting archive files
 ```bash
-$ nar extract app.nar
+$ nar extract app-0.1.0.nar
 ```
 
-Running the application
+Running an application archive
 ```bash
-$ nar run app.nar
+$ nar run app-0.1.0.nar
 ```
 
-Installing from remote to `node_modules` (local path is also supported)
+Installing nar archive (default to `node_modules`)
 ```bash
-$ nar install http://server.net/app-0.1.0.nar --save
+$ nar install app-0.1.0.nar --save[-dev]
+```
+
+Installing from remote server is also supported
+```bash
+$ nar install http://server.net/app-0.1.0.nar --save[-dev]
 ```
 
 ### Executables
