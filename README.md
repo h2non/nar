@@ -408,10 +408,10 @@ var nar = require('nar')
 var options = {
   path: 'my/package.json', // defaults to ./package.json
   dest: 'build/', // defaults to current directory
-  binary: true,
-  dependencies: true,
-  devDependencies: true,
-  globalDependencies: ['npm', 'grunt-cli']
+  binary: true, // embed node binary to use it when run the archive
+  dependencies: true, // embed dependencies declared in package.json
+  devDependencies: true, // the same for dev dependencies
+  globalDependencies: ['npm', 'grunt-cli'] // and for globals :)
 }
 
 try {
