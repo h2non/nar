@@ -568,6 +568,9 @@ Example using `tar`
 $ tar xvfz app-0.1.0.nar
 ```
 
+**Note**: this is not applied for `nar` executable, since they have another format 
+and not just a tarball file interface
+
 ##### Is required to have installed node or nar in order to work with nar archives?
 
 No. From version `0.3.0` you can create executable binary-like applications containers
@@ -581,7 +584,7 @@ $ nar create --executable
 
 Then you could simply run it like this:
 ```bash
-$ ./app-0.1.0.nar [run|extract|install] [options]
+$ ./app-0.1.0-linux-x64.nar [run|extract|install] [options]
 ```
 
 If you don't create your archive with this option, you must to have `nar`
@@ -589,7 +592,7 @@ If you don't create your archive with this option, you must to have `nar`
 
 ##### nar executables runs in Windows?
 
-No. nar executables only can run in any UNIX-like OS
+No. nar executables only can run in GNU/Linux, Darwin or SunOS
 
 Is not planned to support it due to technical limitations in Windows OS
 
@@ -604,11 +607,11 @@ That means, if you create an executable archive in OSX and then deploy it into a
 If you want to create a `nar` archive for different OS, you must create a `nar` [executable](#executables)
 passing the target OS and processor architecture
 
-##### When will be used embedbed node binary in the archive?
+##### When will be used embedded node binary in the archive?
 
-Yes.
-If you use the `run` command, if the archive was created with the node binary embedded,
-your application will run with the self-contained binary
+When you use the `run` command, if the archive you are running has a node binary embedded
+and therefore it was created with the `binary` option set `true`,
+your application will use it transparently
 
 ##### Which MIME type is recommened to serve nar files?
 
