@@ -568,7 +568,7 @@ Example using `tar`
 $ tar xvfz app-0.1.0.nar
 ```
 
-**Note**: this is not applied for `nar` executable, since they have another format 
+**Note**: this is not applied for `nar` executables, since they have another format 
 and not just a tarball file interface
 
 ##### Is required to have installed node or nar in order to work with nar archives?
