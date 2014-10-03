@@ -270,7 +270,7 @@ dependending of the runtime environment
 nar will find ignore-like files in order to load
 and match patterns of files to discard
 
-Supported files by priority are (the first found will discard others ones):
+Supported files by priority are (the first one found implies to ignore other ones):
 
 - `.narignore`
 - `.buildignore`
