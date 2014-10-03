@@ -220,10 +220,10 @@ files patterns to discard from the archive
 Type: `array`
 Default: `['**']`
 
-[Glob][glob] patterns for matching files to include or exclude in the archive
+[Glob][glob] patterns for matching files to include or exclude in the archive.
 OS level specific hidden files such as `.DS_Store` or `Thumbs.db` will be ignored by default
 
-Aditionally, nar will ignore matched patterns defined in [ignore-like files](#ignoring-files)
+Aditionally, `nar` will ignore matched patterns defined in [ignore-like files](#ignoring-files)
 
 ### Stage hooks
 
@@ -270,7 +270,7 @@ dependending of the runtime environment
 nar will find ignore-like files in order to load
 and match patterns of files to discard
 
-Supported files (by priority):
+Supported files by priority are (the first found will discard others ones):
 
 - `.narignore`
 - `.buildignore`
