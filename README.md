@@ -10,7 +10,7 @@ applications easily from a simple [configuration](#configuration) through
 a featured [command-line interface](#command-line-interface)
 and full asynchronous event-based [programmatic API](#programmatic-api)
 
-It could be an great solution for distributing, running and testing
+It could be a great solution for distributing, running and testing
 private node.js applications that are outside of the `npm` ecosystem
 
 Questions? Read the [FAQs](#faq) or [open](https://github.com/h2non/nar/issues/new) an issue
