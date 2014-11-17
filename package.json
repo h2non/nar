@@ -40,7 +40,7 @@
     "portable"
   ],
   "dependencies": {
-    "archiver": "~0.10.0",
+    "archiver": "~0.12.0",
     "cli-table": "~0.3.0",
     "colors": "~1.0.2",
     "commander": "~2.5.0",
