@@ -49,7 +49,7 @@ $ npm install nar --save
 
 ## Basic usage
 
-Creating a new archive
+Creating a new archive (reading metadata from `package.json`)
 ```bash
 $ nar create
 ```
