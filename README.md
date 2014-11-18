@@ -576,12 +576,12 @@ No. From version `0.3.0` you can create executable binary-like applications cont
 and there is no more required to have previously installed `node` or `nar` in order
 to run, install or extract an application
 
-You must create a executable nar archive
+You can create an executable archive simply passing a flag
 ```bash
 $ nar create --executable
 ```
 
-Then you could simply run it like this:
+Then you could run it like a binary:
 ```bash
 $ ./app-0.1.0-linux-x64.nar [run|extract|install] [options]
 ```
@@ -591,7 +591,7 @@ If you don't create your archive with this option, you must to have `nar`
 
 ##### nar executables runs in Windows?
 
-No. nar executables only can run in GNU/Linux, Darwin or SunOS
+No. `nar` executables only can run in POSIX operative systems (GNU/Linux, Darwin or SunOS)
 
 Is not planned to support it due to technical limitations in Windows OS
 
@@ -604,7 +604,11 @@ To be exactly, the binary that
 
 That means, if you create an executable archive in OSX and then deploy it into a GNU/Linux server, it will fail.
 If you want to create a `nar` archive for different OS, you must create a `nar` [executable](#executables)
-passing the target OS and processor architecture
+passing the target OS and, optionally, the processor architecture or node.js version, like this:
+
+```bash
+nar create --executable --os linux --arch x64 --node 0.11.9
+```
 
 ##### When will be used embedded node binary in the archive?
 
