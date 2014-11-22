@@ -595,6 +595,12 @@ No. `nar` executables only can run in POSIX operative systems (GNU/Linux, Darwin
 
 Is not planned to support it due to technical limitations in Windows OS
 
+##### There is the maximum file size for nar archives?
+
+In teory there isn't a maximum size, it depends on your machine resources and your OS (if you are running Windows) when creating or extracting archives
+
+`nar` was tested in real projects creating archives which contains thousands of files and more than 100 MB of file size
+
 ##### Which binary is used in nar executables?
 
 The node binary that is begin used when the `nar` archive is created
