@@ -1,5 +1,5 @@
 
-# nar [![Build Status](https://api.travis-ci.org/h2non/nar.svg?branch=master)][travis] [![Dependency Status](https://gemnasium.com/h2non/nar.svg)][gemnasium] [![NPM version](https://badge.fury.io/js/nar.svg)][npm] [![Stories in Ready](https://badge.waffle.io/h2non/nar.png?label=ready&title=Ready)](https://waffle.io/h2non/nar)
+# nar [![Build Status](https://api.travis-ci.org/h2non/nar.svg?branch=master)][travis] [![Dependency Status](https://gemnasium.com/h2non/nar.svg)][gemnasium] [![NPM version](https://badge.fury.io/js/nar.svg)][npm]  ![Downloads](https://img.shields.io/npm/dm/nar.svg) [![Stories in Ready](https://badge.waffle.io/h2non/nar.png?label=ready&title=Ready)](https://waffle.io/h2non/nar)
 
 **nar** is a simple application packager utility for [node.js](http://nodejs.org)
 that **[creates](https://gist.github.com/h2non/ad21e0eda698e68e7743) self-contained executable applications** that are **ready-to-ship-and-run**
@@ -49,7 +49,7 @@ $ npm install nar --save
 
 ## Basic usage
 
-Creating a new archive
+Creating a new archive (reading metadata from `package.json`)
 ```bash
 $ nar create
 ```
@@ -576,12 +576,12 @@ No. From version `0.3.0` you can create executable binary-like applications cont
 and there is no more required to have previously installed `node` or `nar` in order
 to run, install or extract an application
 
-You must create a executable nar archive
+You can create an executable archive simply passing a flag
 ```bash
 $ nar create --executable
 ```
 
-Then you could simply run it like this:
+Then you could run it like a binary:
 ```bash
 $ ./app-0.1.0-linux-x64.nar [run|extract|install] [options]
 ```
@@ -591,9 +591,15 @@ If you don't create your archive with this option, you must to have `nar`
 
 ##### nar executables runs in Windows?
 
-No. nar executables only can run in GNU/Linux, Darwin or SunOS
+No. `nar` executables only can run in POSIX operative systems (GNU/Linux, Darwin or SunOS)
 
 Is not planned to support it due to technical limitations in Windows OS
+
+##### There is the maximum file size for nar archives?
+
+In teory there isn't a maximum size, it depends on your machine resources and your OS (if you are running Windows) when creating or extracting archives
+
+`nar` was tested in real projects creating archives which contains thousands of files and more than 100 MB of file size
 
 ##### Which binary is used in nar executables?
 
@@ -604,7 +610,11 @@ To be exactly, the binary that
 
 That means, if you create an executable archive in OSX and then deploy it into a GNU/Linux server, it will fail.
 If you want to create a `nar` archive for different OS, you must create a `nar` [executable](#executables)
-passing the target OS and processor architecture
+passing the target OS and, optionally, the processor architecture or node.js version, like this:
+
+```bash
+nar create --executable --os linux --arch x64 --node 0.11.9
+```
 
 ##### When will be used embedded node binary in the archive?
 
