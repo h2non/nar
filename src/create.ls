@@ -147,7 +147,7 @@ module.exports = create = (options) ->
           pkg-info |> nar-config.files.push
           exec!
 
-    if options.binary
+    if options.binary and not options.executable
       nar-config <<< binary: yes
       add-binary!
     else
@@ -342,7 +342,7 @@ get-filename = (options, pkg = {}) ->
     name = pkg.name or 'unnamed'
     name += "-#{pkg.version}" if pkg.version
 
-  name += "-#{process.platform}-#{process.arch}" if binary
+  name += "-#{process.platform}-#{process.arch}" if binary and not options.executable
   name
 
 apply-pkg-options = (options, pkg) ->

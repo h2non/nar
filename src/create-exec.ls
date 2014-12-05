@@ -156,6 +156,7 @@ apply = (options) ->
   options |> set-os
   options |> set-arch
   options |> set-node
+  options <<< executable: yes
   options
 
 find-index = (arr, item) ->
