@@ -127,7 +127,7 @@ Example `package.json` with full configuration
   "archive": {
     "dependencies": true,
     "devDependencies": false,
-    "globalDependencies": ["npm", "grunt-cli", "bower"],
+    "globalDependencies": ["npm", "bower", "http-server"],
     "patterns": ["**", "!test/**"]
   },
   "scripts": {
