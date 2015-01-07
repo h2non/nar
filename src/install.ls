@@ -1,14 +1,15 @@
 require! {
-  fs
-  ncp.ncp
-  path.join
+  './utils'
   './extract'
   './download'
-  requireg.resolve
-  events.EventEmitter
+  ncp: { ncp }
+  path: { join }
+  requireg: { resolve }
+  events: { EventEmitter }
+  fs: { symlink-sync, chmod-sync }
 }
-{ symlink-sync, chmod-sync } = fs
-{ rm, mk, next, write, read, is-win, is-string, is-object, is-array, replace-env-vars, is-file, is-url, is-dir, clone, extend, tmpdir, discover-pkg, win-binary-script } = require './utils'
+
+{ rm, mk, next, write, read, is-win, is-string, is-object, is-array, replace-env-vars, is-file, is-url, is-dir, clone, extend, tmpdir, discover-pkg, win-binary-script } = utils
 
 const defaults =
   gzip: yes

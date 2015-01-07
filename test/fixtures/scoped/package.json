@@ -1,0 +1,16 @@
+{
+  "name": "test",
+  "version": "0.1.0",
+  "main": "./main",
+  "scripts": {
+    "prestart": "echo 'prestart ${NODE_NAR}'",
+    "start": "node main",
+    "stop": "rm -rf .tmp"
+  },
+  "archive": {
+    "dependencies": true
+  },
+  "dependencies": {
+    "@private/test": "~0.1.0"
+  }
+}

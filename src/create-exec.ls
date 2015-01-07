@@ -1,16 +1,17 @@
 require! {
   fw
-  path
-  ncp.ncp
   './pack'
+  './utils'
   './unpack'
   './create'
   './download'
-  child_process.exec
-  events.EventEmitter
+  ncp: { ncp }
+  child_process: { exec }
+  events: { EventEmitter }
+  path: { dirname, join, basename }
 }
-{ dirname, join, basename } = path
-{ rm, mk, is-win, tmpdir, copy-binary, rename, exists, once, extend, handle-exit, arch } = require './utils'
+
+{ rm, mk, is-win, tmpdir, copy-binary, rename, exists, once, extend, handle-exit, arch } = utils
 
 const script = __dirname |> join _, '..', 'scripts/run.sh'
 const download-url = 'http://nodejs.org/dist'

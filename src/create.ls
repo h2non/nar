@@ -4,10 +4,11 @@ require! {
   path
   './pack'
   './utils'
-  requireg.resolve
-  events.EventEmitter
+  requireg: { resolve }
+  events: { EventEmitter }
+  path: { dirname, basename, join, normalize }
 }
-{ dirname, basename, join, normalize } = path
+
 {
   read, rm, tmpdir, clone, extend, copy-binary, keys, archive-name,
   is-object, is-file, is-dir, is-link, is-string, mk, stringify,
@@ -15,6 +16,7 @@ require! {
   replace-env-vars, discover-pkg, handle-exit, once, is-win
 } = utils
 
+const BINDIR = '_modules-bindir'
 const nar-file = '.nar.json'
 const ext = 'nar'
 const ignored-files = [ '!node_modules/**' ]
@@ -195,7 +197,7 @@ module.exports = create = (options) ->
               link-path = file |> join bin-dir, _
               links <<< (file): link-path |> fs.readlink-sync if link-path |> is-link
         {
-          name: '_modules-bindir'
+          name: BINDIR
           src: bin-dir
           dest, links
         } |> it.push
@@ -219,30 +221,36 @@ module.exports = create = (options) ->
         pkg-info <<< dest: pkg-info.dest
         pkg-info |> done null, _
 
+    define-pkg-bindir-info = (pkg-info, pkg) ->
+      pkg-info <<< type: 'binaries'
+      pkg-info <<< { pkg.links }
+      pkg-info |> files.push
+      pkg-info
+
+    define-pkg-dependency-info = (pkg-info, pkg, done) ->
+      if (pkg.name |> globals.index-of) isnt -1
+        pkg-info <<< dest: ".node/lib/node/#{pkg.name}"
+        pkg-info <<< type: 'global-dependency'
+      else
+        pkg-info <<< dest: pkg.name |> get-module-path
+        pkg-info <<< type: 'dependency'
+
+      pkg-info |> emitter.emit 'archive', _
+      pkg.path |> calculate-checksum _, pkg-info, (err, pkg-info) ->
+        pkg-info |> files.push
+        done ...
+
     define-pkg-info = (pkg, done) ->
       pkg-info = name: pkg.name
       pkg-info <<< archive: pkg.file if pkg.file
 
-      if pkg.name is '_modules-bindir'
-        pkg-info <<< type: 'binaries'
-        pkg-info <<< { pkg.links }
-        pkg-info |> files.push
-        pkg-info |> done null, _
+      if pkg.name is BINDIR
+        pkg-info |> define-pkg-bindir-info _, pkg |> done null, _
       else
-        if (pkg.name |> globals.index-of) isnt -1
-          pkg-info <<< dest: ".node/lib/node/#{pkg.name}"
-          pkg-info <<< type: 'global-dependency'
-        else
-          pkg-info <<< dest: pkg.name |> get-module-path
-          pkg-info <<< type: 'dependency'
-
-        pkg-info |> emitter.emit 'archive', _
-        pkg.path |> calculate-checksum _, pkg-info, (err, pkg-info) ->
-          pkg-info |> files.push
-          done ...
+        pkg-info |> define-pkg-dependency-info _, pkg, done
 
     do-pack = (options, done) ->
-      if options.name is '_modules-bindir'
+      if options.name is BINDIR
         options |> done null, _
       else
         (options |> pack)
@@ -299,7 +307,7 @@ module.exports = create = (options) ->
 write-config = (config, tmpdir, cb) ->
   file = tmpdir |> join _, nar-file
   data = config |> stringify
-  fs.write-file file, data, cb
+  data |> fs.write-file file, _, cb
 
 nar-manifest = (name, pkg) ->
   { platform, arch, version } = process
@@ -374,7 +382,7 @@ get-binary-path = (options) ->
   binary |> normalize |> replace-env-vars
 
 get-module-path = ->
-  it = '.bin' if it is '_modules-bindir'
+  it = '.bin' if it is BINDIR
   it |> join 'node_modules', _
 
 match-dependencies = (options, pkg) ->

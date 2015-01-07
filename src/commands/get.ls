@@ -1,9 +1,10 @@
 require! {
-  '../nar'
   progress
-  program: commander
+  '../nar'
+  './common'
+  commander: program
 }
-{ echo, exit, is-url, create-bar, on-download, on-error, on-progress, update-bar } = require './common'
+{ echo, exit, is-url, create-bar, on-download, on-error, on-progress, update-bar } = common
 
 program
   .command 'get <url>'

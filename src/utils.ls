@@ -5,22 +5,27 @@ require! {
   path
   crypto
   './status'
-  buffer.Buffer
-  rm: rimraf.sync
-  mk: mkdirp.sync
-  findup: 'findup-sync'
+  buffer: { Buffer }
+  rimraf: rm
+  mkdirp: mk
+  'findup-sync': findup
 }
+
 { normalize, join, dirname, basename, delimiter, extname } = path
 { env, platform, exit, next-tick, arch } = process
 
 module.exports = _ = {
 
-  path, platform, arch, hu.extend, hu.vals,
-  os.EOL, hu.clone, hu.is-object, hu.is-array,
-  hu.is-string, mk, rm, delimiter, hu.has
+  path, platform, arch, hu.extend,
+  hu.vals, os.EOL, hu.clone, hu.is-object,
+  hu.is-array, hu.is-string, hu.has, delimiter,
 
   echo: ->
     if it then console.log ... else console.log ''
+
+  rm: rm.sync
+
+  mk: mk.sync
 
   next: next-tick
 

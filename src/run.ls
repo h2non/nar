@@ -1,12 +1,13 @@
 require! {
   fw
-  path.join
   './utils'
   './extract'
   './download'
-  child_process.spawn
-  events.EventEmitter
+  path: { join }
+  child_process: { spawn }
+  events: { EventEmitter }
 }
+
 { next, tmpdir, read, has, rm, delimiter, is-win, is-array, replace-env-vars, is-url, handle-exit } = utils
 
 const hooks-keys = <[ prestart start stop poststop ]>

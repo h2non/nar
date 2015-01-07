@@ -1,9 +1,11 @@
 require! {
   '../nar'
-  program: commander
+  './common'
+  '../utils'
+  commander: program
 }
-{ echo, exit, on-entry, on-error, create-bar, on-progress, update-bar, on-download-end } = require './common'
-{ exists, is-dir, is-file, is-string } = require '../utils'
+{ echo, exit, on-entry, on-error, create-bar, on-progress, update-bar, on-download-end } = common
+{ exists, is-dir, is-file, is-string } = utils
 
 const options = [
   'dependencies'

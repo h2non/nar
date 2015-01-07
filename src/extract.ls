@@ -1,14 +1,14 @@
 require! {
-  fs
   fw
-  path
+  './utils'
   './unpack'
-  events.EventEmitter
-  findup: 'findup-sync'
+  events: { EventEmitter }
+  'findup-sync': findup
+  fs: { symlink-sync, chmod-sync, readdir-sync }
+  path: { join, dirname, normalize, sep, relative }
 }
-{ symlink-sync, chmod-sync, readdir-sync } = fs
-{ join, dirname, normalize, sep, relative } = path
-{ next, copy, is-file, is-dir, tmpdir, rm, mk, read, write, clone, add-extension, is-executable, executable-msg, is-win, is-string, is-object, win-binary-script } = require './utils'
+
+{ next, copy, is-file, is-dir, tmpdir, rm, mk, read, write, clone, add-extension, is-executable, executable-msg, is-win, is-string, is-object, win-binary-script } = utils
 
 module.exports = extract = (options = {}) ->
   { path, dest, tmpdir } = options = options |> apply

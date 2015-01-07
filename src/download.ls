@@ -1,14 +1,15 @@
 require! {
   fs
-  path
   request
-  url.parse
-  events.EventEmitter
-  '../package.json'.version
-  progress: 'request-progress'
+  './utils'
+  url: { parse }
+  path: { join, dirname }
+  events: { EventEmitter }
+  '../package.json': { version }
+  'request-progress': progress
 }
-{ join, dirname } = path
-{ next, env, is-win, is-array, once, platform, arch, mk, rm, exists, clone, extend, discover-pkg, http-status } = require './utils'
+
+{ next, env, is-win, is-array, once, platform, arch, mk, rm, exists, clone, extend, discover-pkg, http-status } = utils
 
 const headers =
   'User-Agent': "node nar #{version} (#{platform}-#{arch})"

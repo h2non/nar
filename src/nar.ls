@@ -6,7 +6,7 @@ require! {
   './install'
   './download'
   './create-exec'
-  '../package.json'.version
+  '../package.json': { version }
 }
 
 exports = module.exports = {

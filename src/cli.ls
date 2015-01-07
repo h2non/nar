@@ -2,9 +2,9 @@ require! {
   path
   colors
   './nar'
-  program: commander
+  './utils': { echo }
+  commander: program
 }
-{ echo } = require './utils'
 
 const cmd-map =
   e: 'extract'

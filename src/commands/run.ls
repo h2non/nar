@@ -1,8 +1,10 @@
 require! {
   '../nar'
-  program: commander
+  './common'
+  commander: program
 }
-{ echo, create-bar, on-entry, on-archive, on-download, on-error, on-progress, update-bar, on-download-end, archive-name } = require './common'
+
+{ echo, create-bar, on-entry, on-archive, on-download, on-error, on-progress, update-bar, on-download-end, archive-name } = common
 
 program
   .command 'run <archive>'

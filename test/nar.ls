@@ -214,3 +214,61 @@ describe 'nar', ->
 
           it 'should exists .narignore', ->
             expect exists "#{dest}/.narignore" .to.be.false
+
+    describe 'scoped', ->
+
+      dest = "#{__dirname}/fixtures/.tmp"
+      orig = "#{__dirname}/fixtures/scoped"
+
+      before ->
+        rm dest
+        mk dest
+        chdir dest
+
+      after ->
+        chdir "#{__dirname}/.."
+        rm dest
+
+      describe 'create', (_) ->
+
+        options = path: "#{orig}"
+
+        it 'should create the archive', (done) ->
+          nar.create options
+            .on 'error', -> throw it
+            .on 'end', ->
+              expect it .to.be.equal "#{dest}/test-0.1.0.nar"
+              done!
+
+        it 'should exists the archive', ->
+          expect exists "#{dest}/test-0.1.0.nar" .to.be.true
+
+      describe 'extract', (_) ->
+
+        options = path: "#{dest}/test-0.1.0.nar"
+
+        it 'should create the archive', (done) ->
+          nar.extract options
+            .on 'error', -> throw it
+            .on 'end', -> done!
+
+        it 'should exists package.json', ->
+          expect exists "#{dest}/package.json" .to.be.true
+
+        it 'should exists nar.json', ->
+          expect exists "#{dest}/.nar.json" .to.be.true
+
+        it 'should exists main.js', ->
+          expect exists "#{dest}/main.js" .to.be.true
+
+        it 'should exists node_modules', ->
+          expect exists "#{dest}/node_modules" .to.be.true
+
+        it 'should exists node_modules/@private', ->
+          expect exists "#{dest}/node_modules/@private" .to.be.true
+
+        it 'should exists node_modules/@private/test dependency', ->
+          expect exists "#{dest}/node_modules/@private/test" .to.be.true
+
+        it 'should exists node_modules/@private/test/test.js', ->
+          expect exists "#{dest}/node_modules/@private/test/test.js" .to.be.true

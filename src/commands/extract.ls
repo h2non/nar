@@ -1,9 +1,10 @@
 require! {
   path
   '../nar'
-  program: commander
+  './common'
+  commander: program
 }
-{ echo, on-entry, on-error, on-archive } = require './common'
+{ echo, on-entry, on-error, on-archive } = common
 
 program
   .command 'extract <archive>'

@@ -2,14 +2,15 @@ require! {
   fs
   path
   archiver
-  'os'.tmpdir
-  zlib.create-gzip
-  events.EventEmitter
+  os: { tmpdir }
+  zlib: { create-gzip }
+  events: { EventEmitter }
+  './utils': { checksum, exists, next, is-dir }
 }
-{ checksum, exists, next, is-dir } = require './utils'
 
 # See: http://zlib.net/manual.html#Constants
 const zlib-options = level: 1
+
 # From: https://github.com/github/gitignore/tree/master/Global
 const ignored-files = [
   '!.DS_Store'
@@ -68,7 +69,7 @@ module.exports = pack = (options = {}) ->
     return new Error 'source path do not exists' |> on-error unless src |> exists
     return new Error 'destination path is not a directory' |> on-error unless dest |> is-dir
 
-    file = "#{name}.#{ext}"
+    file = "#{name |> normalize-name}.#{ext}"
     file-path = file |> path.join dest, _
     data = { name, file, path: file-path }
 
@@ -79,6 +80,10 @@ module.exports = pack = (options = {}) ->
 
   do-pack!
   emitter
+
+normalize-name = (name) ->
+  name := name.replace '/', '-' if ~name.indexOf('@')
+  name
 
 apply = (options) ->
   {

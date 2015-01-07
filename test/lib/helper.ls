@@ -9,8 +9,8 @@ require! {
   request
   'node-static'
   '../../lib/nar'
-  child_process.spawn
-  '../../package.json'.version
+  child_process: { spawn }
+  '../../package.json': { version }
 }
 
 node = process.execPath

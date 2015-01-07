@@ -1,11 +1,12 @@
 require! {
   path
   '../nar'
-  Table: 'cli-table'
-  program: commander
+  './common'
+  'cli-table': Table
+  commander: program
 }
 { join, basename } = path
-{ echo, on-error, to-kb, archive-name } = require './common'
+{ echo, on-error, to-kb, archive-name } = common
 
 program
   .command 'list <archive>'

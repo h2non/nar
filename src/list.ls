@@ -1,10 +1,10 @@
 require! {
   fs
   tar
-  zlib.create-gunzip
-  events.EventEmitter
+  zlib: { create-gunzip }
+  events: { EventEmitter }
+  './utils': { next, is-file, add-extension, is-executable, executable-msg }
 }
-{ next, is-file, add-extension, is-executable, executable-msg } = require './utils'
 
 module.exports = list = (options) ->
   { path, gzip } = options |> apply

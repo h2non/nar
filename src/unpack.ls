@@ -1,10 +1,10 @@
 require! {
   fs
   tar
-  zlib.create-gunzip
-  events.EventEmitter
+  zlib: { create-gunzip }
+  events: { EventEmitter }
+  './utils': { next }:_
 }
-{ next }:_ = require './utils'
 
 module.exports = unpack = (options = {}) ->
   { path, checksum } = options |> apply
@@ -18,7 +18,7 @@ module.exports = unpack = (options = {}) ->
     entry |> emitter.emit 'entry', _ if entry
 
   on-error = (err) ->
-    # fix EOF issue, PR pending: https://github.com/isaacs/node-tar/pull/32
+    # fix EOF issue, See: https://github.com/isaacs/node-tar/pull/32
     if err and not /unexpected eof/.test err.message
       err |> emitter.emit 'error', _ unless errored
       errored := yes
