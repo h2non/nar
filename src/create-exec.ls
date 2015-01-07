@@ -100,14 +100,14 @@ module.exports = (options) ->
 
     create-binary = (done) ->
       cmd = if is-win then 'type' else 'cat'
-      exec "#{cmd} #{script} #{nar-path} > #{nar-output}", done
+      exec "#{cmd} \"#{script}\" \"#{nar-path}\" > \"#{nar-output}\"", done
 
     generate = ->
       'generate' |> emitter.emit
       fw.parallel [ copy-node-binary, copy-nar-pkg ], (err) ->
         return new Error 'cannot copy files to temporal directory' |> on-error if err
         fw.series [ create-tarball, create-binary ], (err) ->
-          return new Error 'cannot create the executable' |> on-error if err
+          return new Error "cannot create the executable due to error: #{err.messsage or err}" |> on-error if err
           clean-exec!
           emitter.emit 'end', nar-output
 
