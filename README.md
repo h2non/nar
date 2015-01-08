@@ -597,9 +597,9 @@ Is not planned to support it due to technical limitations in Windows OS
 
 ##### There is the maximum file size for nar archives?
 
-In teory there isn't a maximum size, it depends on your machine resources and your OS (if you are running Windows) when creating or extracting archives
+V8 JavaScript engine (which node uses) has a heap memory limit of 1 GB. This is teorically the maximum fize limit, however, it can variadic depend on the number of files and its sizes, and also based on your machine memory resources and OS (if you are running Windows) when creating, running or extracting `nar` archives
 
-`nar` was tested in real projects creating archives which contains thousands of files and more than 100 MB of file size
+However, `nar` was tested in real projects creating archives which contains thousands of files and which the generated archive has more than 100 MB of file size
 
 ##### Which binary is used in nar executables?
 
