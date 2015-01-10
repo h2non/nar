@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 ##nar##
 
-output="`pwd`/.nar"
+output="$(pwd)/.nar"
 command=$1
 
 die() {
@@ -19,15 +19,9 @@ fi
 
 [[ ! -d "$output" ]] && mkdir "$output"
 
-if [ -d "$output" ]; then
-  rm -rf "$output"
-fi
-
 if [ $? != 0 ]; then
   die 'cannot clean the output path. Check the directory permissions'
 fi
-
-mkdir "$output"
 
 skip=`awk '/^__END__/ { print NR + 1; exit 0; }' $0`
 
