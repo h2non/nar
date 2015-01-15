@@ -144,25 +144,23 @@ Example `package.json` with full configuration
 Following options can be declared in your application `package.json` as
 properties members of the `archive` object
 
-Packages dependencies names will be taken from `package.json`
-
 #### dependencies
 Type: `boolean`
 Default: `true`
 
-Include runtime dependencies in the archive
+Include runtime dependencies in the archive, loaded from `package.json`
 
 #### devDependencies
 Type: `boolean`
 Default: `false`
 
-Include development dependencies in the archive
+Include development dependencies in the archive, loaded from `package.json`
 
 #### peerDependencies
 Type: `boolean`
 Default: `true`
 
-Include peer dependencies in the archive
+Include peer dependencies in the archive, loaded from `package.json`
 
 #### globalDependencies
 Type: `array`
@@ -188,12 +186,12 @@ which works in a sandboxed runtime environment
 The included node binary will be, by default, the same as the used when your
 create the archive (taken from `process.execPath`)
 
-Hooks scripts that requires node will use the self-contained binary inside the archive.
-It will be also accessible via `PATH` environment variable
-if you want to call it from hook scripts
+Hooks scripts that requires `node` will use the self-contained binary inside the archive.
+It will be accessible via `PATH` environment variable.
+If you want to use node from `package.json` hook scripts, you could simply use: `node script.js`
 
-**Note**: as you already know, the node binary is OS and platform specific.
-Take that into account if you are going to deploy the archive in multiple platforms
+**Note**: the node binary is OS and platform specific.
+Take this into account if you are going to deploy the archive in multiple platforms
 
 #### binaryPath
 Type: `string`
