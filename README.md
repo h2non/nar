@@ -42,9 +42,9 @@ It's recommended you install nar as global package
 $ npm install -g nar
 ```
 
-If you need to use the API, you should install it as package dependency
+If you want to use the [programmig API](#programmatic-api)), install it as package dependency
 ```bash
-$ npm install nar --save
+$ npm install nar --save-dev
 ```
 
 ## Basic usage
