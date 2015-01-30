@@ -81,9 +81,9 @@ has `node` binary embedded, and therefore, is not required
 to have node.js already installed in the target OS
 
 This is a useful feature when you need to deploy or test
-node applications in new or isolated servers
+node applications in fresh or isolated servers
 
-Create new executable binary `nar` archive
+Create the executable:
 ```bash
 $ nar create --executable
 > Creates: myapp-0.1.0-linux-x64.nar
