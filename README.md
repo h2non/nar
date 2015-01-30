@@ -37,14 +37,14 @@ Questions? Read the [FAQs](#faq) or [open](https://github.com/h2non/nar/issues/n
 
 ## Installation
 
-It's recommended you install nar as global package
+It's recommended you to install `nar` as global package
 ```bash
 $ npm install -g nar
 ```
 
-If you want to use the [programmig API](#programmatic-api)), install it as package dependency
+If you want to use the [programmatic API](#programmatic-api), install it as package dependency
 ```bash
-$ npm install nar --save-dev
+$ npm install nar --save[-dev]
 ```
 
 ## Basic usage
