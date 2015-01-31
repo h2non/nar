@@ -169,11 +169,11 @@ Default: `null`
 Include global dependencies in the archive.
 It should define an array of strings with packages names
 
-nar will resolve globally installed packages (via [requireg][requireg])
+nar will resolve global installed packages (via [requireg][requireg])
 and will add them to the archive
 
 Global dependencies will be placed in `.node/lib/node` on archive extraction and them will be
-available via `require` and `PATH` environment variable (for binary files)
+available both via `require` and `PATH` environment variable (for binary files)
 
 #### binary
 Type: `boolean`
@@ -394,10 +394,9 @@ $ nar list app.nar --no-table
 
 ## Programmatic API
 
-nar provides a full featured programmatic API designed to
-be easily consumed from other node applications
+`nar` provides a full featured programmatic API designed to easy to use from other node applications
 
-The API is fully asynchronous event-based, for a better approach
+The API is full asynchronous event based
 
 ```js
 var nar = require('nar')
@@ -433,7 +432,7 @@ try {
 ### nar.create(options)
 Fired events: `end, error, entry, archive, message, info, start`
 
-Create new archive from a given package.json
+Create new archive based a the given `package.json` and additional defined options
 
 ##### Options
 
@@ -442,22 +441,22 @@ You can pass any configuration [options](#options) and the following options:
 - **path** `string` Path to package.json or application directory. Required
 - **dest** `string` Extract destination path. Default to random temporal directory
 - **file** `string` Archive file name. Default to package name + version, taken from `package.json`
-- **patterns** `array` List of glob patterns for matching files to include or exclude
+- **patterns** `array` List of glob patterns to match files to include or exclude. See [node-glob](https://github.com/isaacs/node-glob)
 
 ### nar.createExec(options)
 
 Same as `nar.create()`, but this generate an executable binary-like archive
 
-Aditional executable options are:
+Aditional executable options supported are:
 
-- **os** `string` Node.js OS binary platform to embed. Detault to current OS
-- **arch** `string` Node.js OS binary architecture to embed. Default to current OS
-- **node** `string` Node.js version to embed. Default to current node runtime version
+- **os** `string` Node.js OS binary platform to embed. Detault to runtime OS
+- **arch** `string` Node.js OS binary architecture to embed. Default to runtime OS arch
+- **node** `string` Node.js version to embed. Default to the current node runtime version
 
 ### nar.extract(options)
 Fired events: `end, error, entry, archive, message, info, start`
 
-Extract archive files into a output directory
+Extract archive files into an output directory
 
 ##### Options
 
