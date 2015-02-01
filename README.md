@@ -20,8 +20,7 @@ Questions? Read the [FAQs](#faq) or [open](https://github.com/h2non/nar/issues/n
 
 - Simple and featured command-line interface
 - Easy-to-use asynchronous programmatic API
-- Fully configurable from package.json
-- Tarball with gzip compression/decompression
+- Fully configurable from `package.json`
 - Built-in support for archive extraction
 - Built-in support for application execution
 - Built-in support for installating archives (like npm does)
@@ -31,8 +30,9 @@ Questions? Read the [FAQs](#faq) or [open](https://github.com/h2non/nar/issues/n
 - Allow to embed dependencies by type
 - Allow to embed global dependencies
 - Allow to embed node binary for isolated runtime environments
-- Allow to create archives like executables binary-like containers (embedded node)
+- Allow to create archives like executables binary-like containers
 - Integrable in your development workflow through [Grunt][grunt-plugin] or [Gulp][gulp-plugin]
+- Uses tarball bitstream with gzip compression/decompression
 - Transparent file checksum integrity verification
 
 ## Installation
