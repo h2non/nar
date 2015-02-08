@@ -125,8 +125,9 @@ module.exports = (options) ->
           generate!
 
     download-binary = ->
-      { node } = options
-      name = "node-#{node}-#{get-binary-type!}"
+      { node, io } = options
+      base-name = if io then 'io' else 'node'
+      name = "#{base-name}-#{node}-#{get-binary-type!}"
       url = "#{download-url}/#{node}/#{name}.tar.gz"
       dest = tmp-download := tmpdir!
 
@@ -172,7 +173,8 @@ match-version = (version) ->
   (supported-versions.filter -> it.test version).length isnt 0
 
 same-node-binary = (options) ->
-  { os, arch, node } = options
+  { os, arch, node, io } = options
+  node = io if io
   os is process.platform and arch is process.arch and node is process.version
 
 set-os = (options) ->
