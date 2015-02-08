@@ -111,7 +111,7 @@ Supported platforms are:
 - `darwin` (x86, x64, arm*)
 - `sunos` (x86, x64, arm*)
 
-* `io.js only`
+\* `io.js only`
 
 Suported `node` versions:
 - `0.8.x`
