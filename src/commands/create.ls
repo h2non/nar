@@ -39,7 +39,7 @@ program
   .option '-s, --os <name>', 'Node.js OS binary platform to embed. Default to current OS'
   .option '-a, --arch <name>', 'Node.js OS binary architecture to embed. Default to ' + process.arch
   .option '-q, --node <version>', 'Node.js binary version to embed. Default to ' + process.version
-  .option '-q, --io <version>', 'io.js binary version to embed. Default to ' + process.version
+  .option '-q, --io <version>', 'io.js binary version to embed'
   .option '--proxy <url>', 'Proxy server URL to use to download binaries'
   .option '-d, --debug', 'Enable debug mode. More information will be shown'
   .option '-v, --verbose', 'Enable verbose mode. A lot of information will be shown'
