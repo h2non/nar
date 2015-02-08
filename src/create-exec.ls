@@ -189,7 +189,7 @@ set-os = (options) ->
     options <<< os: process.platform
 
 set-arch = (options) ->
-  { arch, node } = options
+  { arch } = options
   if arch
     if (supported-archs |> find-index _, arch)
       options <<< arch: arch
