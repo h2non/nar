@@ -19,6 +19,7 @@ const options = [
   'arch'
   'node'
   'proxy'
+  'io'
 ]
 
 program
