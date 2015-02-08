@@ -37,7 +37,8 @@
     "executable",
     "embedded",
     "exe",
-    "portable"
+    "portable",
+    "iojs"
   ],
   "dependencies": {
     "archiver": "~0.14.0",
