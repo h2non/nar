@@ -199,7 +199,7 @@ set-arch = (options) ->
     options <<< arch: process.arch
 
 set-node = (options) ->
-  { node } = options
+  { node, io } = options
   if node
     if node is 'latest'
       options <<< node: 'latest'
@@ -207,5 +207,12 @@ set-node = (options) ->
       options <<< node: "v#{node}"
     else
       throw new Error "Invalid node version '#{node}'"
+  else if io
+    if io is 'latest'
+      options <<< io: 'latest'
+    else if (io |> match-version)
+      options <<< io: "v#{io}"
+    else
+      throw new Error "Invalid io.js version '#{io}'"
   else
     options <<< node: process.version
