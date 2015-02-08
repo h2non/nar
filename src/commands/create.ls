@@ -84,7 +84,7 @@ create = (pkgpath, options) ->
     'Creating archive...' |> echo
 
   on-download = ->
-    'Downloading node binary...' |> echo
+    'Downloading binary...' |> echo
 
   on-archive = ->
     "Add [#{it.type.cyan}] #{it.name or ''}" |> echo unless debug and verbose
