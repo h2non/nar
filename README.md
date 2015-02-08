@@ -30,7 +30,7 @@ Questions? Read the [FAQs](#faq) or [open](https://github.com/h2non/nar/issues/n
 - Allow to embed dependencies by type
 - Allow to embed global dependencies
 - Allow to embed node binary for isolated runtime environments
-- Allow to create archives like executables binary-like containers
+- Allow to create archives like executables binary containers
 - Integrable in your development workflow through [Grunt][grunt-plugin] or [Gulp][gulp-plugin]
 - Uses tarball bitstream with gzip compression/decompression
 - Transparent file checksum integrity verification
