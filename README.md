@@ -107,9 +107,11 @@ $ nar create --executable --os darwin --arch x64 --node 0.11.9
 ```
 
 Supported platforms are:
-- `linux` (x86, x64)
-- `darwin` (x86, x64)
-- `sunos` (x86, x64)
+- `linux` (x86, x64, arm*)
+- `darwin` (x86, x64, arm*)
+- `sunos` (x86, x64, arm*)
+
+* `io.js only`
 
 Suported `node` versions:
 - `0.8.x`
