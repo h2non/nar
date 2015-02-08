@@ -1,7 +1,7 @@
 
 # nar [![Build Status](https://api.travis-ci.org/h2non/nar.svg?branch=master)][travis] [![Dependency Status](https://gemnasium.com/h2non/nar.svg)][gemnasium] [![NPM version](https://badge.fury.io/js/nar.svg)][npm]  ![Downloads](https://img.shields.io/npm/dm/nar.svg) [![Stories in Ready](https://badge.waffle.io/h2non/nar.png?label=ready&title=Ready)](https://waffle.io/h2non/nar)
 
-**nar** is a simple application packager utility for [node.js](http://nodejs.org)
+**nar** is a simple application packager utility for [node](http://nodejs.org)/[io.js](https://iojs.org)
 to **[create](https://gist.github.com/h2non/ad21e0eda698e68e7743) self-contained executable applications** that are **ready-to-ship-and-run**
 
 It provides **built-in support** for **creating**, **extracting**, **installing** and **running** 
@@ -10,7 +10,7 @@ a featured [command-line interface](#command-line-interface)
 and full asynchronous event-based [programmatic API](#programmatic-api)
 
 It could be a great solution for distributing, running and testing
-private node.js applications that are outside of the `npm` ecosystem
+private node/io.js applications that are outside of the `npm` ecosystem
 
 Questions? Read the [FAQs](#faq) or [open](https://github.com/h2non/nar/issues/new) an issue
 
@@ -77,7 +77,7 @@ $ nar install http://server.net/app-0.1.0.nar --save[-dev]
 ### Executables
 
 `nar` also provides support for creating **executables binary-like** archives which
-has `node` binary embedded, and therefore, is not required
+has `node/io.js` binary embedded, and therefore, is not required
 to have node.js already installed in the target OS
 
 This is a useful feature when you need to deploy or test
@@ -111,13 +111,16 @@ Supported platforms are:
 - `darwin` (x86, x64)
 - `sunos` (x86, x64)
 
-Suported node version are:
+Suported `node` versions:
 - `0.8.x`
 - `0.9.x`
 - `0.10.x`
 - `0.11.x`
 - `0.12.x`
 - `0.13.x`
+
+Supported `io.js` versions:
+- `1.0.x`
 
 ## Configuration
 
