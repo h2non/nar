@@ -116,6 +116,8 @@ Suported node version are:
 - `0.9.x`
 - `0.10.x`
 - `0.11.x`
+- `0.12.x`
+- `0.13.x`
 
 ## Configuration
 
