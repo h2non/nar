@@ -140,7 +140,7 @@ module.exports = create = (options) ->
       pkg-info |> emitter.emit 'archive', _
 
       copy-binary binary-path, tmp-path, (err, file) ->
-        return new Error "Error while copying the node binary: #{err}" |> on-error if err
+        return new Error "Error while copying the binary: #{err}" |> on-error if err
         file |> basename |> config.patterns.push
         { name: pkg-info.archive, pkg-info.type, size: '10485760', source-path: binary-path } |> on-entry
 
