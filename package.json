@@ -1,7 +1,7 @@
 {
   "name": "nar",
   "version": "0.3.17",
-  "description": "node.js application archive",
+  "description": "node/io.js application archive",
   "preferGlobal": true,
   "engineStrict": true,
   "repository": "h2non/nar",
