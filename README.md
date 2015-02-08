@@ -122,7 +122,7 @@ Suported `node` versions:
 - `0.13.x`
 
 Supported `io.js` versions:
-- `1.0.x`
+- `1.x.x`
 
 ## Configuration
 
