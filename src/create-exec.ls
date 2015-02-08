@@ -17,7 +17,7 @@ const script = __dirname |> join _, '..', 'scripts/run.sh'
 const download-url = 'http://nodejs.org/dist'
 const iojs-url = 'https://iojs.org/dist'
 const supported-platforms = <[ linux darwin sunos ]>
-const supported-archs = <[ x86 x64 ]>
+const supported-archs = <[ x86 x64 arm ]>
 
 const supported-versions = [ 
   /^0.8.[0-9]+/, /^0.9.[0-9]+/, /^0.10.[0-9]+/, 
@@ -189,7 +189,7 @@ set-os = (options) ->
     options <<< os: process.platform
 
 set-arch = (options) ->
-  { arch } = options
+  { arch, node } = options
   if arch
     if (supported-archs |> find-index _, arch)
       options <<< arch: arch
