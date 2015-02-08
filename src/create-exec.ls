@@ -15,6 +15,7 @@ require! {
 
 const script = __dirname |> join _, '..', 'scripts/run.sh'
 const download-url = 'http://nodejs.org/dist'
+const iojs-url = 'https://iojs.org/dist'
 const supported-platforms = <[ linux darwin sunos ]>
 const supported-archs = <[ x86 x64 ]>
 
