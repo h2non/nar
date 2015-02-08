@@ -4,7 +4,7 @@
 **nar** is a simple application packager utility for [node.js](http://nodejs.org)
 to **[create](https://gist.github.com/h2non/ad21e0eda698e68e7743) self-contained executable applications** that are **ready-to-ship-and-run**
 
-It provides **built-in support** for **creating**, **extracting**, **installing** and **running** node
+It provides **built-in support** for **creating**, **extracting**, **installing** and **running** 
 applications easily from a simple [configuration](#configuration) through
 a featured [command-line interface](#command-line-interface)
 and full asynchronous event-based [programmatic API](#programmatic-api)
