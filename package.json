@@ -1,6 +1,6 @@
 {
   "name": "nar",
-  "version": "0.3.17",
+  "version": "0.3.18",
   "description": "node/io.js application archive",
   "preferGlobal": true,
   "repository": "h2non/nar",
