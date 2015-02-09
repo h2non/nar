@@ -106,6 +106,10 @@ You can also embed a custom node binary per platform, processor architecture and
 $ nar create --executable --os darwin --arch x64 --node 0.11.9
 ```
 
+```bash
+$ nar create --executable --os darwin --arch x64 --io 1.1.0
+```
+
 Supported platforms:
 - `linux` (x86, x64, armv7l*)
 - `darwin` (x86, x64, armv7l*)
