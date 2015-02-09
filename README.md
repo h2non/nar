@@ -103,7 +103,7 @@ $ ./myapp-0.1.0-linux-x64.tar exec --port 8080 --env dev
 
 You can also embed a custom node binary per platform, processor architecture and version
 ```bash
-$ nar create --executable --os darwin --arch x64 --node 0.11.9
+$ nar create --executable --os darwin --arch x64 --node 0.12.0
 ```
 
 ```bash
