@@ -111,11 +111,11 @@ $ nar create --executable --os darwin --arch x64 --io 1.1.0
 ```
 
 Supported platforms:
-- `linux` (x86, x64, armv7l*)
-- `darwin` (x86, x64, armv7l*)
-- `sunos` (x86, x64, armv7l*)
+- `linux` (x86, x64, armv7l)
+- `darwin` (x86, x64, armv7l)
+- `sunos` (x86, x64, armv7l)
 
-\* `only available in io.js and linux platform`
+**Note**: `armv7l` is only available in io.js and linux platform
 
 Suported `node` versions:
 - `0.8.x`
