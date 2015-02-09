@@ -29,7 +29,7 @@ Questions? Read the [FAQs](#faq) or [open](https://github.com/h2non/nar/issues/n
 - Supports installing archives from local and remote servers (like npm does)
 - Allow to embed dependencies by type
 - Allow to embed global dependencies
-- Allow to embed node binary for isolated runtime environments
+- Allow to embed node/io.js binary for isolated runtime environments
 - Allow to create archives like executables binary containers
 - Integrable in your development workflow through [Grunt][grunt-plugin] or [Gulp][gulp-plugin]
 - Uses tarball bitstream with gzip compression/decompression
