@@ -3,7 +3,6 @@
   "version": "0.3.17",
   "description": "node/io.js application archive",
   "preferGlobal": true,
-  "engineStrict": true,
   "repository": "h2non/nar",
   "author": "Tomas Aparicio",
   "licenses": "MIT",
@@ -13,9 +12,6 @@
   },
   "bin": {
     "nar": "./bin/nar"
-  },
-  "engines": {
-    "node": ">= 0.10.0"
   },
   "scripts": {
     "test": "make test"
