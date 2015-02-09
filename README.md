@@ -106,12 +106,12 @@ You can also embed a custom node binary per platform, processor architecture and
 $ nar create --executable --os darwin --arch x64 --node 0.11.9
 ```
 
-Supported platforms are:
-- `linux` (x86, x64, arm*)
-- `darwin` (x86, x64, arm*)
-- `sunos` (x86, x64, arm*)
+Supported platforms:
+- `linux` (x86, x64, armv7l*)
+- `darwin` (x86, x64, armv7l*)
+- `sunos` (x86, x64, armv7l*)
 
-\* `io.js only`
+\* `only available in io.js and linux platform`
 
 Suported `node` versions:
 - `0.8.x`

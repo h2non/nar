@@ -15,7 +15,7 @@ require! {
 
 const script = __dirname |> join _, '..', 'scripts/run.sh'
 const supported-platforms = <[ linux darwin sunos ]>
-const supported-archs = <[ x86 x64 arm ]>
+const supported-archs = <[ x86 x64 armv7l ]>
 
 const supported-versions = [ 
   /^0.8.[0-9]+/, /^0.9.[0-9]+/, /^0.10.[0-9]+/, 
@@ -198,7 +198,7 @@ set-arch = (options) ->
     if (supported-archs |> find-index _, arch)
       options <<< arch: arch
     else
-      throw new Error "Invalid architecture '#{arch}'. Only x86 or x64 are supported"
+      throw new Error "Invalid architecture '#{arch}'. Only x86, x64 and armv7l are supported"
   else
     options <<< arch: process.arch
 
