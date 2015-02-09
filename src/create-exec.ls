@@ -128,6 +128,7 @@ module.exports = (options) ->
     download-binary = ->
       { node, io } = options
       base-name = if io then 'io' else 'node'
+      
       name = "#{base-name}-#{node}-#{get-binary-type!}"
       url = "#{download-url}/#{node}/#{name}.tar.gz"
       dest = tmp-download := tmpdir!
