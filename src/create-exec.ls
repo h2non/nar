@@ -14,8 +14,6 @@ require! {
 { rm, mk, is-win, tmpdir, copy-binary, rename, exists, once, extend, handle-exit, arch } = utils
 
 const script = __dirname |> join _, '..', 'scripts/run.sh'
-const download-url = 'http://nodejs.org/dist'
-const iojs-url = 'https://iojs.org/dist'
 const supported-platforms = <[ linux darwin sunos ]>
 const supported-archs = <[ x86 x64 arm ]>
 
@@ -125,12 +123,17 @@ module.exports = (options) ->
           node-binary := options.dest |> join _, options.name, 'bin', 'node'
           generate!
 
+    get-download-url = (engine) ->
+      engine = if engine is 'node' then 'nodejs' else engine
+      "https://#{engine}.org/dist"
+
     download-binary = ->
       { node, io } = options
-      base-name = if io then 'io' else 'node'
-      
-      name = "#{base-name}-#{node}-#{get-binary-type!}"
-      url = "#{download-url}/#{node}/#{name}.tar.gz"
+      engine = if io then 'iojs' else 'node'      
+      version = io or node
+
+      name = "#{engine}-#{version}-#{get-binary-type!}"
+      url = "#{engine |> get-download-url}/#{version}/#{name}.tar.gz"
       dest = tmp-download := tmpdir!
 
       ({ url, dest, options.proxy } |> download)
