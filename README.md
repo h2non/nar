@@ -78,7 +78,7 @@ $ nar install http://server.net/app-0.1.0.nar --save[-dev]
 
 `nar` also provides support for creating **executables binary-like** archives which
 has `node/io.js` binary embedded, and therefore, is not required
-to have node.js already installed in the target OS
+to have it already installed in the target OS
 
 This is a useful feature when you need to deploy or test
 node applications in fresh or isolated servers
