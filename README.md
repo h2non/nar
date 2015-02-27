@@ -128,7 +128,7 @@ $ nar create --executable --os darwin --arch x64 --io 1.1.0
 **Supported `io.js` versions**:
 - `1.x.x`
 
-Tip: distribute `nar` executables easily using the [nar-installer](https://github.com/h2non/nar-installer) script
+Tip: distribute `nar` executables easily using the [installer](https://github.com/h2non/nar-installer) script
 
 ## Configuration
 
