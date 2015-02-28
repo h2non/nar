@@ -39,39 +39,39 @@ Questions? Read the [FAQs](#faq) or [open](https://github.com/h2non/nar/issues/n
 
 It's recommended you to install `nar` as global package
 ```bash
-$ npm install -g nar
+npm install -g nar
 ```
 
 If you want to use the [programmatic API](#programmatic-api), install it as package dependency
 ```bash
-$ npm install nar --save[-dev]
+npm install nar --save[-dev]
 ```
 
 ## Basic usage
 
 Creating a new archive (reading metadata from `package.json`)
 ```bash
-$ nar create
+nar create
 ```
 
 Extracting archive files
 ```bash
-$ nar extract app-0.1.0.nar
+nar extract app-0.1.0.nar
 ```
 
 Running an application archive
 ```bash
-$ nar run app-0.1.0.nar
+nar run app-0.1.0.nar
 ```
 
 Installing nar archive (default to `node_modules`)
 ```bash
-$ nar install app-0.1.0.nar --save[-dev]
+nar install app-0.1.0.nar --save[-dev]
 ```
 
 Installing from remote server is also supported
 ```bash
-$ nar install http://server.net/app-0.1.0.nar --save[-dev]
+nar install http://server.net/app-0.1.0.nar --save[-dev]
 ```
 
 ### Executables
@@ -85,29 +85,29 @@ node applications in fresh or isolated servers
 
 Create the executable:
 ```bash
-$ nar create --executable
+nar create --executable
 > Creates: myapp-0.1.0-linux-x64.nar
 ```
 
 Then you can run it as simple as:
 ```bash
-$ chmod +x myapp-0.1.0-linux-x64.nar
-$ ./myapp-0.1.0-linux-x64.nar start --args-start='--port 8080 --env dev'
+chmod +x myapp-0.1.0-linux-x64.nar
+./myapp-0.1.0-linux-x64.nar start --args-start='--port 8080 --env dev'
 ```
 
 If you need to pass custom arguments to your application, instead
 of use the `--args-start` flag, you could use the `exec` command directly
 ```bash
-$ ./myapp-0.1.0-linux-x64.tar exec --port 8080 --env dev
+./myapp-0.1.0-linux-x64.tar exec --port 8080 --env dev
 ```
 
 You can also embed a custom node binary per platform, processor architecture and version
 ```bash
-$ nar create --executable --os darwin --arch x64 --node 0.12.0
+nar create --executable --os darwin --arch x64 --node 0.12.0
 ```
 
 ```bash
-$ nar create --executable --os darwin --arch x64 --io 1.1.0
+nar create --executable --os darwin --arch x64 --io 1.1.0
 ```
 
 **Supported platforms**:
