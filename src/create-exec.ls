@@ -18,9 +18,8 @@ const supported-platforms = <[ linux darwin sunos ]>
 const supported-archs = <[ x86 x64 armv7l ]>
 
 const supported-versions = [ 
-  /^0.8.[0-9]+/, /^0.9.[0-9]+/, /^0.10.[0-9]+/, 
-  /^0.11.[0-9]+/, /^0.12.[0-9]+/, /^0.13.[0-9]+/,
-  /^1.[0-9].[0-9]+/
+  /^0.(8|9|10|11|12).[0-9]+$/,
+  /^1.[0-9].[0-9]+$/
 ]
 
 module.exports = (options) ->
