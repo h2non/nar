@@ -40,7 +40,7 @@
     "archiver": "~0.14.0",
     "cli-table": "~0.3.0",
     "colors": "~1.0.2",
-    "commander": "~2.6.0",
+    "commander": "~2.7.0",
     "findup-sync": "~0.2.1",
     "fw": "~0.1.0",
     "hu": "~0.1.0",
