@@ -7,7 +7,7 @@ to **[create](https://gist.github.com/h2non/ad21e0eda698e68e7743) self-contained
 It provides **built-in support** for **creating**, **extracting**, **installing** and **running** 
 applications easily from a simple [configuration](#configuration) through
 a featured [command-line interface](#command-line-interface)
-and full asynchronous event-based [programmatic API](#programmatic-api), following npm idiomatics
+and full asynchronous event-based [programmatic API](#programmatic-api), based on idiomatic patterns from `npm`
 
 It's a good solution for distributing, running and testing
 public or private node/io.js applications that are outside of the `npm` ecosystem
