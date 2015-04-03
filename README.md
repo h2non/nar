@@ -25,12 +25,12 @@ Questions? Read the [FAQs](#faq) or [open](https://github.com/h2non/nar/issues/n
 - Built-in support for application execution
 - Built-in support for installating archives (like npm does)
 - Supports downloading and running archives from remote servers
-- Supports application pre/post run hooks (like [npm scripts][npm-scripts])
+- Supports pre/post run hooks like [npm scripts][npm-scripts]
 - Supports installing archives from local and remote servers (like npm does)
-- Allow to embed dependencies by type
-- Allow to embed global dependencies
-- Allow to embed node/io.js binary for isolated runtime environments
-- Allow to create archives like executables binary containers
+- Allows you to embed global dependencies
+- Allows you to embed dependencies by type
+- Allows you to embed node/io.js binary for isolated runtime environments
+- Allows youto create archives like executables binary containers
 - Integrable in your development workflow through [Grunt][grunt-plugin] or [Gulp][gulp-plugin]
 - Uses tarball bitstream with gzip compression/decompression
 - Transparent file checksum integrity verification
