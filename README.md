@@ -7,10 +7,10 @@ to **[create](https://gist.github.com/h2non/ad21e0eda698e68e7743) self-contained
 It provides **built-in support** for **creating**, **extracting**, **installing** and **running** 
 applications easily from a simple [configuration](#configuration) through
 a featured [command-line interface](#command-line-interface)
-and full asynchronous event-based [programmatic API](#programmatic-api)
+and full asynchronous event-based [programmatic API](#programmatic-api), following npm idiomatics
 
-It could be a great solution for distributing, running and testing
-private node/io.js applications that are outside of the `npm` ecosystem
+It's a good solution for distributing, running and testing
+public or private node/io.js applications that are outside of the `npm` ecosystem
 
 Questions? Read the [FAQs](#faq) or [open](https://github.com/h2non/nar/issues/new) an issue
 
