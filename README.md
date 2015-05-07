@@ -1,16 +1,16 @@
 
 # nar [![Build Status](https://api.travis-ci.org/h2non/nar.svg?branch=master)][travis] [![NPM version](https://badge.fury.io/js/nar.svg)][npm]  ![Downloads](https://img.shields.io/npm/dm/nar.svg) [![Stories in Ready](https://badge.waffle.io/h2non/nar.png?label=ready&title=Ready)](https://waffle.io/h2non/nar)
 
-**nar** is a simple application packager utility for [node](http://nodejs.org)/[io.js](https://iojs.org)
+**nar** is a simple and idiomatic application packager utility for [node](http://nodejs.org)/[io.js](https://iojs.org)
 to **[create](https://gist.github.com/h2non/ad21e0eda698e68e7743) self-contained executable applications** that are **ready-to-ship-and-run**
 
 It provides **built-in support** for **creating**, **extracting**, **installing** and **running** 
 applications easily from a simple [configuration](#configuration) through
 a featured [command-line interface](#command-line-interface)
-and full asynchronous event-based [programmatic API](#programmatic-api), based on idiomatic patterns from `npm`
+or full asynchronous event-based [programmatic API](#programmatic-api)
 
-It's a good solution for distributing, running and testing
-public or private node/io.js applications that are outside of the `npm` ecosystem
+It could be good solution for distributing, running and testing
+public or private node applications that are outside of the `npm` ecosystem
 
 Questions? Read the [FAQs](#faq) or [open](https://github.com/h2non/nar/issues/new) an issue
 
@@ -21,16 +21,14 @@ Questions? Read the [FAQs](#faq) or [open](https://github.com/h2non/nar/issues/n
 - Simple and featured command-line interface
 - Easy-to-use asynchronous programmatic API
 - Fully configurable from `package.json`
-- Built-in support for archive extraction
-- Built-in support for application execution
-- Built-in support for installating archives (like npm does)
-- Supports downloading and running archives from remote servers
-- Supports pre/post run hooks like [npm scripts][npm-scripts]
-- Supports installing archives from local and remote servers (like npm does)
-- Allows you to embed global dependencies
-- Allows you to embed dependencies by type
-- Allows you to embed node/io.js binary for isolated runtime environments
-- Allows youto create archives like executables binary containers
+- Supports pre/post run hooks based on [npm scripts][npm-scripts]
+- Can download and run archives from remote servers
+- Can install archives from local and remote servers (like npm does)
+- Can embed global dependencies
+- Can embed dependencies by type
+- Can embed node/io.js binary, supporting multiple versions
+- Can install archives like npm does
+- Can create archives like plain binaries (fully self-contained)
 - Integrable in your development workflow through [Grunt][grunt-plugin] or [Gulp][gulp-plugin]
 - Uses tarball bitstream with gzip compression/decompression
 - Transparent file checksum integrity verification
