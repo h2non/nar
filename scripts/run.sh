@@ -19,10 +19,6 @@ fi
 
 [[ ! -d "$output" ]] && mkdir "$output"
 
-if [ $? != 0 ]; then
-  die 'cannot clean the output path. Check the directory permissions'
-fi
-
 skip=`awk '/^__END__/ { print NR + 1; exit 0; }' $0`
 
 tail -n +$skip $0 | tar -xz -C "$output"
