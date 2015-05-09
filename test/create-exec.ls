@@ -7,7 +7,7 @@ describe 'create exec', ->
 
   dest = "#{tmpdir!}/nar-testing" |> normalize
 
-  describe 'basic', (_) ->
+  describe 'node', (_) ->
     output = "#{dest}/test-1.0.0-#{process.platform}-#{process.arch}.nar"
 
     before ->
@@ -54,3 +54,62 @@ describe 'create exec', ->
 
     it 'should exists the sample package.json', ->
       expect ("#{dest}/package.json" |> exists) .to.be.true
+
+  describe 'io', (_) ->
+    output = "#{dest}/test-1.0.0-#{process.platform}-#{process.arch}.nar"
+
+    before ->
+      rm dest
+      mk dest
+      chdir "#{__dirname}/fixtures/basic"
+
+    before ->
+      @archive = create dest: dest, io: '2.0.1'
+
+    after ->
+      chdir "#{__dirname}/.."
+      rm dest
+
+    it 'should compress files sucessfully', (done) ->
+      entries = 0
+      @archive
+        .on 'error', -> throw it
+        .on 'entry', -> entries += 1
+        .on 'end', ->
+          expect it .to.be.equal output
+          expect entries > 7 .to.be.true
+          done!
+
+    it 'should exists the file', ->
+      expect (output |> exists) .to.be.true
+
+    it 'should execute the file as binary', (done) ->
+      chdir dest
+      return done! if process.platform is 'win32'
+      (spawn 'bash', [ output, 'extract' ])
+        .on 'close', (code) ->
+          expect code .to.be.equal 0
+          done!
+
+    it 'should exists the .nar directory', ->
+      expect ("#{dest}/.nar" |> exists) .to.be.true
+
+    it 'should exists the node binary', ->
+      expect ("#{dest}/.nar/bin/node" |> exists) .to.be.true
+
+    it 'should exists the nar package.json', ->
+      expect ("#{dest}/.nar/nar/package.json" |> exists) .to.be.true
+
+    it 'should exists the sample package.json', ->
+      expect ("#{dest}/package.json" |> exists) .to.be.true
+
+    it 'should has a valid the io binary version', (done) ->
+      return done! if process.platform is 'win32'
+      (spawn "#{dest}/.nar/bin/node", [ '-v' ])
+        .on('close', (code) ->
+          expect code .to.be.equal 0
+          done!
+        )
+        .stdout.on('data', (data) ->
+          expect data.to-string! .to.match /v2.0.1/
+        )

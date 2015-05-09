@@ -4,7 +4,7 @@
 **nar** is a simple and idiomatic application packager utility for [node](http://nodejs.org)/[io.js](https://iojs.org)
 to **[create](https://gist.github.com/h2non/ad21e0eda698e68e7743) self-contained executable applications** that are **ready-to-ship-and-run**
 
-It provides **built-in support** for **creating**, **extracting**, **installing** and **running** 
+It provides **built-in support** for **creating**, **extracting**, **installing** and **running**
 applications easily from a simple [configuration](#configuration) through
 a featured [command-line interface](#command-line-interface)
 or full asynchronous event-based [programmatic API](#programmatic-api)
@@ -124,8 +124,9 @@ nar create --executable --os darwin --arch x64 --io 1.1.0
 
 **Supported `io.js` versions**:
 - `1.x.x`
+- `2.x.x`
 
-Tip: distribute `nar` executables easily using the [installer](https://github.com/h2non/nar-installer) script
+Help: you can build and distribute `nar` executables with auto installer using the [installer](https://github.com/h2non/nar-installer) script
 
 ## Configuration
 
@@ -574,7 +575,7 @@ Example using `tar`
 $ tar xvfz app-0.1.0.nar
 ```
 
-**Note**: this is not applied for `nar` executables, since they have another format 
+**Note**: this is not applied for `nar` executables, since they have another format
 and not just a tarball file interface
 
 ##### Is required to have installed node or nar in order to work with nar archives?

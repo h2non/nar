@@ -36,7 +36,7 @@ compile: clean mkdir
 
 mocha:
 	cat test/lib/helper.ls | $(LS) -c -s -b > ./test/lib/helper.js
-	$(MOCHA) --timeout 20000 --reporter spec --ui tdd --compilers ls:$(LS_MODULE)
+	$(MOCHA) --timeout 50000 --reporter spec --ui tdd --compilers ls:$(LS_MODULE)
 
 publish: test
 	git push --tags origin HEAD:master
