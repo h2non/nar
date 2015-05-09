@@ -17,9 +17,9 @@ const script = __dirname |> join _, '..', 'scripts/run.sh'
 const supported-platforms = <[ linux darwin sunos ]>
 const supported-archs = <[ x86 x64 armv7l ]>
 
-const supported-versions = [ 
+const supported-versions = [
   /^0.(8|9|10|11|12).[0-9]+$/,
-  /^1.[0-9].[0-9]+$/
+  /^[1-2].[0-9].[0-9]+$/
 ]
 
 module.exports = (options) ->
@@ -128,7 +128,7 @@ module.exports = (options) ->
 
     download-binary = ->
       { node, io } = options
-      engine = if io then 'iojs' else 'node'      
+      engine = if io then 'iojs' else 'node'
       version = io or node
 
       name = "#{engine}-#{version}-#{get-binary-type!}"

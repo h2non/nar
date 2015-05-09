@@ -156,6 +156,7 @@ module.exports = extract = (options = {}) ->
     do-extract!
   catch
     e |> on-error
+
   emitter
 
 apply = (options) ->

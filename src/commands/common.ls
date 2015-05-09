@@ -1,7 +1,7 @@
 require! { progress }
 { echo, log-error, exit, to-kb, is-url, extend, archive-name, to-kb } = require '../utils'
 
-module.exports = _ = {
+common = module.exports = {
 
   echo, exit, to-kb
   is-url, extend
@@ -25,7 +25,7 @@ module.exports = _ = {
       bar <<< { state.total }
       bar <<< start: new Date!
     else
-      state.received |> _.update-bar bar
+      state.received |> common.update-bar bar
 
   on-entry: (action) -> ->
     "#{action} [".green + "#{it.size |> to-kb} KB".cyan + "] #{it.path or it.name or ''}".green |> echo
@@ -41,6 +41,6 @@ module.exports = _ = {
     "Extract [#{it.type.cyan}] #{it.name or ''}" |> echo
 
   on-download-end: (bar) -> ->
-    bar.total |> (bar |> _.update-bar) |> echo
+    bar.total |> (bar |> common.update-bar) |> echo
 
 }
