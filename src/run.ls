@@ -61,7 +61,7 @@ module.exports = run = (options) ->
         |> exec emitter, _, dest, 'start'
         |> buf.push
 
-    for own hook, cmd of (nar |> get-hooks)
+    for own hook, cmd of (nar |> get-hooks _, args)
       when hooks or (not hooks and hook is 'start')
       then hook |> add-hook-fn cmd, _
 
@@ -132,11 +132,19 @@ apply = (options) ->
 read-nar-json = (dest) ->
   '.nar.json' |> join dest, _ |> read
 
-get-hooks = (nar) ->
-  scripts = nar.manifest.scripts
+get-hooks = (nar, args) ->
+  { scripts ||= {} } = nar.manifest
+  args ||= {}
   hooks = {}
-  hooks-keys.for-each ->
-    hooks <<< (it): scripts[it] if scripts and (it |> has scripts, _)
+
+  hooks-keys
+  .filter ->
+    (it |> has scripts, _) or (it |> has args, _)
+  .filter ->
+    scripts[it] or args[it]
+  .for-each ->
+    hooks <<< (it): scripts[it] or args[it]
+
   hooks
 
 is-binary-valid = (nar) ->
@@ -163,10 +171,10 @@ exec = (emitter, command, cwd, hook) -> (done) ->
       done!
 
 get-command-script = (cmd) ->
-  if cmd is 'node' or /^node /.test cmd
+  unless cmd is 'node' or /^node /.test cmd
     script = join __dirname, '../scripts', if is-win then 'node.bat' else 'node.sh'
     script = "/usr/bin/env bash #{script}" unless is-win
-    cmd = "#{script} " + cmd.replace /^node/, ''
+    cmd = "#{script} " + (cmd.replace /^node/, '')
   cmd
 
 parse-command = (cmd) ->

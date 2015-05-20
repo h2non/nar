@@ -23,6 +23,7 @@ const ignored-files = [
   '!.Trashes'
   '!.apdisk'
   '!.AppleDB'
+  '!.nar'
 ]
 
 module.exports = pack = (options = {}) ->

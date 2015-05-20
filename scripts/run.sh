@@ -4,7 +4,7 @@
 output="$(pwd)/.nar"
 command=$1
 
-die() {
+odie() {
   echo "Error: $*"
   exit 1
 }
@@ -38,6 +38,7 @@ if [[ $command == 'exec' || -z $command ]]; then
   if [ $# -eq 0 ]; then
     "${output}/bin/node" "${output}/nar/bin/nar" start "${output}/${nar_file}"
   else
+    echo "${output}/nar/bin/nar start --args-start=$* ${output}/${nar_file}"
     "${output}/bin/node" "${output}/nar/bin/nar" start --args-start="$*" "${output}/${nar_file}"
   fi
 else
