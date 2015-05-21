@@ -57,7 +57,7 @@ module.exports = run = (options) ->
 
     add-start-main-script = ->
       if nar.manifest.main
-        "node #{nar.manifest.main}"
+        "node #{nar.manifest.main or ''}"
         |> exec emitter, _, dest, 'start'
         |> buf.push
 
@@ -132,29 +132,38 @@ apply = (options) ->
 read-nar-json = (dest) ->
   '.nar.json' |> join dest, _ |> read
 
-get-hooks = (nar, args) ->
-  { scripts ||= {} } = nar.manifest
-  args ||= {}
+get-hooks = (nar, args = {}) ->
   hooks = {}
+  { scripts ||= {} } = nar.manifest
+  scripts |> apply-default-script-hooks nar, _
 
-  hooks-keys
-  .filter ->
-    (it |> has scripts, _) or (it |> has args, _)
-  .filter ->
-    scripts[it] or args[it]
-  .for-each ->
-    hooks <<< (it): scripts[it] or args[it]
+  [ scripts, args ]
+  .for-each (hooks |> merge-hooks-args)
 
   hooks
+
+apply-default-script-hooks = (nar, scripts, args) ->
+  unless scripts.start
+    scripts <<< start: "node #{nar.manifest.main or 'index'}"
+
+merge-hooks-args = (hooks) -> (args = {}) ->
+  hooks-keys
+  .filter -> it |> has args, _
+  .filter -> args[it]
+  .for-each (hooks |> map-hooks _, args)
+
+map-hooks = (hooks, args) -> ->
+  hooks <<< (it): args[it] unless hooks[it]
 
 is-binary-valid = (nar) ->
   { platform, arch } = nar.info
   platform is process.platform
   and (arch is process.arch
-    or (arch is 'ia32' and process.arch is 'x64'))
+  or  (arch is 'ia32' and process.arch is 'x64'))
 
 exec = (emitter, command, cwd, hook) -> (done) ->
   { cmd, args } = command |> get-command-script |> parse-command
+
   (cmd-str = "#{cmd} #{args.join ' '}") |> emitter.emit 'command', _, hook
   cmd-str |> emitter.emit 'start', _ if hook is 'start'
 
@@ -171,7 +180,7 @@ exec = (emitter, command, cwd, hook) -> (done) ->
       done!
 
 get-command-script = (cmd) ->
-  unless cmd is 'node' or /^node /.test cmd
+  if cmd is 'node' or /^node /.test cmd
     script = join __dirname, '../scripts', if is-win then 'node.bat' else 'node.sh'
     script = "/usr/bin/env bash #{script}" unless is-win
     cmd = "#{script} " + (cmd.replace /^node/, '')
