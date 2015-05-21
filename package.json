@@ -1,7 +1,7 @@
 {
   "name": "nar",
-  "version": "0.3.19",
-  "description": "node/io.js application archive",
+  "version": "0.3.20",
+  "description": "node.js application archive",
   "preferGlobal": true,
   "repository": "h2non/nar",
   "author": "Tomas Aparicio",
@@ -15,6 +15,9 @@
   },
   "scripts": {
     "test": "make test"
+  },
+  "engines": {
+    "node": ">=0.10"
   },
   "keywords": [
     "node",
