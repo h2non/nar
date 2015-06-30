@@ -1,7 +1,7 @@
 
 # nar [![Build Status](https://api.travis-ci.org/h2non/nar.svg?branch=master)][travis] [![NPM version](https://badge.fury.io/js/nar.svg)][npm] ![Downloads](https://img.shields.io/npm/dm/nar.svg)
 
-**nar** is a simple and idiomatic application packager utility for [node](http://nodejs.org)/[io.js](https://iojs.org)
+**nar** is a idiomatic application packager utility for [node](http://nodejs.org)/[io.js](https://iojs.org)
 to **[create](https://gist.github.com/h2non/ad21e0eda698e68e7743) self-contained executable applications** that are **ready-to-ship-and-run**
 
 It provides **built-in support** for **creating**, **extracting**, **installing** and **running**
@@ -96,7 +96,7 @@ chmod +x myapp-0.1.0-linux-x64.nar
 If you need to pass custom arguments to your application, instead
 of use the `--args-start` flag, you could use the `exec` command directly
 ```bash
-./myapp-0.1.0-linux-x64.tar exec --port 8080 --env dev
+./myapp-0.1.0-linux-x64.nar exec --port 8080 --env dev
 ```
 
 You can also embed a custom node binary per platform, processor architecture and version
