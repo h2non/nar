@@ -10,25 +10,25 @@ a featured [command-line interface](#command-line-interface)
 or full asynchronous event-based [programmatic API](#programmatic-api)
 
 It could be good solution for distributing, running and testing
-public or private node applications that are outside of the `npm` ecosystem
+public or private node applications that are outside of the `npm` ecosystem.
 
-Questions? Read the [FAQs](#faq) or [open](https://github.com/h2non/nar/issues/new) an issue
+Questions? See the [features](#features), [basic usage](#basic-usage) or read the [FAQs](#faq)
 
 ## Features
 
 <img align="right" height="165" src="http://nodejs.org/images/platform-icon-generic.png" />
 
 - Simple and featured command-line interface
-- Easy-to-use asynchronous programmatic API
+- Simple evented programmatic API
 - Fully configurable from `package.json`
-- Supports pre/post run hooks based on [npm scripts][npm-scripts]
-- Can download and run archives from remote servers
-- Can install archives from local and remote servers (like npm does)
-- Can embed global dependencies
-- Can embed dependencies by type
-- Can embed node/io.js binary, supporting multiple versions
-- Can install archives like npm does
-- Can create archives like plain binaries (fully self-contained)
+- Supports pre/post run hooks (based on [npm scripts][npm-scripts])
+- Able to download and run archives from remote servers
+- Able to install archives from local and remote servers (like npm does)
+- Able to embed global dependencies
+- Able to embed dependencies by type
+- Able to embed node/io.js binary, also supporting multiple versions
+- Able to install archives like npm does
+- Able to create archives like raw binaries (fully self-contained)
 - Integrable in your development workflow through [Grunt][grunt-plugin] or [Gulp][gulp-plugin]
 - Uses tarball bitstream with gzip compression/decompression
 - Transparent file checksum integrity verification
