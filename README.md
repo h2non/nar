@@ -35,12 +35,11 @@ Questions? See the [features](#features), [basic usage](#basic-usage) or read th
 
 ## Installation
 
-It's recommended you to install `nar` as global package
 ```bash
 npm install -g nar
 ```
 
-If you want to use the [programmatic API](#programmatic-api), install it as package dependency
+If you want to use the [programmatic API](#programmatic-api), install it as direct package dependency
 ```bash
 npm install nar --save[-dev]
 ```
