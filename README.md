@@ -4,15 +4,15 @@
 **nar** is an idiomatic application packager utility for [node](http://nodejs.org)/[io.js](https://iojs.org)
 to **[create](https://gist.github.com/h2non/ad21e0eda698e68e7743) self-contained executable applications** that are **ready-to-ship-and-run**
 
-It provides **built-in support** for **creating**, **extracting**, **installing** and **running**
+Provides **built-in support** for **creating**, **extracting**, **installing** and **running**
 applications easily from a simple [configuration](#configuration) through
 a featured [command-line interface](#command-line-interface)
-or full asynchronous event-based [programmatic API](#programmatic-api)
+or evented [programmatic API](#programmatic-api).
 
-It could be good solution for distributing, running and testing
+It can be a convenient solution for distributing, running and testing
 public or private node applications that are outside of the `npm` ecosystem.
 
-Questions? See the [features](#features), [basic usage](#basic-usage) or read the [FAQs](#faq)
+To get started, see the [features](#features), [basic usage](#basic-usage) or read the [FAQs](#faq)
 
 ## Features
 
