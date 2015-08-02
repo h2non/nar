@@ -232,7 +232,7 @@ OS level specific hidden files such as `.DS_Store` or `Thumbs.db` will be ignore
 
 Aditionally, `nar` will ignore matched patterns defined in [ignore-like files](#ignoring-files)
 
-### Stage hooks
+### Hooks
 
 `nar` supports application pre/post execution hooks, that are also supported by `npm`
 
