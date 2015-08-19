@@ -19,7 +19,7 @@ const supported-archs = <[ x86 x64 armv7l ]>
 
 const supported-versions = [
   /^0.(8|9|10|11|12).[0-9]+$/,
-  /^[1-2].[0-9].[0-9]+$/
+  /^[0-9].[0-9].[0-9]+$/
 ]
 
 module.exports = (options) ->
