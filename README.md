@@ -634,7 +634,7 @@ your application will use it transparently
 One of the following types will be valid:
 
 - `application/x-gzip`
-- `aplication/x-compress`
+- `application/x-compress`
 - `application/x-compressed`
 - `application/octet-stream`
 
