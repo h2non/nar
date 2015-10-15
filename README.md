@@ -120,10 +120,12 @@ nar create --executable --os darwin --arch x64 --io 1.1.0
 - `0.10.x`
 - `0.11.x`
 - `0.12.x`
+- `4.x`
 
 **Supported `io.js` versions**:
-- `1.x.x`
-- `2.x.x`
+- `1.x`
+- `2.x`
+- `3.x`
 
 Help: you can build and distribute `nar` executables with auto installer using the [installer](https://github.com/h2non/nar-installer) script
 
