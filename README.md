@@ -420,23 +420,19 @@ var options = {
   globalDependencies: ['npm', 'grunt-cli'] // and for globals :)
 }
 
-try {
-  nar.create(options)
-    .on('error', function (err) {
-      throw err
-    })
-    .on('info', function (nar) {
-      console.log(nar.name)
-    })
-    .on('entry', function (file) {
-      console.log('Adding file:', file.name)
-    })
-    .on('end', function (path) {
-      console.log('Archive created in:', path)
-    })
-} catch (e) {
-  console.error('Cannot create the archive:', e.message)
-}
+nar.create(options)
+  .on('error', function (err) {
+    throw err
+  })
+  .on('info', function (nar) {
+    console.log(nar.name)
+  })
+  .on('entry', function (file) {
+    console.log('Adding file:', file.name)
+  })
+  .on('end', function (path) {
+    console.log('Archive created in:', path)
+  })
 ```
 
 ### nar.create(options)
