@@ -121,6 +121,7 @@ nar create --executable --os darwin --arch x64 --io 1.1.0
 - `0.11.x`
 - `0.12.x`
 - `4.x`
+- `5.x`
 
 **Supported `io.js` versions**:
 - `1.x`
