@@ -74,7 +74,7 @@ describe 'CLI', (_) ->
         expect stdout .to.match /finished/i
 
       it 'should have a valid debug stdout', ->
-        expect stdout .to.match /\> node/i
+        expect stdout .to.match /node/i
         expect stdout .to.match /sample\.js/i
         expect stdout .to.match /end/i
 
@@ -106,7 +106,7 @@ describe 'CLI', (_) ->
         expect stdout .to.match /finished/i
 
       it 'should have a valid verbose stdout', ->
-        expect stdout .to.match /\> node/i
+        expect stdout .to.match /node/i
         expect stdout .to.match /sample\.js/i
         expect stdout .to.match /end/i
 
