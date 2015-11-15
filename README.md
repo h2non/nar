@@ -120,10 +120,13 @@ nar create --executable --os darwin --arch x64 --io 1.1.0
 - `0.10.x`
 - `0.11.x`
 - `0.12.x`
+- `4.x`
+- `5.x`
 
 **Supported `io.js` versions**:
-- `1.x.x`
-- `2.x.x`
+- `1.x`
+- `2.x`
+- `3.x`
 
 Help: you can build and distribute `nar` executables with auto installer using the [installer](https://github.com/h2non/nar-installer) script
 
@@ -420,23 +423,19 @@ var options = {
   globalDependencies: ['npm', 'grunt-cli'] // and for globals :)
 }
 
-try {
-  nar.create(options)
-    .on('error', function (err) {
-      throw err
-    })
-    .on('info', function (nar) {
-      console.log(nar.name)
-    })
-    .on('entry', function (file) {
-      console.log('Adding file:', file.name)
-    })
-    .on('end', function (path) {
-      console.log('Archive created in:', path)
-    })
-} catch (e) {
-  console.error('Cannot create the archive:', e.message)
-}
+nar.create(options)
+  .on('error', function (err) {
+    throw err
+  })
+  .on('info', function (nar) {
+    console.log(nar.name)
+  })
+  .on('entry', function (file) {
+    console.log('Adding file:', file.name)
+  })
+  .on('end', function (path) {
+    console.log('Archive created in:', path)
+  })
 ```
 
 ### nar.create(options)
@@ -634,7 +633,7 @@ your application will use it transparently
 One of the following types will be valid:
 
 - `application/x-gzip`
-- `aplication/x-compress`
+- `application/x-compress`
 - `application/x-compressed`
 - `application/octet-stream`
 
