@@ -1,8 +1,7 @@
-
 # nar [![Build Status](https://api.travis-ci.org/h2non/nar.svg?branch=master)][travis] [![NPM version](https://badge.fury.io/js/nar.svg)][npm] ![Downloads](https://img.shields.io/npm/dm/nar.svg)
 
 **nar** is an idiomatic application packager utility for [node](http://nodejs.org)/[io.js](https://iojs.org)
-to **[create](https://gist.github.com/h2non/ad21e0eda698e68e7743) self-contained executable applications** that are **ready-to-ship-and-run**
+to **[create](https://gist.github.com/h2non/ad21e0eda698e68e7743) self-contained executable applications** that are **ready-to-ship-and-run**.
 
 Provides **built-in support** for **creating**, **extracting**, **installing** and **running**
 applications easily from a simple [configuration](#configuration) through
@@ -12,7 +11,7 @@ or evented [programmatic API](#programmatic-api).
 It can be a convenient solution for distributing, running and testing
 public or private node applications that are outside of the `npm` ecosystem.
 
-To get started, see the [features](#features), [basic usage](#basic-usage) or read the [FAQs](#faq)
+To get started, see the [features](#features), [basic usage](#basic-usage) or read the [FAQs](#faq).
 
 ## Features
 
@@ -32,6 +31,27 @@ To get started, see the [features](#features), [basic usage](#basic-usage) or re
 - Integrable in your development workflow through [Grunt][grunt-plugin] or [Gulp][gulp-plugin]
 - Uses tarball bitstream with gzip compression/decompression
 - Transparent file checksum integrity verification
+
+## Contents
+
+- [Installation](#installation)
+- [Basic usage](#basic-usage)
+  - [Executables](#executables)
+- [Configuration](#configuration)
+  - [Options](#options)
+  - [Hooks](#hooks)
+- [Command-line interface](#command-line-interface)
+  - [create](#create)
+  - [extract](#extract)
+  - [run](#run)
+  - [install](#install)
+  - [get](#get)
+  - [list](#list)
+- [Programmatic API](#programmatic-api)
+- [FAQ](#faq)
+- [Contributing](#contributing)
+- [Development](#development)
+- [License](#license)
 
 ## Installation
 
@@ -662,7 +682,7 @@ and follow the LiveScript language conventions defined in the [coding style guid
 You must add new test cases for any new feature or refactor you do,
 always following the same design/code patterns that already exist
 
-### Development
+## Development
 
 Only [node.js](http://nodejs.org) is required for development
 
