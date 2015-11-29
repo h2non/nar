@@ -1,9 +1,10 @@
 {
   "name": "nar",
-  "version": "0.3.21",
+  "version": "0.3.22",
   "description": "node.js application archive",
   "preferGlobal": true,
   "repository": "h2non/nar",
+  "homepage": "https://github.com/h2non/nar",
   "author": "Tomas Aparicio",
   "license": "MIT",
   "main": "lib/nar",

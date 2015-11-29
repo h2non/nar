@@ -31,7 +31,7 @@ To get started, see the [features](#features), [basic usage](#basic-usage) or re
 - Integrable in your development workflow through [Grunt][grunt-plugin] or [Gulp][gulp-plugin]
 - Uses tarball bitstream with gzip compression/decompression
 - Transparent file checksum integrity verification
-- Well tested (+300)
+- Well tested (+270)
 
 ## Contents
 
