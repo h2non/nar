@@ -7,6 +7,7 @@ require! {
   './unpack'
   './create'
   './download'
+  'array-unique'
   'resolve-tree'
   ncp: { ncp }
   child_process: { exec }
@@ -86,10 +87,12 @@ module.exports = (options) ->
       |> copy-binary _, bin-dir, done
 
     copy-directory = (dest) -> (dir, next) ->
-      orig = (dir |> path.basename) |> path.join dest, _
+      name = (dir |> path.basename)
+      orig = name |> path.join dest, _
+      pkg-dest = name |> path.join dest, _
       fs.exists orig, (exists) ->
         return next! if exists
-        dir |> ncp _, dest next
+        dir |> ncp _, pkg-dest next
 
     copy-nar-pkg = (done) ->
       dest = tmp-path |> join _, 'nar'
@@ -111,7 +114,7 @@ module.exports = (options) ->
         paths = resolve-tree.flattenMap tree, 'root'
           .filter -> (path.join nar-path, 'node_modules', path.basename(it)) is it
 
-        paths |> do-copy _, done
+        paths |> array-unique |> do-copy _, done
 
     create-tarball = (done) ->
       const config =
