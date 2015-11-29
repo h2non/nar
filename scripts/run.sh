@@ -17,7 +17,9 @@ if [ -f "$output" ]; then
   die 'output path cannot be a file'
 fi
 
-[[ ! -d "$output" ]] && mkdir "$output"
+if [ ! -d "$output" ]; then
+  mkdir "$output"
+fi
 
 skip=`awk '/^__END__/ { print NR + 1; exit 0; }' $0`
 
