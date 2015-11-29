@@ -1,10 +1,13 @@
 require! {
+  fs
   fw
+  path
   './pack'
   './utils'
   './unpack'
   './create'
   './download'
+  'resolve-tree'
   ncp: { ncp }
   child_process: { exec }
   events: { EventEmitter }
@@ -82,10 +85,33 @@ module.exports = (options) ->
       (node-binary or process.exec-path)
       |> copy-binary _, bin-dir, done
 
+    copy-directory = (dest) -> (dir, next) ->
+      orig = (dir |> path.basename) |> path.join dest, _
+      fs.exists orig, (exists) ->
+        return next! if exists
+        dir |> ncp _, dest next
+
     copy-nar-pkg = (done) ->
       dest = tmp-path |> join _, 'nar'
       nar-path = __dirname |> join _, '..'
-      nar-path |> ncp _, dest, done
+      nar-manifest = require(nar-path |> join _, 'package.json')
+
+      do-copy = (paths, done) ->
+        # Copy nar directory recursively
+        nar-path |> ncp _, dest, (err) ->
+          return err |> done if err
+          # Copy shared dependencies recursively
+          deps-dest = dest |> path.join _, 'node_modules'
+          fw.each paths, (deps-dest |> copy-directory), done
+
+      resolve-tree.manifest nar-manifest, basedir: nar-path, (err, tree) ->
+        return cb err if err
+
+        # Filter top level dependencies
+        paths = resolve-tree.flattenMap tree, 'root'
+          .filter -> (path.join nar-path, 'node_modules', path.basename(it)) is it
+
+        paths |> do-copy _, done
 
     create-tarball = (done) ->
       const config =

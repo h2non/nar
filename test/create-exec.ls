@@ -20,7 +20,7 @@ describe 'create exec', ->
 
     after ->
       chdir "#{__dirname}/.."
-      rm dest
+      #rm dest
 
     it 'should compress files sucessfully', (done) ->
       entries = 0
