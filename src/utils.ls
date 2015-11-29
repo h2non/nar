@@ -31,7 +31,7 @@ module.exports = _ = {
 
   env: -> env[it] or null
 
-  now: -> new Date!get-time!
+  now: -> Date.now!
 
   is-win: platform is 'win32'
 

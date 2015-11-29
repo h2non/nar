@@ -39,7 +39,7 @@ describe 'nar', ->
       before ->
         rm "#{orig}/node_modules/.bin"
         mk "#{orig}/node_modules/.bin"
-        symlink-sync "#{orig}/node_modules/hu/package.json" "#{orig}/node_modules/.bin/hu"
+        symlink-sync "#{orig}/node_modules/hu/index.js" "#{orig}/node_modules/.bin/hu"
 
       after ->
         chdir "#{__dirname}/.."
@@ -51,7 +51,7 @@ describe 'nar', ->
 
         it 'should create the archive', (done) ->
           nar.create options
-            .on 'error', -> throw it
+            .on 'error', done
             .on 'end', ->
               expect it .to.be.equal "#{dest}/test-0.1.0-#{platform}.nar"
               done!
@@ -65,7 +65,7 @@ describe 'nar', ->
 
         it 'should create the archive', (done) ->
           nar.extract options
-            .on 'error', -> throw it
+            .on 'error', done
             .on 'end', -> done!
 
         it 'should exists package.json', ->

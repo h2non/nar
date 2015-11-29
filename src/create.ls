@@ -4,6 +4,8 @@ require! {
   path
   './pack'
   './utils'
+  'resolve-tree'
+  'array-unique'
   requireg: { resolve }
   events: { EventEmitter }
   path: { dirname, basename, join, normalize }
@@ -208,7 +210,7 @@ module.exports = create = (options) ->
         throw new Error "Missing required dependency in node_modules: #{name}\nRun: npm install"
       path
 
-    find-pkg = ->
+    map-pkg-data = ->
       it.map ->
         name: it
         dest: dest
@@ -249,11 +251,11 @@ module.exports = create = (options) ->
       else
         pkg-info |> define-pkg-dependency-info _, pkg, done
 
-    do-pack = (options, done) ->
-      if options.name is BINDIR
-        options |> done null, _
+    do-pack = (pkg, done) ->
+      if pkg.name is BINDIR
+        pkg |> done null, _
       else
-        (options |> pack)
+        (pkg |> pack)
           .on 'error', done
           .on 'entry', on-entry
           .on 'end', -> done null, it
@@ -281,8 +283,9 @@ module.exports = create = (options) ->
     process-deps = (deps) ->
       deps = (deps |> vals)
         .filter is-valid
-        .map find-pkg
+        .map map-pkg-data
         .filter is-valid
+
       deps[0] |> add-bin-directory if deps.length
       deps
 
@@ -292,11 +295,51 @@ module.exports = create = (options) ->
       list = list ++ [ (global |> process-global) ] if global
       list
 
-    list = dependencies-list!
-    if list.length
+    shared-dependencies = (deps, options, cb) ->
+      deps = deps or []
+
+      # get binaries dependency
+      binaries = (deps.filter (pkg) -> pkg.name is BINDIR).shift!
+
+      # Ignore binary directory dependency
+      list = deps.filter (pkg) -> pkg.name isnt BINDIR
+      names = list.map (pkg) -> pkg.name
+
+      # Continue if has no dependencies
+      cb null, deps unless names.length
+
+      opts = options |> get-resolve-options
+      resolve-tree.packages names, opts, (err, tree) ->
+        return err |> cb if err
+
+        # Filter by root dependencies
+        tree-names = resolve-tree.flattenMap tree, 'root'
+          .filter -> (path.join opts.basedir, 'node_modules', path.basename(it)) is it
+          .map -> path.basename it
+
+        # Process dependencies
+        buf = tree-names |> names.concat |> array-unique
+        buf = buf |> map-pkg-data
+        buf = binaries |> buf.concat if binaries
+
+        # Resolve callback
+        buf |> cb null, _
+
+    [ tree, global ] = list = dependencies-list!
+
+    # if no dependencies, just continue
+    cb! unless list.length
+
+    # Extend dependencies with shared dependencies
+    tree = tree or []
+    shared-dependencies tree, options, (err, deps) ->
+      return cb err if err
+
+      # re-assign the new dependency list
+      list[0] = deps
+
+      # process dependencies
       list |> fw.each _, compress-dep-pkgs, (|> cb _, files)
-    else
-      cb!
 
   try
     do-create!
@@ -327,6 +370,7 @@ get-ignored-files = (dir) ->
   patterns = []
   files = ignore-files.map (|> join dir, _) .filter (|> exists)
   files = files.slice -1 if files.length > 1
+
   if files.length
     ignored = ((files[0] |> read) |> lines)
     if ignored |> is-array
@@ -334,6 +378,7 @@ get-ignored-files = (dir) ->
         .filter (-> it)
         .map -> if (it |> join dir, _) |> is-dir then "#{it}/**" else it
         .map -> "!#{it.trim!}"
+
   patterns = patterns ++ ignore-files.map -> "!#{it}"
   patterns
 
@@ -393,3 +438,16 @@ match-dependencies = (options, pkg) ->
   deps <<< peer: pkg.peer-dependencies |> keys if peer-dependencies
   deps <<< global: global-dependencies if global-dependencies |> is-array
   deps
+
+get-resolve-options = (options) ->
+  basedir = options.path |> path.dirname
+
+  opts =
+    lookups: []
+    basedir: basedir
+
+  'dependencies' |> opts.lookups.push if options.dependencies
+  'devDependencies' |> opts.lookups.push if options.devDependencies
+  'peerDependencies' |> opts.lookups.push if options.peerDependencies
+
+  opts
