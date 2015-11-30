@@ -42,6 +42,12 @@ module.exports = _ = {
   stringify: ->
     it |> JSON.stringify _, null, 2 if it
 
+  resolve-pkg-path: ->
+    if it |> _.is-file
+      it |> dirname |> _.resolve-pkg-path
+    else
+      it
+
   keys: ->
     if it |> hu.is-object then it |> Object.keys else []
 

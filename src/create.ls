@@ -15,7 +15,7 @@ require! {
   read, rm, tmpdir, clone, extend, copy-binary, keys, archive-name,
   is-object, is-file, is-dir, is-link, is-string, mk, stringify,
   vals, exists, checksum, lines, next, is-array, now,
-  replace-env-vars, discover-pkg, handle-exit, once, is-win
+  replace-env-vars, discover-pkg, handle-exit, once, is-win, resolve-pkg-path
 } = utils
 
 const BINDIR = '_modules-bindir'
@@ -414,12 +414,6 @@ apply = (options) ->
   options <<< path: pkg-path |> discover-pkg
   options <<< dest: process.cwd! unless options.dest
   options
-
-resolve-pkg-path = ->
-  if it |> is-file
-    it |> dirname |> resolve-pkg-path
-  else
-    it
 
 get-binary-path = (options) ->
   binary = options.binary-path

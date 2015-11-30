@@ -15,7 +15,7 @@ require! {
   path: { dirname, join, basename }
 }
 
-{ rm, mk, is-win, tmpdir, copy-binary, rename, exists, once, extend, handle-exit, arch } = utils
+{ rm, mk, is-win, tmpdir, copy-binary, rename, exists, once, is-file, extend, handle-exit, arch, discover-pkg, resolve-pkg-path } = utils
 
 const script = __dirname |> join _, '..', 'scripts/run.sh'
 const supported-platforms = <[ linux darwin sunos ]>
@@ -87,24 +87,25 @@ module.exports = (options) ->
       |> copy-binary _, bin-dir, done
 
     copy-directory = (dest) -> (dir, next) ->
-      name = (dir |> path.basename)
-      orig = name |> path.join dest, _
-      pkg-dest = name |> path.join dest, _
+      name = (dir |> basename)
+      orig = name |> join dest, _
+      pkg-dest = name |> join dest, _
+
       fs.exists orig, (exists) ->
         return next! if exists
-        dir |> ncp _, pkg-dest next
+        dir |> ncp _, pkg-dest, next
 
     copy-nar-pkg = (done) ->
-      dest = tmp-path |> join _, 'nar'
+      nar-dest = tmp-path |> join _, 'nar'
       nar-path = __dirname |> join _, '..'
       nar-manifest = require(nar-path |> join _, 'package.json')
 
       do-copy = (paths, done) ->
         # Copy nar directory recursively
-        nar-path |> ncp _, dest, (err) ->
+        nar-path |> ncp _, nar-dest, (err) ->
           return err |> done if err
           # Copy shared dependencies recursively
-          deps-dest = dest |> path.join _, 'node_modules'
+          deps-dest = nar-dest |> join _, 'node_modules'
           fw.each paths, (deps-dest |> copy-directory), done
 
       resolve-tree.manifest nar-manifest, basedir: nar-path, (err, tree) ->
@@ -112,7 +113,7 @@ module.exports = (options) ->
 
         # Filter top level dependencies
         paths = resolve-tree.flattenMap tree, 'root'
-          .filter -> (path.join nar-path, 'node_modules', path.basename(it)) is it
+          .filter -> (join options.base, 'node_modules', basename(it)) is it
 
         paths |> array-unique |> do-copy _, done
 
@@ -197,6 +198,19 @@ apply = (options) ->
   options |> set-arch
   options |> set-node
   options <<< executable: yes
+
+  if options.path
+    pkg-path = options.path |> resolve-pkg-path
+  else
+    pkg-path = process.cwd!
+
+  options <<< path: pkg-path |> discover-pkg
+
+  if /\.json$/i.test pkg-path
+    options <<< base: pkg-path |> dirname
+  else
+    options <<< base: pkg-path
+
   options
 
 find-index = (arr, item) ->

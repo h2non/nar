@@ -1,4 +1,5 @@
 require! {
+  path
   '../nar'
   './common'
   '../utils'
