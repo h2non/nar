@@ -12,7 +12,7 @@ require! {
   ncp: { ncp }
   child_process: { exec }
   events: { EventEmitter }
-  path: { dirname, join, basename }
+  path: { dirname, join, basename, relative }
 }
 
 { rm, mk, is-win, tmpdir, copy-binary, rename, exists, once, is-file, extend, handle-exit, arch, discover-pkg, resolve-pkg-path } = utils
@@ -25,6 +25,10 @@ const supported-versions = [
   /^0.(8|9|10|11|12).[0-9]+$/,
   /^[0-9].[0-9].[0-9]+$/
 ]
+
+const copy-opts =
+  stopOnErr: no
+  clobber: yes
 
 module.exports = (options) ->
   emitter = new EventEmitter
@@ -93,7 +97,9 @@ module.exports = (options) ->
 
       fs.exists orig, (exists) ->
         return next! if exists
-        dir |> ncp _, pkg-dest, next
+        fs.exists pkg-dest, (exists) ->
+          return next! if exists
+          dir |> ncp _, pkg-dest, copy-opts, next
 
     copy-nar-pkg = (done) ->
       nar-dest = tmp-path |> join _, 'nar'
@@ -102,20 +108,32 @@ module.exports = (options) ->
 
       do-copy = (paths, done) ->
         # Copy nar directory recursively
-        nar-path |> ncp _, nar-dest, (err) ->
+        nar-path |> ncp _, nar-dest, copy-opts, (err) ->
           return err |> done if err
           # Copy shared dependencies recursively
           deps-dest = nar-dest |> join _, 'node_modules'
+          # Run copy in parallel
           fw.each paths, (deps-dest |> copy-directory), done
 
       resolve-tree.manifest nar-manifest, basedir: nar-path, (err, tree) ->
         return cb err if err
 
-        # Filter top level dependencies
-        paths = resolve-tree.flattenMap tree, 'root'
-          .filter -> (join options.base, 'node_modules', basename(it)) is it
+        # Filter by top level dependencies
+        paths = tree |> resolve-tree.flattenMap _, 'root' |> array-unique
 
-        paths |> array-unique |> do-copy _, done
+        # Copy root level dependencies
+        root-paths = paths.filter -> (join options.base, 'node_modules', basename(it)) is it
+
+        # Copy parent dependencies in case that nar is a nested dependency
+        parent-paths = paths
+          .filter -> (it |> root-paths.index-of) is -1
+          .filter -> (new RegExp "^#{nar-path}" .test it) is no
+          .map -> (it |> relative (join options.base, 'node_modules'), _).split '/' .shift!
+          .map -> join options.base, 'node_modules', it
+          .filter -> (it |> root-paths.index-of) is -1
+          |> array-unique
+
+        (root-paths ++ parent-paths) |> do-copy _, done
 
     create-tarball = (done) ->
       const config =
