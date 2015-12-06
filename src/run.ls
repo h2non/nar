@@ -199,8 +199,8 @@ clean-spaces = ->
 set-environment = (dest, manifest = {}) ->
   process.env.NODE_PATH = ('.node' |> join dest, _)
   process.env.NODE_NAR = '1'
-  process.env.npm_package_name = manife.name or ''
-  process.env.npm_package_version = manife.version or ''
+  process.env.npm_package_name = manifest.name or ''
+  process.env.npm_package_version = manifest.version or ''
 
 extend-path = (dest) ->
   process.env.PATH = ('.node/bin' |> join dest, _) + "#{delimiter}#{process.env.PATH}"
