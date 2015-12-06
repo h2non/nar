@@ -71,7 +71,7 @@ module.exports = run = (options) ->
   app-runner = (options) ->
     nar = dest |> read-nar-json
     nar |> emitter.emit 'info', _
-    dest |> set-environment
+    dest |> set-environment _, nar.manifest
 
     if nar.binary
       dest |> extend-path
@@ -196,9 +196,11 @@ parse-flags = (flags) ->
 clean-spaces = ->
   it.replace regex-spaces, ' '
 
-set-environment = (dest) ->
+set-environment = (dest, manifest = {}) ->
   process.env.NODE_PATH = ('.node' |> join dest, _)
   process.env.NODE_NAR = '1'
+  process.env.npm_package_name = manife.name or ''
+  process.env.npm_package_version = manife.version or ''
 
 extend-path = (dest) ->
   process.env.PATH = ('.node/bin' |> join dest, _) + "#{delimiter}#{process.env.PATH}"
