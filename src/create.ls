@@ -325,6 +325,7 @@ module.exports = create = (options) ->
         # Resolve callback
         buf |> cb null, _
 
+    # Get dependencies by type
     [ tree, global ] = list = dependencies-list!
 
     # if no dependencies, just continue
@@ -437,11 +438,7 @@ get-resolve-options = (options) ->
   basedir = options.path |> path.dirname
 
   opts =
-    lookups: []
+    lookups: ['dependencies']
     basedir: basedir
-
-  'dependencies' |> opts.lookups.push if options.dependencies
-  'devDependencies' |> opts.lookups.push if options.devDependencies
-  'peerDependencies' |> opts.lookups.push if options.peerDependencies
 
   opts
