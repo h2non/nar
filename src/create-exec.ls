@@ -99,7 +99,7 @@ module.exports = (options) ->
         return next! if exists
         fs.exists pkg-dest, (exists) ->
           return next! if exists
-          # pkg-dest |> mk
+          pkg-dest |> mk
           dir |> ncp _, pkg-dest, copy-opts, next
 
     copy-nar-pkg = (done) ->
