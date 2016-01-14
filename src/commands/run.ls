@@ -74,7 +74,7 @@ run = (archive, options) ->
     "> #{out |> format-eol}".red |> echo
 
   on-exit = (code, hook) ->
-    "End [".green + hook.cyan + "]: exited with code #{code}".green |> echo
+    "End [".green + hook.cyan + "]: exited with code #{code || hook}".green |> echo
 
   run = ->
     archive = nar.run opts
