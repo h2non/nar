@@ -167,7 +167,8 @@ exec = (emitter, command, cwd, hook) -> (done) ->
   (cmd-str = "#{cmd} #{args.join ' '}") |> emitter.emit 'command', _, hook
   cmd-str |> emitter.emit 'start', _ if hook is 'start'
 
-  process.env.PATH = "node_modules/.bin#{delimiter}#{process.env.PATH}"
+  if process.env.PATH.indexOf("node_modules/.bin") isnt 0
+    process.env.PATH = "node_modules/.bin#{delimiter}#{process.env.PATH}"
 
   child = cmd |> spawn _, args, { cwd, process.env }
   child.stdout.on 'data', -> it.to-string! |> emitter.emit 'stdout', _
