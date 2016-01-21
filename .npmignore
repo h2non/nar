@@ -1,3 +1,4 @@
 src/*
 *.nar
+.nar
 test/fixtures
