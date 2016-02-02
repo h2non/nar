@@ -159,6 +159,7 @@ module.exports = create = (options) ->
 
   compress-pkg = (config, cb) ->
     { dest, base, name, patterns } = config = config |> clone
+    patterns.push "**" unless patterns.length > 0
     config.patterns = patterns.concat (base |> include-files-patterns _, options.ignore-files)
     config <<< src: base
 
@@ -363,7 +364,7 @@ nar-manifest = (name, pkg) ->
   files: []
 
 include-files-patterns = (dir, ignore) ->
-  patterns = [ '**' ] ++ ignored-files
+  patterns = ignored-files |> clone
   patterns = patterns ++ (dir |> get-ignored-files) if ignore
   patterns
 
