@@ -205,9 +205,12 @@ module.exports = create = (options) ->
           dest, links
         } |> it.push
 
+    pkg-manifest-exists = (path) ->
+      path |> join _, 'package.json' |> is-file
+
     get-pkg-path = (name) ->
       path = name |> get-module-path |> join base, _
-      unless path |> join _, 'package.json' |> is-file
+      unless path |> pkg-manifest-exists
         throw new Error "Missing required dependency in node_modules: #{name}\nRun: npm install"
       path
 
@@ -290,9 +293,29 @@ module.exports = create = (options) ->
       deps[0] |> add-bin-directory if deps.length
       deps
 
+    resolve-optional-dep = (name) ->
+      try
+        src = name |> get-pkg-path
+      catch e
+        return null
+
+      {
+        name: name
+        dest: dest
+        src: src
+        optional: yes
+      }
+
+    process-optional-deps = (deps) ->
+      deps
+        .filter is-valid
+        .map resolve-optional-dep
+        .filter -> it
+
     dependencies-list = ->
-      { run, dev, peer, global } = (options |> match-dependencies _, pkg)
+      { run, dev, peer, optional, global } = (options |> match-dependencies _, pkg)
       list = { run, dev, peer } |> process-deps
+      list = list ++ [ optional |> process-optional-deps ] if optional
       list = list ++ [ (global |> process-global) ] if global
       list
 
@@ -309,6 +332,7 @@ module.exports = create = (options) ->
       # Continue if has no dependencies
       cb null, deps unless names.length
 
+      # Resolve dependency tree recursively
       opts = options |> get-resolve-options
       resolve-tree.packages names, opts, (err, tree) ->
         return err |> cb if err
@@ -427,11 +451,12 @@ get-module-path = ->
   it |> join 'node_modules', _
 
 match-dependencies = (options, pkg) ->
-  { dependencies, dev-dependencies, peer-dependencies, global-dependencies } = options
+  { dependencies, dev-dependencies, peer-dependencies, optional-dependencies, global-dependencies } = options
   deps = {}
   deps <<< run: pkg.dependencies |> keys if dependencies
   deps <<< dev: pkg.dev-dependencies |> keys if dev-dependencies
   deps <<< peer: pkg.peer-dependencies |> keys if peer-dependencies
+  deps <<< optional: (pkg.optional-dependencies or {}) |> keys if dependencies or optional-dependencies
   deps <<< global: global-dependencies if global-dependencies |> is-array
   deps
 
@@ -439,7 +464,7 @@ get-resolve-options = (options) ->
   basedir = options.path |> path.dirname
 
   opts =
-    lookups: ['dependencies']
+    lookups: ['dependencies', 'optionalDependencies']
     basedir: basedir
 
   opts

@@ -1,3 +1,7 @@
+## 0.3.25 - 2016-03-05
+
+- feat(#130): support and resolve optional dependencies.
+
 ## 0.3.34 - 2016-02-02
 
 - Maintenance release.

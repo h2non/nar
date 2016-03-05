@@ -121,7 +121,7 @@ describe 'create', ->
       chdir "#{__dirname}/.."
       rm dest
 
-    it 'should compress files sucessfully', (done) ->
+    it 'should create sucessfully', (done) ->
       entries = 0
       @archive
         .on 'error', done
@@ -129,6 +129,48 @@ describe 'create', ->
         .on 'end', ->
           expect it .to.be.equal "#{dest}/test-0.1.0.nar"
           expect entries .to.be.equal 7
+          done!
+
+  describe 'optional', (_) ->
+
+    before ->
+      rm dest
+      mk dest
+      chdir "#{__dirname}/fixtures/optional"
+
+    before ->
+      @archive = create { dest: dest }
+
+    after ->
+      chdir "#{__dirname}/.."
+      rm dest
+
+    it 'should create sucessfully', (done) ->
+      entries = 0
+      @archive
+        .on 'error', done
+        .on 'entry', -> entries += 1
+        .on 'end', ->
+          expect it .to.be.equal "#{dest}/test-1.0.0.nar"
+          expect entries .to.be.equal 20
+          done!
+
+    it 'should extract the archive', (done) ->
+      options =
+        path: "#{dest}/test-1.0.0.nar"
+        dest: dest
+
+      files = 0
+      extract options
+        .on 'error', done
+        .on 'entry', -> files += 1
+        .on 'end', ->
+          expect files .to.be.equal 20
+          expect (fs.exists-sync "#{dest}/a/b/sample.js") .to.be.true
+          expect (fs.exists-sync "#{dest}/node_modules/some/index.js") .to.be.true
+          expect (fs.exists-sync "#{dest}/node_modules/some/node_modules/another/index.js") .to.be.true
+          expect (fs.exists-sync "#{dest}/node_modules/optional/index.js") .to.be.true
+          expect (fs.exists-sync "#{dest}/node_modules/optional/node_modules/bar/index.js") .to.be.true
           done!
 
   describe 'npm v3', (_) ->

@@ -1,0 +1,17 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "main": "a/b/sample.js",
+  "scripts": {
+    "prestart": "echo 'prestart ${NODE_NAR}'",
+    "start": "node a/b/sample.js",
+    "stop": "rm -rf .tmp"
+  },
+  "dependencies": {
+    "some": "^1.0.0"
+  },
+  "optionalDependencies": {
+    "optional": "^0.1.0",
+    "invalid": "^1.0.0"
+  }
+}
