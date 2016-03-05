@@ -1,4 +1,4 @@
-## 0.3.25 - 2016-03-05
+## 0.3.35 - 2016-03-05
 
 - feat(#130): support and resolve optional dependencies.
 
