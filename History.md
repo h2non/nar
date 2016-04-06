@@ -1,3 +1,7 @@
+## 0.3.36 - 2016-04-06
+
+- fix(#133, #130): properly resolve optional dependencies.
+
 ## 0.3.35 - 2016-03-05
 
 - feat(#130): support and resolve optional dependencies.
