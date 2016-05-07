@@ -76,7 +76,7 @@ module.exports =
 
   server: (done) ->
     server = new stubby.Stubby
-    server.start { data: require "../fixtures/mock.json" }, done
+    server.start { data: require "#{__dirname}/../fixtures/mock.json" }, done
     server
 
   static-server: (dir, cb) ->
