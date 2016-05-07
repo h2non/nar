@@ -1,3 +1,8 @@
+## 0.3.37 - 2016-05-07
+
+- fix(#136): add compatibility for node +6.
+- fix(#135): use `resolve-tree@0.1.11`.
+
 ## 0.3.36 - 2016-04-06
 
 - fix(#133, #130): properly resolve optional dependencies.
