@@ -52,8 +52,8 @@ module.exports = list = (options) ->
           file.archive
           file.type
           file.dest
-          size: entries[file.archive].size
-          props: entries[file.archive].props
+          size: entries[file.archive].size if entries[file.archive]
+          props: entries[file.archive].props if entries[file.archive]
         } |> on-entry
 
     parse = tar.Parse!

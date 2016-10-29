@@ -35,7 +35,8 @@ list = (archive, options) ->
 
   on-entry = ->
     if table
-      it |> map-entry |> table-list.push
+      item = it |> map-entry
+      item |> table-list.push if item
     else
       (it.archive |> join it.dest, _) + " (#{(it.size |> to-kb)} KB)".cyan |> echo
 
@@ -55,4 +56,4 @@ list = (archive, options) ->
     e |> on-error debug
 
 map-entry = ->
-  [ (it.archive |> basename _, '.tar'), it.dest, (it.size |> to-kb) + ' KB', it.type ] if it
+  [ (it.archive |> basename _, '.tar'), it.dest, (it.size |> to-kb) + ' KB', it.type ] if it and it.archive
