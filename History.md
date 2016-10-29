@@ -1,4 +1,4 @@
-## 0.3.38 - 2016-05-07
+## 0.3.38 - 2016-10-29
 
 - feat(#140): support scoped package archive creation
 - fix(#139): fix issue with list command.
