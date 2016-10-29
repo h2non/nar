@@ -38,6 +38,10 @@ module.exports = extract = (options = {}) ->
 
   extractor = (options, type) -> (done) ->
     { path, dest } = options
+
+    # Normalize scoped package name
+    path = path.replace /@[a-z0-9]+\//i, '' if /\/@[a-z0-9]+\//i.test path
+
     return new Error 'The given path is not a file' |> on-error unless path |> is-file
     return path |> executable-msg |> on-error if path |> is-executable
 

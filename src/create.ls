@@ -163,9 +163,10 @@ module.exports = create = (options) ->
     config.patterns = patterns.concat (base |> include-files-patterns _, options.ignore-files)
     config <<< src: base
 
+    archive = name.replace '/', '-'
     pkg-info =
       name: name
-      archive: "#{name}.tar"
+      archive: "#{archive}.tar"
       dest: '.'
       type: 'package'
 
@@ -420,6 +421,9 @@ get-filename = (options, pkg = {}) ->
   else
     name = pkg.name or 'unnamed'
     name += "-#{pkg.version}" if pkg.version
+
+  # Remove organization prefix from name
+  name = name.replace /^@[a-z0-9]+\//i, '' if name[0] is '@'
 
   name += "-#{process.platform}-#{process.arch}" if binary and not options.executable
   name
