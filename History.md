@@ -1,3 +1,8 @@
+## 0.3.38 - 2016-05-07
+
+- feat(#140): support scoped package archive creation
+- fix(#139): fix issue with list command.
+
 ## 0.3.37 - 2016-05-07
 
 - fix(#136): add compatibility for node +6.
