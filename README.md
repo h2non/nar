@@ -275,7 +275,7 @@ Configuration example:
   "scripts": {
     "prestart": "mkdir -p temp/logs",
     "start": "node app --env ${ENV}",
-    "stop" "rm -rf cache"
+    "stop": "rm -rf cache"
   }
 }
 ```
