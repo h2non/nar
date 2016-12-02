@@ -10,11 +10,9 @@ ENDLOCAL
 
 SETLOCAL ENABLEDELAYEDEXPANSION
 @IF EXIST "%~dp0\.node\bin\node.exe" (
-  echo Using embedded node.exe
   PATH="%~dp0\.node\bin:%PATH%"
   "%~dp0\.node\bin\node.exe" %*
 ) ELSE (
-  echo Using system node
   node %*
 )
 ENDLOCAL
