@@ -1,3 +1,7 @@
+## 0.3.39 - 2016-12-02
+
+- fix(#144): batch script for nar execution under Windows OS.
+
 ## 0.3.38 - 2016-10-29
 
 - feat(#140): support scoped package archive creation
