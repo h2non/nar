@@ -152,7 +152,13 @@ module.exports = (options) ->
 
     create-binary = (done) ->
       cmd = if is-win then 'type' else 'cat'
-      exec "#{cmd} \"#{script}\" \"#{nar-path}\" > \"#{nar-output}\"", done
+      exec "#{cmd} \"#{script}\" \"#{nar-path}\" > \"#{nar-output}\"", (err) ->
+        return err |> done if err
+
+        if not (process.platform |> /^win/.test)
+          nar-output |> fs.chmod _, '775', done
+        else
+          done!
 
     generate = ->
       'generate' |> emitter.emit
