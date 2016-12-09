@@ -51,7 +51,12 @@ module.exports = pack = (options = {}) ->
     tar = archiver 'tar', zlib-options
     tar.on 'entry', on-entry
     tar.on 'error', on-error
-    tar.bulk [{ expand: yes, cwd: src, src: patterns, dest: '.' }]
+
+    include = [pattern for pattern in patterns when pattern and pattern[0] is not '!']
+    ignore = [pattern.slice(1) for pattern in patterns when pattern and pattern[0] is '!']
+
+    for pattern in include
+      tar.glob pattern, { expand: yes, cwd: src, ignore: ignore }, { name: '.' }
 
     if gzip
       stream |> (create-gzip! |> tar.pipe).pipe
