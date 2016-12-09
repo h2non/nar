@@ -1,3 +1,8 @@
+## 0.3.40 / 2016-12-09
+
+- feat(executable): assign execution permissions after file creation
+- fix(#147): use new archiver API and stops using deprecated bulk function
+
 ## 0.3.39 - 2016-12-02
 
 - fix(#144): batch script for nar execution under Windows OS.
