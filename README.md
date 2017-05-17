@@ -9,6 +9,8 @@ or evented [programmatic API](#programmatic-api).
 
 To get started, see the [features](#features), [basic usage](#basic-usage) or read the [FAQs](#faq).
 
+**Deprecation notice**: `nar` is not longer actively maintained, so I'd encourage you to use [pkg](https://github.com/zeit/pkg) instead, which is pretty much the same, but better.
+
 ## Features
 
 <img align="right" height="165" src="http://nodejs.org/images/platform-icon-generic.png" />
