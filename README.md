@@ -11,6 +11,10 @@ To get started, see the [features](#features), [basic usage](#basic-usage) or re
 
 **Deprecation notice**: `nar` is not longer actively maintained, so I'd encourage you to use [pkg](https://github.com/zeit/pkg) instead, which is pretty much the same, but better.
 
+<a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/1MpD3pzt63uUeG43NP4tDHPY/h2non/nar'>
+  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/1MpD3pzt63uUeG43NP4tDHPY/h2non/nar.svg' />
+</a>
+
 ## Features
 
 <img align="right" height="165" src="http://nodejs.org/images/platform-icon-generic.png" />
